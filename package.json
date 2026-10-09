@@ -1,0 +1,32 @@
+{
+  "name": "dog-bone-run",
+  "version": "0.22.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/server.mjs --dist",
+    "test:browser": "node tests/runner-polish.browser.mjs",
+    "test:touch": "node tests/runner-touch.browser.mjs",
+    "test:interruptions": "node tests/runner-interruption.browser.mjs",
+    "test:realtime": "node tests/runner-realtime.browser.mjs",
+    "assets:animation": "node scripts/build-sprite-animation.mjs",
+    "assets:home-motion": "node scripts/build-home-motion.mjs",
+    "test:home-motion": "node tests/home-motion.browser.mjs",
+    "test:animation": "node tests/sprite-animation.browser.mjs",
+    "test:animation-realtime": "node tests/sprite-animation-realtime.browser.mjs",
+    "test:road": "node tests/road-comfort.browser.mjs",
+    "test:natural-home": "node tests/natural-home.browser.mjs",
+    "test:natural-home-realtime": "node tests/natural-home-realtime.browser.mjs",
+    "test:home-motion-realtime": "node tests/home-motion-realtime.browser.mjs",
+    "assets:continuity": "python3 scripts/build-home-continuity.py",
+    "test:continuity": "node tests/continuity-home.browser.mjs",
+    "test:continuity-realtime": "node tests/continuity-realtime.browser.mjs",
+    "test:home-command": "node tests/home-command.browser.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

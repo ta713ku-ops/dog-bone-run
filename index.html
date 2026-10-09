@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff9f0">
+  <meta name="description" content="犬と走る、30秒・3レーンのランゲーム。左右に移動して骨を集めよう。">
+  <title>ほねのおさんぽ</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <main class="game" id="game" data-state="ready" aria-label="ほねのおさんぽ">
+    <canvas id="scene" tabindex="0" aria-label="ゲーム操作面。左右にスワイプ、または左右キー・AとDで移動"></canvas>
+    <div class="hud" id="hud" hidden>
+      <div class="score-stack">
+      <div class="score-box"><span class="hud-label">スコア</span><strong id="score">0</strong></div>
+      <div class="combo-box" data-active="false" aria-hidden="true"><span class="hud-label">コンボ</span><strong id="combo">0</strong></div>
+      </div>
+      <div class="hud-actions">
+      <span class="trail-label" id="trail-label" hidden>花咲く小径</span>
+      <div class="clock" id="clock"><span class="hud-label" id="clock-label">のこり</span><strong class="clock-value"><span id="clock-seconds">30</span><span class="clock-unit">秒</span></strong></div>
+      <button class="icon-button" id="pause" aria-label="一時停止"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg></button>
+      </div>
+    </div>
+    <section class="screen ready-screen" id="ready" aria-labelledby="title">
+      <h1 id="title" class="sr-only">おうちで、ひとやすみ。</h1>
+      <header class="home-header">
+        <div class="home-dog-actions" role="group" aria-label="犬のしぐさ">
+          <button class="home-dog-gesture" id="home-sit" type="button" data-dog-gesture="sit">おすわり</button>
+          <button class="home-dog-gesture" id="home-lie" type="button" data-dog-gesture="lie">ふせ</button>
+          <button class="home-dog-gesture" id="home-greet" type="button" data-dog-gesture="greet">こっちを見て</button>
+        </div>
+        <button class="icon-button settings-button" id="ready-settings" aria-label="設定を開く"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg></button></header>
+      <p id="intro-note" hidden>スワイプで左右に移動</p>
+      <div class="start-actions">
+        <p class="home-dog-status sr-only" id="home-dog-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        <div class="departure-panel">
+          <p class="caption" id="ready-record" role="status" aria-live="polite" aria-atomic="true">おさんぽを準備しています…</p>
+          <button class="button primary departure-button" id="start" aria-labelledby="start-label" aria-describedby="home-duration"><span class="departure-copy"><span class="departure-label" id="start-label">おさんぽへ</span><span class="departure-meta sr-only" id="home-duration">30秒のおさんぽ</span></span><svg class="departure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+    <section class="screen modal-screen" id="paused" hidden aria-labelledby="pause-title">
+      <div class="modal"><p class="eyebrow">ひとやすみ</p><h2 id="pause-title" tabindex="-1">ちょっと、休憩。</h2><p id="pause-reason">続きは、いつでも。</p><button class="button primary" id="resume">再開する</button><button class="button secondary sound-toggle" id="pause-sound" aria-pressed="true">音：オン</button><button class="button secondary" id="pause-settings">設定を開く</button><button class="text-button" id="quit">おさんぽをやめる</button></div>
+    </section>
+    <section class="screen result-screen" id="result" hidden aria-labelledby="result-title">
+      <div class="result-top"><p class="eyebrow" id="result-note">30秒のおさんぽ、おつかれさま。</p><h2 id="result-title" tabindex="-1">また一緒に歩こう。</h2></div>
+      <div class="result-bottom"><p class="result-score"><span>スコア</span><strong id="result-score">0</strong></p><div class="result-stats"><p id="phase1-bones"><span>集めた骨</span><strong id="result-bones">0個</strong></p><p id="phase2-normal" hidden><span>ふつうの骨</span><strong id="result-normal">0</strong></p><p id="phase2-gold" hidden><span>金の骨</span><strong id="result-gold">0</strong></p><p><span>最大コンボ</span><strong id="result-combo">0</strong></p><p id="phase2-time" hidden><span id="result-time-label">走った時間</span><strong id="result-time">0秒</strong></p></div><p id="record-status" class="record-status" role="status" hidden></p><div class="result-actions"><button class="button primary" id="retry">もう一度</button><button class="button secondary" id="end">タイトルへ</button></div></div>
+    </section>
+    <section class="audio-overlay" id="audio-panel" role="dialog" aria-modal="true" hidden aria-labelledby="audio-title">
+      <div class="modal"><h2 id="audio-title" tabindex="-1">音を準備しています</h2><p id="audio-message" role="status">もうすぐ、おさんぽ。</p><div id="audio-options" hidden><button class="button primary" id="audio-retry">音を再試行</button><button class="button secondary" id="audio-silent">音なしで開始</button></div></div>
+    </section>
+    <section class="settings-overlay" id="settings-panel" role="dialog" aria-modal="true" hidden aria-labelledby="settings-title">
+      <div class="modal settings-modal"><p class="eyebrow">おさんぽの設定</p><h2 id="settings-title" tabindex="-1">音と表示</h2>
+        <button class="sound-toggle" id="ready-sound" aria-pressed="true">音：オン</button>
+        <button class="sound-toggle" id="music-toggle" aria-pressed="true">BGM：オン</button>
+        <label class="volume-setting" for="music-volume"><span>BGMの音量 <output id="music-volume-value">35%</output></span><input id="music-volume" type="range" min="0" max="100" value="35" step="5"></label>
+        <label class="volume-setting" for="sfx-volume"><span>効果音の音量 <output id="sfx-volume-value">80%</output></span><input id="sfx-volume" type="range" min="0" max="100" value="80" step="5"></label>
+        <label class="motion-setting"><input id="reduce-motion" type="checkbox">動きを控えめにする</label>
+        <p class="settings-note" id="settings-note">端末の「動きを減らす」設定も反映します。</p>
+        <button class="button primary" id="settings-close">設定を閉じる</button>
+        <p class="build-label" id="build-label">v0.22.0 · 30秒チャレンジ</p>
+      </div>
+    </section>
+    <p class="control-hint" id="control-hint" hidden>左右にスワイプして進もう</p>
+    <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
+  </main>
+  <aside class="test-panel" id="test-panel" hidden aria-label="検証担当者用">
+    <details><summary id="test-heading">検証パネル · Phase 2</summary><p>観察・ログはこの端末内のみ。通常画面では非表示です。</p>
+      <form id="test-form">
+        <label>参加者ID<input name="participantId" placeholder="P01" pattern="P[0-9]{2,3}" maxlength="4"></label>
+        <label>確認した端末<input name="device" placeholder="例：iPhone 13" maxlength="80"></label>
+        <label>確認したOS<input name="os" placeholder="例：iOS 18.6" maxlength="80"></label>
+        <label>確認したブラウザ版<input name="browser" placeholder="例：Safari 18.6" maxlength="80"></label>
+        <label>操作理解の有効時間（秒）<input name="understoodSeconds" type="number" min="0" max="60" step="0.1"></label>
+        <label>説明の有無<select name="explained"><option value="">未確認</option><option value="false">説明なし</option><option value="true">説明あり</option></select></label>
+        <label>音は聞こえたか<select name="heardSound"><option value="">未確認</option><option value="true">聞こえた</option><option value="false">聞こえなかった</option></select></label>
+        <label>取得感（1〜5）<select name="feeling"><option value="">未回答</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+        <label>自由回答・観察<textarea name="notes" rows="3" maxlength="2000" placeholder="気持ちよかった瞬間／思い通りに動かなかった瞬間／続けた・やめた理由"></textarea></label>
+        <button class="button secondary" type="submit">観察を記録</button>
+      </form>
+      <label class="check"><input type="checkbox" id="debug"> 足元と骨の判定を表示</label>
+      <label class="check"><input type="checkbox" id="discovery"> 初回10秒で観察用に一時停止</label>
+      <button class="button secondary" id="export">ログを書き出す（JSON）</button><p id="log-status" role="status"></p>
+    </details>
+  </aside>
+  <noscript>このゲームを遊ぶにはJavaScriptを有効にしてください。</noscript>
+</body>
+</html>

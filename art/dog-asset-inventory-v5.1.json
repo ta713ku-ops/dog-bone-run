@@ -1,0 +1,2155 @@
+{
+  "schemaVersion": 2,
+  "inventory": [
+    "idle",
+    "walk",
+    "run",
+    "turn",
+    "sit",
+    "lie",
+    "sleep",
+    "wake",
+    "stretch",
+    "yawn",
+    "headTilt",
+    "petHappy",
+    "bellyUp",
+    "happyJump",
+    "sleepyRefuse",
+    "lookPlayer",
+    "peek",
+    "lookFood",
+    "sitWait",
+    "sniffFood",
+    "eat",
+    "lick",
+    "playBow",
+    "retrieve",
+    "carry",
+    "return",
+    "tug",
+    "plushShake",
+    "plushCuddle",
+    "jumpCatch",
+    "enterHouse",
+    "insideHouse",
+    "exitHouse"
+  ],
+  "images": {
+    "front": "art/dog-faithful-front.png",
+    "back": "art/dog-faithful-back.png",
+    "expressions": "art/dog-expressions.png",
+    "care": "art/dog-care-candidate.webp"
+  },
+  "behaviors": {
+    "idle": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "idle-front"
+      },
+      "directionFallback": {}
+    },
+    "walk": {
+      "directions": [
+        "side"
+      ],
+      "motionByDirection": {
+        "side": "walk-side"
+      },
+      "directionFallback": {}
+    },
+    "run": {
+      "directions": [
+        "back"
+      ],
+      "motionByDirection": {
+        "back": "run-back"
+      },
+      "directionFallback": {}
+    },
+    "turn": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "turn-front"
+      },
+      "directionFallback": {}
+    },
+    "sit": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "sit-front"
+      },
+      "directionFallback": {}
+    },
+    "lie": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "lie-front"
+      },
+      "directionFallback": {}
+    },
+    "sleep": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "sleep-front"
+      },
+      "directionFallback": {}
+    },
+    "wake": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "wake-front"
+      },
+      "directionFallback": {}
+    },
+    "stretch": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "stretch-front"
+      },
+      "directionFallback": {}
+    },
+    "yawn": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "yawn-front"
+      },
+      "directionFallback": {}
+    },
+    "headTilt": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "headTilt-front"
+      },
+      "directionFallback": {}
+    },
+    "petHappy": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "petHappy-front"
+      },
+      "directionFallback": {}
+    },
+    "bellyUp": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "bellyUp-front"
+      },
+      "directionFallback": {}
+    },
+    "happyJump": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "happyJump-front"
+      },
+      "directionFallback": {}
+    },
+    "sleepyRefuse": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "sleepyRefuse-front"
+      },
+      "directionFallback": {}
+    },
+    "lookPlayer": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "lookPlayer-front"
+      },
+      "directionFallback": {}
+    },
+    "peek": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "peek-front"
+      },
+      "directionFallback": {}
+    },
+    "lookFood": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "lookFood-front"
+      },
+      "directionFallback": {}
+    },
+    "sitWait": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "sitWait-front"
+      },
+      "directionFallback": {}
+    },
+    "sniffFood": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "sniffFood-front"
+      },
+      "directionFallback": {}
+    },
+    "eat": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "eat-front"
+      },
+      "directionFallback": {}
+    },
+    "lick": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "lick-front"
+      },
+      "directionFallback": {}
+    },
+    "playBow": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "playBow-front"
+      },
+      "directionFallback": {}
+    },
+    "retrieve": {
+      "directions": [
+        "side"
+      ],
+      "motionByDirection": {
+        "side": "retrieve-side"
+      },
+      "directionFallback": {}
+    },
+    "carry": {
+      "directions": [
+        "side"
+      ],
+      "motionByDirection": {
+        "side": "carry-side"
+      },
+      "directionFallback": {}
+    },
+    "return": {
+      "directions": [
+        "side"
+      ],
+      "motionByDirection": {
+        "side": "return-side"
+      },
+      "directionFallback": {}
+    },
+    "tug": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "tug-front"
+      },
+      "directionFallback": {}
+    },
+    "plushShake": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "plushShake-front"
+      },
+      "directionFallback": {}
+    },
+    "plushCuddle": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "plushCuddle-front"
+      },
+      "directionFallback": {}
+    },
+    "jumpCatch": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "jumpCatch-front"
+      },
+      "directionFallback": {}
+    },
+    "enterHouse": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "enterHouse-front"
+      },
+      "directionFallback": {}
+    },
+    "insideHouse": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "insideHouse-front"
+      },
+      "directionFallback": {}
+    },
+    "exitHouse": {
+      "directions": [
+        "front"
+      ],
+      "motionByDirection": {
+        "front": "exitHouse-front"
+      },
+      "directionFallback": {}
+    }
+  },
+  "motions": {
+    "idle-front": {
+      "assetId": "idle-front"
+    },
+    "walk-side": {
+      "assetId": "walk-side"
+    },
+    "run-back": {
+      "assetId": "run-back"
+    },
+    "turn-front": {
+      "assetId": "turn-front"
+    },
+    "sit-front": {
+      "assetId": "sit-front"
+    },
+    "lie-front": {
+      "assetId": "lie-front"
+    },
+    "sleep-front": {
+      "assetId": "sleep-front"
+    },
+    "wake-front": {
+      "assetId": "wake-front"
+    },
+    "stretch-front": {
+      "assetId": "stretch-front"
+    },
+    "yawn-front": {
+      "assetId": "yawn-front"
+    },
+    "headTilt-front": {
+      "assetId": "headTilt-front"
+    },
+    "petHappy-front": {
+      "assetId": "petHappy-front"
+    },
+    "bellyUp-front": {
+      "assetId": "bellyUp-front"
+    },
+    "happyJump-front": {
+      "assetId": "happyJump-front"
+    },
+    "sleepyRefuse-front": {
+      "assetId": "sleepyRefuse-front"
+    },
+    "lookPlayer-front": {
+      "assetId": "lookPlayer-front"
+    },
+    "peek-front": {
+      "assetId": "peek-front"
+    },
+    "lookFood-front": {
+      "assetId": "lookFood-front"
+    },
+    "sitWait-front": {
+      "assetId": "sitWait-front"
+    },
+    "sniffFood-front": {
+      "assetId": "sniffFood-front"
+    },
+    "eat-front": {
+      "assetId": "eat-front"
+    },
+    "lick-front": {
+      "assetId": "lick-front"
+    },
+    "playBow-front": {
+      "assetId": "playBow-front"
+    },
+    "retrieve-side": {
+      "assetId": "retrieve-side"
+    },
+    "carry-side": {
+      "assetId": "carry-side"
+    },
+    "return-side": {
+      "assetId": "return-side"
+    },
+    "tug-front": {
+      "assetId": "tug-front"
+    },
+    "plushShake-front": {
+      "assetId": "plushShake-front"
+    },
+    "plushCuddle-front": {
+      "assetId": "plushCuddle-front"
+    },
+    "jumpCatch-front": {
+      "assetId": "jumpCatch-front"
+    },
+    "enterHouse-front": {
+      "assetId": "enterHouse-front"
+    },
+    "insideHouse-front": {
+      "assetId": "insideHouse-front"
+    },
+    "exitHouse-front": {
+      "assetId": "exitHouse-front"
+    }
+  },
+  "assets": {
+    "idle-front": {
+      "id": "idle-front",
+      "behavior": "idle",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "walk-side": {
+      "id": "walk-side",
+      "behavior": "walk",
+      "direction": "side",
+      "imageId": "back",
+      "frames": [
+        {
+          "imageId": "back",
+          "crop": {
+            "x": 512,
+            "y": 776,
+            "width": 255,
+            "height": 219
+          },
+          "anchorX": 129.99378269770264,
+          "anchorY": 219,
+          "groundY": 219,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 6,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "run-back": {
+      "id": "run-back",
+      "behavior": "run",
+      "direction": "back",
+      "imageId": "back",
+      "frames": [
+        {
+          "imageId": "back",
+          "crop": {
+            "x": 54,
+            "y": 14,
+            "width": 150,
+            "height": 234
+          },
+          "anchorX": 76.25862981577853,
+          "anchorY": 234,
+          "groundY": 234,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 6,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "turn-front": {
+      "id": "turn-front",
+      "behavior": "turn",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "sit-front": {
+      "id": "sit-front",
+      "behavior": "sit",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 61,
+            "y": 21,
+            "width": 301,
+            "height": 343
+          },
+          "anchorX": 150.5,
+          "anchorY": 343,
+          "groundY": 343,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "lie-front": {
+      "id": "lie-front",
+      "behavior": "lie",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 362,
+            "y": 84,
+            "width": 362,
+            "height": 274
+          },
+          "anchorX": 181,
+          "anchorY": 274,
+          "groundY": 274,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "sleep-front": {
+      "id": "sleep-front",
+      "behavior": "sleep",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 755,
+            "y": 144,
+            "width": 331,
+            "height": 209
+          },
+          "anchorX": 165.5,
+          "anchorY": 209,
+          "groundY": 209,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "wake-front": {
+      "id": "wake-front",
+      "behavior": "wake",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "stretch-front": {
+      "id": "stretch-front",
+      "behavior": "stretch",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "yawn-front": {
+      "id": "yawn-front",
+      "behavior": "yawn",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 1086,
+            "y": 27,
+            "width": 306,
+            "height": 337
+          },
+          "anchorX": 153,
+          "anchorY": 337,
+          "groundY": 337,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "headTilt-front": {
+      "id": "headTilt-front",
+      "behavior": "headTilt",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 524,
+            "y": 86,
+            "width": 244,
+            "height": 386
+          },
+          "anchorX": 130.88787035448271,
+          "anchorY": 386,
+          "groundY": 386,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "petHappy-front": {
+      "id": "petHappy-front",
+      "behavior": "petHappy",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 5,
+            "y": 534,
+            "width": 251,
+            "height": 394
+          },
+          "anchorX": 147.65397546275204,
+          "anchorY": 394,
+          "groundY": 394,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "bellyUp-front": {
+      "id": "bellyUp-front",
+      "behavior": "bellyUp",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 1086,
+            "y": 748,
+            "width": 344,
+            "height": 283
+          },
+          "anchorX": 172,
+          "anchorY": 283,
+          "groundY": 283,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "happyJump-front": {
+      "id": "happyJump-front",
+      "behavior": "happyJump",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "sleepyRefuse-front": {
+      "id": "sleepyRefuse-front",
+      "behavior": "sleepyRefuse",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "lookPlayer-front": {
+      "id": "lookPlayer-front",
+      "behavior": "lookPlayer",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "peek-front": {
+      "id": "peek-front",
+      "behavior": "peek",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "lookFood-front": {
+      "id": "lookFood-front",
+      "behavior": "lookFood",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "sitWait-front": {
+      "id": "sitWait-front",
+      "behavior": "sitWait",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "sniffFood-front": {
+      "id": "sniffFood-front",
+      "behavior": "sniffFood",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 362,
+            "y": 391,
+            "width": 354,
+            "height": 311
+          },
+          "anchorX": 177,
+          "anchorY": 311,
+          "groundY": 311,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "eat-front": {
+      "id": "eat-front",
+      "behavior": "eat",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 58,
+            "y": 389,
+            "width": 304,
+            "height": 313
+          },
+          "anchorX": 152,
+          "anchorY": 313,
+          "groundY": 313,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 4,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "lick-front": {
+      "id": "lick-front",
+      "behavior": "lick",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 778,
+            "y": 386,
+            "width": 308,
+            "height": 320
+          },
+          "anchorX": 154,
+          "anchorY": 320,
+          "groundY": 320,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "playBow-front": {
+      "id": "playBow-front",
+      "behavior": "playBow",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 1086,
+            "y": 399,
+            "width": 332,
+            "height": 300
+          },
+          "anchorX": 166,
+          "anchorY": 300,
+          "groundY": 300,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "retrieve-side": {
+      "id": "retrieve-side",
+      "behavior": "retrieve",
+      "direction": "side",
+      "imageId": "back",
+      "frames": [
+        {
+          "imageId": "back",
+          "crop": {
+            "x": 512,
+            "y": 776,
+            "width": 255,
+            "height": 219
+          },
+          "anchorX": 129.99378269770264,
+          "anchorY": 219,
+          "groundY": 219,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "carry-side": {
+      "id": "carry-side",
+      "behavior": "carry",
+      "direction": "side",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 48,
+            "y": 719,
+            "width": 314,
+            "height": 312
+          },
+          "anchorX": 157,
+          "anchorY": 312,
+          "groundY": 312,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "return-side": {
+      "id": "return-side",
+      "behavior": "return",
+      "direction": "side",
+      "imageId": "back",
+      "frames": [
+        {
+          "imageId": "back",
+          "crop": {
+            "x": 512,
+            "y": 776,
+            "width": 255,
+            "height": 219
+          },
+          "anchorX": 129.99378269770264,
+          "anchorY": 219,
+          "groundY": 219,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "tug-front": {
+      "id": "tug-front",
+      "behavior": "tug",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 362,
+            "y": 730,
+            "width": 362,
+            "height": 304
+          },
+          "anchorX": 181,
+          "anchorY": 304,
+          "groundY": 304,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 4,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "plushShake-front": {
+      "id": "plushShake-front",
+      "behavior": "plushShake",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 4,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "plushCuddle-front": {
+      "id": "plushCuddle-front",
+      "behavior": "plushCuddle",
+      "direction": "front",
+      "imageId": "care",
+      "frames": [
+        {
+          "imageId": "care",
+          "crop": {
+            "x": 724,
+            "y": 787,
+            "width": 362,
+            "height": 224
+          },
+          "anchorX": 181,
+          "anchorY": 224,
+          "groundY": 224,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "jumpCatch-front": {
+      "id": "jumpCatch-front",
+      "behavior": "jumpCatch",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "enterHouse-front": {
+      "id": "enterHouse-front",
+      "behavior": "enterHouse",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "insideHouse-front": {
+      "id": "insideHouse-front",
+      "behavior": "insideHouse",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "exitHouse-front": {
+      "id": "exitHouse-front",
+      "behavior": "exitHouse",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 3,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": false,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-front-normal": {
+      "id": "expression-front-normal",
+      "behavior": "idle",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-front-happy": {
+      "id": "expression-front-happy",
+      "behavior": "idle",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-front-excited": {
+      "id": "expression-front-excited",
+      "behavior": "idle",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-front-sleepy": {
+      "id": "expression-front-sleepy",
+      "behavior": "idle",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-front-want": {
+      "id": "expression-front-want",
+      "behavior": "idle",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-front-eating": {
+      "id": "expression-front-eating",
+      "behavior": "idle",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-front-relaxed": {
+      "id": "expression-front-relaxed",
+      "behavior": "idle",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-front-surprised": {
+      "id": "expression-front-surprised",
+      "behavior": "idle",
+      "direction": "front",
+      "imageId": "expressions",
+      "frames": [
+        {
+          "imageId": "expressions",
+          "crop": {
+            "x": 8,
+            "y": 93,
+            "width": 248,
+            "height": 377
+          },
+          "anchorX": 127.35403539229688,
+          "anchorY": 377,
+          "groundY": 377,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-side-normal": {
+      "id": "expression-side-normal",
+      "behavior": "idle",
+      "direction": "side",
+      "imageId": "back",
+      "frames": [
+        {
+          "imageId": "back",
+          "crop": {
+            "x": 512,
+            "y": 776,
+            "width": 255,
+            "height": 219
+          },
+          "anchorX": 129.99378269770264,
+          "anchorY": 219,
+          "groundY": 219,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-side-happy": {
+      "id": "expression-side-happy",
+      "behavior": "idle",
+      "direction": "side",
+      "imageId": "back",
+      "frames": [
+        {
+          "imageId": "back",
+          "crop": {
+            "x": 512,
+            "y": 776,
+            "width": 255,
+            "height": 219
+          },
+          "anchorX": 129.99378269770264,
+          "anchorY": 219,
+          "groundY": 219,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-side-excited": {
+      "id": "expression-side-excited",
+      "behavior": "idle",
+      "direction": "side",
+      "imageId": "back",
+      "frames": [
+        {
+          "imageId": "back",
+          "crop": {
+            "x": 512,
+            "y": 776,
+            "width": 255,
+            "height": 219
+          },
+          "anchorX": 129.99378269770264,
+          "anchorY": 219,
+          "groundY": 219,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-side-sleepy": {
+      "id": "expression-side-sleepy",
+      "behavior": "idle",
+      "direction": "side",
+      "imageId": "back",
+      "frames": [
+        {
+          "imageId": "back",
+          "crop": {
+            "x": 512,
+            "y": 776,
+            "width": 255,
+            "height": 219
+          },
+          "anchorX": 129.99378269770264,
+          "anchorY": 219,
+          "groundY": 219,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    },
+    "expression-side-want": {
+      "id": "expression-side-want",
+      "behavior": "idle",
+      "direction": "side",
+      "imageId": "back",
+      "frames": [
+        {
+          "imageId": "back",
+          "crop": {
+            "x": 512,
+            "y": 776,
+            "width": 255,
+            "height": 219
+          },
+          "anchorX": 129.99378269770264,
+          "anchorY": 219,
+          "groundY": 219,
+          "bodyScale": 1,
+          "bodyLandmarks": [],
+          "contactFeet": [],
+          "durationMs": 200
+        }
+      ],
+      "frameCount": 1,
+      "minimumFrameCount": 1,
+      "sourceStatus": "candidate",
+      "requiredForRelease": true,
+      "loop": true,
+      "durationMs": 200,
+      "maxCssHeight": 190,
+      "renderDprCap": 2,
+      "faceOverlay": false,
+      "locomotionMode": "inPlace",
+      "strideLength": null,
+      "landmarksReviewed": false
+    }
+  },
+  "expressions": {
+    "front": {
+      "normal": "expression-front-normal",
+      "happy": "expression-front-happy",
+      "excited": "expression-front-excited",
+      "sleepy": "expression-front-sleepy",
+      "want": "expression-front-want",
+      "eating": "expression-front-eating",
+      "relaxed": "expression-front-relaxed",
+      "surprised": "expression-front-surprised"
+    },
+    "side": {
+      "normal": "expression-side-normal",
+      "happy": "expression-side-happy",
+      "excited": "expression-side-excited",
+      "sleepy": "expression-side-sleepy",
+      "want": "expression-side-want"
+    }
+  },
+  "humanReview": "PENDING",
+  "runtimeBindings": {
+    "runner": {
+      "behavior": "run",
+      "assetId": "run-back",
+      "sourcePose": "back.idle",
+      "animation": "distance-driven mesh",
+      "rigStatus": "prototype"
+    },
+    "fetch": [
+      "walk-side",
+      "retrieve-side",
+      "carry-side",
+      "return-side"
+    ],
+    "homeCare": [
+      "lie-front",
+      "sleep-front",
+      "eat-front",
+      "sniffFood-front",
+      "lick-front",
+      "tug-front",
+      "plushCuddle-front"
+    ],
+    "homeStanding": [
+      "idle-front",
+      "headTilt-front",
+      "petHappy-front"
+    ],
+    "limitations": [
+      "Other inventory motions are candidate production targets and aliases, not completed natural clips",
+      "Estimated mesh landmarks and stride require technical and human acceptance"
+    ]
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 3,
+  "rendererKind": "articulated3d",
+  "sourceStatus": "candidate",
+  "legacyInventoryBackup": "art/dog-asset-inventory-v5.1.json",
+  "sourceFiles": {
+    "model": "src/dog-3d-model.js",
+    "rig": "src/dog-3d-rig.js",
+    "renderer": "src/dog-3d-renderer.js"
+  },
+  "modelVersion": "pom-coat-webgl-1.2.0",
+  "rigVersion": "four-foot-contact-ik-1.2.0",
+  "standingHeight": 1.355,
+  "groundPlaneY": 1.1102230246251565e-16,
+  "limits": {
+    "triangles": 15000,
+    "joints": 24,
+    "materials": 1,
+    "maxStanceFootDriftCssPx": 3
+  },
+  "skinning": "single-joint-weight-one",
+  "directions": {
+    "front": 0,
+    "right": 1.5707963267948966,
+    "back": 3.141592653589793,
+    "left": 4.71238898038469
+  },
+  "inventory": [
+    "idle",
+    "walk",
+    "run",
+    "turn",
+    "sit",
+    "lie",
+    "sleep",
+    "wake",
+    "stretch",
+    "yawn",
+    "headTilt",
+    "petHappy",
+    "bellyUp",
+    "happyJump",
+    "sleepyRefuse",
+    "lookPlayer",
+    "peek",
+    "lookFood",
+    "sitWait",
+    "sniffFood",
+    "eat",
+    "lick",
+    "playBow",
+    "retrieve",
+    "carry",
+    "return",
+    "tug",
+    "plushShake",
+    "plushCuddle",
+    "jumpCatch",
+    "enterHouse",
+    "insideHouse",
+    "exitHouse"
+  ],
+  "behaviors": {
+    "idle": {
+      "action": "idle"
+    },
+    "walk": {
+      "action": "walk"
+    },
+    "run": {
+      "action": "run"
+    },
+    "turn": {
+      "action": "turn"
+    },
+    "sit": {
+      "action": "sit"
+    },
+    "lie": {
+      "action": "lie"
+    },
+    "sleep": {
+      "action": "sleep"
+    },
+    "wake": {
+      "action": "wake"
+    },
+    "stretch": {
+      "action": "stretch"
+    },
+    "yawn": {
+      "action": "yawn"
+    },
+    "headTilt": {
+      "action": "headTilt"
+    },
+    "petHappy": {
+      "action": "petHappy"
+    },
+    "bellyUp": {
+      "action": "bellyUp"
+    },
+    "happyJump": {
+      "action": "happyJump"
+    },
+    "sleepyRefuse": {
+      "action": "sleepyRefuse"
+    },
+    "lookPlayer": {
+      "action": "lookPlayer"
+    },
+    "peek": {
+      "action": "peek"
+    },
+    "lookFood": {
+      "action": "lookFood"
+    },
+    "sitWait": {
+      "action": "sitWait"
+    },
+    "sniffFood": {
+      "action": "sniffFood"
+    },
+    "eat": {
+      "action": "eat"
+    },
+    "lick": {
+      "action": "lick"
+    },
+    "playBow": {
+      "action": "playBow"
+    },
+    "retrieve": {
+      "action": "retrieve"
+    },
+    "carry": {
+      "action": "carry"
+    },
+    "return": {
+      "action": "return"
+    },
+    "tug": {
+      "action": "tug"
+    },
+    "plushShake": {
+      "action": "plushShake"
+    },
+    "plushCuddle": {
+      "action": "plushCuddle"
+    },
+    "jumpCatch": {
+      "action": "jumpCatch"
+    },
+    "enterHouse": {
+      "action": "enterHouse"
+    },
+    "insideHouse": {
+      "action": "insideHouse"
+    },
+    "exitHouse": {
+      "action": "exitHouse"
+    }
+  },
+  "humanApproval": {
+    "required": true,
+    "bindsTo": "assetsHash"
+  },
+  "integrationChecks": {
+    "houseOcclusion": "required",
+    "toyMouthFollow": "required",
+    "homeRunResultRenderer": "required"
+  }
+}

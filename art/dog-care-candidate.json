@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "texture": "dog-care-candidate.webp",
+  "size": [
+    1448,
+    1086
+  ],
+  "sourceStatus": "candidate",
+  "referenceStandingHeight": 350,
+  "poses": {
+    "sit": {
+      "x": 61,
+      "y": 21,
+      "width": 301,
+      "height": 343,
+      "anchorX": 150.5,
+      "anchorY": 343,
+      "groundY": 343,
+      "cell": 0,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "lie": {
+      "x": 362,
+      "y": 84,
+      "width": 362,
+      "height": 274,
+      "anchorX": 181,
+      "anchorY": 274,
+      "groundY": 274,
+      "cell": 1,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "sleep": {
+      "x": 755,
+      "y": 144,
+      "width": 331,
+      "height": 209,
+      "anchorX": 165.5,
+      "anchorY": 209,
+      "groundY": 209,
+      "cell": 2,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "yawn": {
+      "x": 1086,
+      "y": 27,
+      "width": 306,
+      "height": 337,
+      "anchorX": 153,
+      "anchorY": 337,
+      "groundY": 337,
+      "cell": 3,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "eat": {
+      "x": 58,
+      "y": 389,
+      "width": 304,
+      "height": 313,
+      "anchorX": 152,
+      "anchorY": 313,
+      "groundY": 313,
+      "cell": 4,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "sniffFood": {
+      "x": 362,
+      "y": 391,
+      "width": 354,
+      "height": 311,
+      "anchorX": 177,
+      "anchorY": 311,
+      "groundY": 311,
+      "cell": 5,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "lick": {
+      "x": 778,
+      "y": 386,
+      "width": 308,
+      "height": 320,
+      "anchorX": 154,
+      "anchorY": 320,
+      "groundY": 320,
+      "cell": 6,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "playBow": {
+      "x": 1086,
+      "y": 399,
+      "width": 332,
+      "height": 300,
+      "anchorX": 166,
+      "anchorY": 300,
+      "groundY": 300,
+      "cell": 7,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "carry": {
+      "x": 48,
+      "y": 719,
+      "width": 314,
+      "height": 312,
+      "anchorX": 157,
+      "anchorY": 312,
+      "groundY": 312,
+      "cell": 8,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "tug": {
+      "x": 362,
+      "y": 730,
+      "width": 362,
+      "height": 304,
+      "anchorX": 181,
+      "anchorY": 304,
+      "groundY": 304,
+      "cell": 9,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "plushCuddle": {
+      "x": 724,
+      "y": 787,
+      "width": 362,
+      "height": 224,
+      "anchorX": 181,
+      "anchorY": 224,
+      "groundY": 224,
+      "cell": 10,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    },
+    "bellyUp": {
+      "x": 1086,
+      "y": 748,
+      "width": 344,
+      "height": 283,
+      "anchorX": 172,
+      "anchorY": 283,
+      "groundY": 283,
+      "cell": 11,
+      "sourceStatus": "candidate",
+      "landmarksReviewed": false
+    }
+  },
+  "reviewStatus": "HUMAN DOG ART PENDING"
+}

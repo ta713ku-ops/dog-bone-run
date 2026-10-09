@@ -1,0 +1,20 @@
+# Local home motion production record — 2026-10-08
+
+Original V1 dog retained. Baseline v0.13 comparison rasters: `v13/`.
+Compiler: `scripts/build-home-continuity.py`, Pillow/numpy/OpenCV DIS pinned as in `art/continuity/PRODUCTION_NOTES.md`.
+
+Visual source review selected sit [0,4,8,12,15], lie [0,1,3,4,6,8,10,12,14,15], greet [0,3,6,10,15] (zero-based). Lie retains more intermediate body anchors after a sparse-gap candidate produced fur spill. Lie7 fringe and greet4 paw reversal are excluded from the interpolation path. The corrected16 sheets retain all originals for diagnosis; the production interpolation uses the recorded selection, not every sheet cell.
+
+Identity repair maps one standing-face RGB texture onto each registered face. Target alpha is preserved exactly: the standing reference does not include newly exposed haunches. This prevents head masking from cutting shoulder holes. The dedicated actual-source alpha regression checks all80 input poses. Source eye trajectory, body/haunch pose and shared endpoints remain registered.
+
+Intermediate coverage is constrained by a signed-distance morph of the endpoint silhouettes (2px fur allowance). Only remove flow spill; never fill a guessed opaque region. Scale premultiplied color with coverage so feathered edges retain their color. Sit intermediate front-paw contacts are re-registered after interpolation. New counts: sit48, lie48, greet32, with original validated tilts32 retained, uniformly sampled; playback easing stays in the sampler.
+
+Discarded local candidates: alpha-replacing head repair (shoulder cutouts/late fur flaps), sparse lie gaps (fur wing from flow extrapolation). A steep right-head-tilt graft was also rejected by the browser eye-continuity gate (wrong source eye/nose pairing, visible duplicate face). The two tilt atlases now retain exact validated v0.13 production pixels and landmarks; they do not play automatically. Their baseline pixels and metadata are declared compiler inputs. These candidates were rejected before final verified delivery. Formal normal-speed naturalness remains a subjective gate; source shape changes and 2D occlusion limitations remain.
+
+Built-in imagegen edit candidate `liedown-imagegen-candidate.png` was rejected: frame-wise face/fur variation and fringe persisted. No paid CLI/API or external upload. It is not referenced by the game.
+
+Prompt used (built-in edit, transparent=true; first supplied sheet edit target, second identity reference):
+
+> Use case: identity-preserve precise sprite repair. Edit target is the FIRST supplied transparent 4x4 Pomeranian sit-to-lie sheet, and the SECOND image is identity reference only. Repair the FIRST sheet into an anatomically continuous sixteen-pose 4x4 front-view sequence slowly lowering from a seated posture into a sphinx lying pose. Preserve EXACT original dog: same brown/white Pomeranian face, eye spacing, forehead white marking, nose, open mouth and tongue, fur texture, light, camera angle, scale, foot baseline, fully transparent background. First frame must match the seated dog at bottom-right of SECOND reference. Last frame match bottom-right of FIRST. Especially repair frames1-4: hind haunch and feet must not appear/disappear abruptly; front paws extend gradually, chest lowers steadily, head size remains fixed. No independent reinterpretation of facial features or fur in each cell. Repeat one identical face texture across all poses; only tiny head translation for lowering. Gentle physically coherent shoulder/elbow movement; no doubled limbs, no extra toes, no phantom fur edges. All sixteen full dogs entirely inside equal cells with wide transparent gutters, no text/numbers/shadows/background. The key purpose is continuous identity and morphology between adjacent cells, not diverse poses or expressions.
+
+Selected runtime assets are the five `art/dog-continuous-*.webp` files with `art/dog-home-continuity.json`. Alpha/provenance/frame/contact evidence and browser recordings are in the final verification record. Source and comparison assets stay outside dist.

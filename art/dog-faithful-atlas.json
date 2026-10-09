@@ -1,0 +1,308 @@
+{
+  "version": 2,
+  "mode": "photo-reference-sprites",
+  "triangleCount": 0,
+  "materials": 0,
+  "textureSizes": [
+    [
+      1024,
+      1024
+    ],
+    [
+      1024,
+      1024
+    ]
+  ],
+  "textureCount": 2,
+  "poses": {
+    "front": {
+      "idle": {
+        "durationMs": 900,
+        "loop": true,
+        "frames": [
+          {
+            "atlas": "front",
+            "x": 111,
+            "y": 22,
+            "width": 390,
+            "height": 486,
+            "anchorX": 171.66152689751314,
+            "cell": [
+              0,
+              0
+            ]
+          },
+          {
+            "atlas": "front",
+            "x": 583,
+            "y": 18,
+            "width": 385,
+            "height": 490,
+            "anchorX": 170.6414886089641,
+            "cell": [
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      "finish": {
+        "durationMs": 800,
+        "loop": true,
+        "frames": [
+          {
+            "atlas": "front",
+            "x": 121,
+            "y": 519,
+            "width": 391,
+            "height": 485,
+            "anchorX": 169.62334061463102,
+            "cell": [
+              1,
+              0
+            ]
+          },
+          {
+            "atlas": "front",
+            "x": 604,
+            "y": 516,
+            "width": 383,
+            "height": 488,
+            "anchorX": 160.06082718290713,
+            "cell": [
+              1,
+              1
+            ]
+          }
+        ]
+      }
+    },
+    "back": {
+      "idle": {
+        "atlas": "back",
+        "x": 54,
+        "y": 14,
+        "width": 150,
+        "height": 234,
+        "anchorX": 76.25862981577853,
+        "cell": [
+          0,
+          0
+        ]
+      },
+      "run": {
+        "durationMs": 500,
+        "loop": true,
+        "frames": [
+          {
+            "atlas": "back",
+            "x": 291,
+            "y": 10,
+            "width": 208,
+            "height": 239,
+            "anchorX": 79.43947926994218,
+            "cell": [
+              0,
+              1
+            ]
+          },
+          {
+            "atlas": "back",
+            "x": 537,
+            "y": 9,
+            "width": 206,
+            "height": 233,
+            "anchorX": 67.18682704120775,
+            "cell": [
+              0,
+              2
+            ]
+          },
+          {
+            "atlas": "back",
+            "x": 804,
+            "y": 12,
+            "width": 196,
+            "height": 230,
+            "anchorX": 71.84987304594317,
+            "cell": [
+              0,
+              3
+            ]
+          },
+          {
+            "atlas": "back",
+            "x": 35,
+            "y": 267,
+            "width": 210,
+            "height": 238,
+            "anchorX": 60.96671337016741,
+            "cell": [
+              1,
+              0
+            ]
+          }
+        ]
+      },
+      "leanLeft": {
+        "atlas": "back",
+        "x": 295,
+        "y": 261,
+        "width": 197,
+        "height": 245,
+        "anchorX": 59.79602206736353,
+        "cell": [
+          1,
+          1
+        ]
+      },
+      "leanRight": {
+        "atlas": "back",
+        "x": 539,
+        "y": 261,
+        "width": 202,
+        "height": 244,
+        "anchorX": 124.15115410937597,
+        "cell": [
+          1,
+          2
+        ]
+      },
+      "collect": {
+        "atlas": "back",
+        "x": 821,
+        "y": 259,
+        "width": 156,
+        "height": 247,
+        "anchorX": 74.2977041096751,
+        "cell": [
+          1,
+          3
+        ]
+      },
+      "gold": {
+        "atlas": "back",
+        "x": 20,
+        "y": 514,
+        "width": 221,
+        "height": 243,
+        "anchorX": 100.57975407492137,
+        "cell": [
+          2,
+          0
+        ]
+      },
+      "hit": {
+        "atlas": "back",
+        "x": 276,
+        "y": 526,
+        "width": 207,
+        "height": 242,
+        "anchorX": 114.21798265334242,
+        "cell": [
+          2,
+          1
+        ]
+      },
+      "fall": {
+        "durationMs": 650,
+        "loop": false,
+        "frames": [
+          {
+            "atlas": "back",
+            "x": 516,
+            "y": 538,
+            "width": 243,
+            "height": 211,
+            "anchorX": 122.81867188536833,
+            "cell": [
+              2,
+              2
+            ]
+          },
+          {
+            "atlas": "back",
+            "x": 772,
+            "y": 539,
+            "width": 238,
+            "height": 197,
+            "anchorX": 95.49314555637801,
+            "cell": [
+              2,
+              3
+            ]
+          },
+          {
+            "atlas": "back",
+            "x": 12,
+            "y": 799,
+            "width": 233,
+            "height": 179,
+            "anchorX": 99.60935904743413,
+            "cell": [
+              3,
+              0
+            ]
+          }
+        ]
+      },
+      "finish": {
+        "atlas": "back",
+        "x": 286,
+        "y": 768,
+        "width": 171,
+        "height": 234,
+        "anchorX": 102.98504586027312,
+        "cell": [
+          3,
+          1
+        ]
+      }
+    },
+    "side": {
+      "idle": {
+        "atlas": "back",
+        "x": 512,
+        "y": 776,
+        "width": 255,
+        "height": 219,
+        "anchorX": 129.99378269770264,
+        "cell": [
+          3,
+          2
+        ]
+      },
+      "run": {
+        "atlas": "back",
+        "x": 774,
+        "y": 781,
+        "width": 240,
+        "height": 209,
+        "anchorX": 132.755565841342,
+        "cell": [
+          3,
+          3
+        ]
+      }
+    }
+  },
+  "sourceSheets": {
+    "front": {
+      "path": "art/source/dog-faithful-front-source.png",
+      "sha256": "4145f5b267f754636544ac3b06704d9d4ccd95d015394b66529211bb1373c06e",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    },
+    "back": {
+      "path": "art/source/dog-faithful-back-source.png",
+      "sha256": "55f0bd117af5ad38dd5f0ebf6f1c2622ca66bc3382ff60cdb0acdabf32fada7a",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    }
+  },
+  "compressedBytes": 2806516
+}

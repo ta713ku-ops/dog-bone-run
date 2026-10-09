@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "atlas": "expressions",
+  "textureSize": [
+    1024,
+    1024
+  ],
+  "cellSize": [
+    256,
+    512
+  ],
+  "poses": {
+    "blink": {
+      "atlas": "expressions",
+      "x": 256,
+      "y": 92,
+      "width": 256,
+      "height": 380,
+      "anchorX": 137.75565559111917,
+      "cell": [
+        0,
+        1
+      ]
+    },
+    "lookLeft": {
+      "atlas": "expressions",
+      "x": 524,
+      "y": 86,
+      "width": 244,
+      "height": 386,
+      "anchorX": 130.88787035448271,
+      "cell": [
+        0,
+        2
+      ]
+    },
+    "lookRight": {
+      "atlas": "expressions",
+      "x": 768,
+      "y": 86,
+      "width": 256,
+      "height": 386,
+      "anchorX": 125.93503385778152,
+      "cell": [
+        0,
+        3
+      ]
+    },
+    "paw": {
+      "atlas": "expressions",
+      "x": 5,
+      "y": 534,
+      "width": 251,
+      "height": 394,
+      "anchorX": 147.65397546275204,
+      "cell": [
+        1,
+        0
+      ]
+    },
+    "bow": {
+      "atlas": "expressions",
+      "x": 256,
+      "y": 546,
+      "width": 242,
+      "height": 379,
+      "anchorX": 125.16061824809259,
+      "cell": [
+        1,
+        1
+      ]
+    },
+    "finish": {
+      "durationMs": 760,
+      "loop": true,
+      "frames": [
+        {
+          "atlas": "expressions",
+          "x": 512,
+          "y": 550,
+          "width": 256,
+          "height": 375,
+          "anchorX": 111.23101280306092,
+          "cell": [
+            1,
+            2
+          ]
+        },
+        {
+          "atlas": "expressions",
+          "x": 786,
+          "y": 550,
+          "width": 238,
+          "height": 376,
+          "anchorX": 105.95728586197332,
+          "cell": [
+            1,
+            3
+          ]
+        }
+      ]
+    }
+  },
+  "neutral": {
+    "atlas": "expressions",
+    "x": 8,
+    "y": 93,
+    "width": 248,
+    "height": 377,
+    "anchorX": 127.35403539229688,
+    "cell": [
+      0,
+      0
+    ]
+  },
+  "source": {
+    "path": "art/source/dog-expressions-source.png",
+    "sha256": "794f78093e0e87a443cd0adb6d446ef045821195cde82ab7189774ae3242c871",
+    "size": [
+      1254,
+      1254
+    ]
+  },
+  "pngBytes": 1480716
+}

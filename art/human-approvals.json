@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "gates": {
+    "humanDog": {
+      "gateId": "humanDog",
+      "status": "PENDING",
+      "scopeHash": null,
+      "buildHash": null,
+      "codeHash": null,
+      "assetsHash": null,
+      "configHash": null,
+      "reviewedHash": null,
+      "reviewedBuildHash": null,
+      "reviewedAssetsHash": null,
+      "reviewer": null,
+      "testVersion": null,
+      "executedAt": null,
+      "evidence": [],
+      "reason": "human_review_not_recorded"
+    },
+    "humanRoad": {
+      "gateId": "humanRoad",
+      "status": "PENDING",
+      "scopeHash": null,
+      "buildHash": null,
+      "codeHash": null,
+      "assetsHash": null,
+      "configHash": null,
+      "reviewedHash": null,
+      "reviewedBuildHash": null,
+      "reviewer": null,
+      "testVersion": null,
+      "executedAt": null,
+      "evidence": [],
+      "reason": "human_review_not_recorded"
+    },
+    "humanDifficulty": {
+      "gateId": "humanDifficulty",
+      "status": "PENDING",
+      "scopeHash": null,
+      "buildHash": null,
+      "codeHash": null,
+      "assetsHash": null,
+      "configHash": null,
+      "reviewedHash": null,
+      "reviewedBuildHash": null,
+      "reviewer": null,
+      "testVersion": null,
+      "executedAt": null,
+      "evidence": [],
+      "reason": "human_review_not_recorded"
+    },
+    "iOS": {
+      "gateId": "iOS",
+      "status": "PENDING",
+      "scopeHash": null,
+      "buildHash": null,
+      "codeHash": null,
+      "assetsHash": null,
+      "configHash": null,
+      "reviewedHash": null,
+      "reviewedBuildHash": null,
+      "reviewer": null,
+      "testVersion": null,
+      "executedAt": null,
+      "evidence": [],
+      "reason": "human_review_not_recorded"
+    }
+  }
+}

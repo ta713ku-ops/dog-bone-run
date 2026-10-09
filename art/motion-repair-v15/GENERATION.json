@@ -1,0 +1,11 @@
+{
+  "mode": "built-in image_gen transparent edit",
+  "prompt": "Use case: identity-preserve. Asset type: four KEY POSES for an existing photorealistic Pomeranian game sprite. Input1 is the EXACT seated dog; input2 is the EXACT lying dog. Create a 2x2 sheet of only FOUR anatomically coherent intermediate poses between these exact endpoints. Read left to right top to bottom: 20%, 45%, 70%, 90% of lowering from sitting to lying. Each transparent square cell has same fixed front camera, same dog size, center and ground baseline at 97% cell height. Keep EXACT original dog identity: orange sable fur, white blaze and chest, face size, dark eye spacing, round nose, small pink tongue, pointed ears, fluffy tail at image right. Head remains full size throughout, moves as ONE rigid head with neck and chest. Body NEVER uniformly scales/squashes. Depict real animal mechanics: front paws stay planted; elbows bend progressively, chest lowers between forelegs, folded hindquarters stay low behind. Ear tips and eyes gradually descend without any rising before descending. Fur volume remains coherent. NO sudden widening haunches, floating fur, extra legs, double faces, opaque backing, shadows, ground, labels or text. Keep all four poses carefully consistent, only joint bending and body weight transfer changes. Transparent background.",
+  "inputImages": [
+    "seated-reference.png",
+    "lying-reference.png"
+  ],
+  "output": "lowering-candidate.png",
+  "status": "accepted as four body key poses after original-face restoration, local planted-paw repair, and parent visual review; raw candidate is not shipped",
+  "processingEvidence": "../continuity/compiler-evidence.json"
+}

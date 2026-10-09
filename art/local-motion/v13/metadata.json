@@ -1,0 +1,6037 @@
+{
+  "version": 1,
+  "mode": "continuous-home-motion",
+  "method": "landmark registration + bidirectional DIS correspondence; 32 uniform phases",
+  "atlases": {
+    "sitdown": {
+      "key": "sitdown",
+      "width": 1128,
+      "height": 2312,
+      "cell": 320,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0,
+          "pixelSha256": "d70cbb871bbd7f9ebdf945923b3b033d627dc2574b7526568451efc4efc3f7da",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.29702758789062,
+                "y": 127.77227783203125,
+                "mass": 202.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 207.72935485839844,
+                "y": 126.94036865234375,
+                "mass": 218.0,
+                "rx": 13.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 38,
+            "bottom": 370,
+            "left": 86,
+            "right": 353
+          }
+        },
+        {
+          "x": 282,
+          "y": 0,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.03225806451612903,
+          "pixelSha256": "961abafd06712da406a70fd7259ca4a3ebef12c12f288c77ba4860f440ed254a",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.6165008544922,
+                "y": 128.78640747070312,
+                "mass": 206.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 207.87225341796875,
+                "y": 128.101318359375,
+                "mass": 227.0,
+                "rx": 11.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 40,
+            "bottom": 370,
+            "left": 86,
+            "right": 352
+          }
+        },
+        {
+          "x": 564,
+          "y": 0,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.06451612903225806,
+          "pixelSha256": "ee89945f01b8eae47d0d7462cfb0b189660b86bbfa455c031513cea18820cd8e",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.59808349609375,
+                "y": 129.89952087402344,
+                "mass": 209.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 207.88841247558594,
+                "y": 129.0643768310547,
+                "mass": 233.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 40,
+            "bottom": 370,
+            "left": 86,
+            "right": 352
+          }
+        },
+        {
+          "x": 846,
+          "y": 0,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0967741935483871,
+          "pixelSha256": "7ec5b766a889d92074bfe9819a4a5e67771a6f4a9e5d4f2c79ac93c1f6b057a4",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.53810119628906,
+                "y": 131.11904907226562,
+                "mass": 210.0,
+                "rx": 10.0,
+                "ry": 8.0
+              },
+              {
+                "x": 208.09130859375,
+                "y": 130.1521759033203,
+                "mass": 230.0,
+                "rx": 11.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 41,
+            "bottom": 370,
+            "left": 87,
+            "right": 353
+          }
+        },
+        {
+          "x": 0,
+          "y": 289,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.12903225806451613,
+          "pixelSha256": "e809c0b23948e05c8c123d9251790cd9cd06a3bbe4b099ea04712d8038c843ec",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.4837188720703,
+                "y": 132.17674255371094,
+                "mass": 215.0,
+                "rx": 10.5,
+                "ry": 8.0
+              },
+              {
+                "x": 208.11538696289062,
+                "y": 131.25213623046875,
+                "mass": 234.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 41,
+            "bottom": 370,
+            "left": 87,
+            "right": 355
+          }
+        },
+        {
+          "x": 282,
+          "y": 289,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.16129032258064516,
+          "pixelSha256": "d3fd63d3aaac3cf7a36a00335ca3df36720047f0d2b0e6db3b5825f992ae0162",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.57943725585938,
+                "y": 133.2102813720703,
+                "mass": 214.0,
+                "rx": 10.0,
+                "ry": 8.0
+              },
+              {
+                "x": 208.24575805664062,
+                "y": 132.3474578857422,
+                "mass": 236.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 42,
+            "bottom": 370,
+            "left": 87,
+            "right": 356
+          }
+        },
+        {
+          "x": 564,
+          "y": 289,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.1935483870967742,
+          "pixelSha256": "cd9a37dc1cdd1aeb4a87d2284d17d38b418424a15ae5396878de1a2ddfbd29fe",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.563720703125,
+                "y": 134.2205810546875,
+                "mass": 204.0,
+                "rx": 10.5,
+                "ry": 8.0
+              },
+              {
+                "x": 208.27049255371094,
+                "y": 133.31967163085938,
+                "mass": 244.0,
+                "rx": 10.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 42,
+            "bottom": 370,
+            "left": 87,
+            "right": 358
+          }
+        },
+        {
+          "x": 846,
+          "y": 289,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.22580645161290322,
+          "pixelSha256": "ead028e14bb6a7be41d6c20c46ecbd71d012cab8322f5ec52efb28c7ac91c4e7",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.7441864013672,
+                "y": 135.28372192382812,
+                "mass": 215.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 208.5,
+                "y": 134.5991668701172,
+                "mass": 242.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 43,
+            "bottom": 370,
+            "left": 85,
+            "right": 358
+          }
+        },
+        {
+          "x": 0,
+          "y": 578,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.25806451612903225,
+          "pixelSha256": "283571a678062b097fc5034b65be2c4afd5813725065bfcf027e776b53971fb0",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.73504638671875,
+                "y": 136.35470581054688,
+                "mass": 234.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 208.63414001464844,
+                "y": 135.47967529296875,
+                "mass": 246.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 43,
+            "bottom": 369,
+            "left": 82,
+            "right": 357
+          }
+        },
+        {
+          "x": 282,
+          "y": 578,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.2903225806451613,
+          "pixelSha256": "88b72d1528aeb7c694b34205e6add3f8fd0cbb2f1df054462d6d47094453513f",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.84454345703125,
+                "y": 137.43276977539062,
+                "mass": 238.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 208.7708282470703,
+                "y": 136.46665954589844,
+                "mass": 240.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 44,
+            "bottom": 370,
+            "left": 82,
+            "right": 357
+          }
+        },
+        {
+          "x": 564,
+          "y": 578,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3225806451612903,
+          "pixelSha256": "da459ebc87efe198abeaed3883133c8d17bf05c0250fa34e7086b293e38c9692",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.01287841796875,
+                "y": 138.63519287109375,
+                "mass": 233.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 208.6903839111328,
+                "y": 137.53138732910156,
+                "mass": 239.0,
+                "rx": 12.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 46,
+            "bottom": 370,
+            "left": 84,
+            "right": 355
+          }
+        },
+        {
+          "x": 846,
+          "y": 578,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3548387096774194,
+          "pixelSha256": "6a6e46db5c07a48c7c47139f41fc13f93bd8c1ec264897e32ff34aebfb72ab00",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.11111450195312,
+                "y": 139.63247680664062,
+                "mass": 234.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 208.98291015625,
+                "y": 138.61965942382812,
+                "mass": 234.0,
+                "rx": 12.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 48,
+            "bottom": 370,
+            "left": 83,
+            "right": 355
+          }
+        },
+        {
+          "x": 0,
+          "y": 867,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3870967741935484,
+          "pixelSha256": "b0473e48443eabc4c6802c101d02e31a795eb25a2415e983aa18c51a894e0694",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.0347900390625,
+                "y": 140.69564819335938,
+                "mass": 230.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 208.7572021484375,
+                "y": 139.91769409179688,
+                "mass": 243.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 49,
+            "bottom": 370,
+            "left": 83,
+            "right": 355
+          }
+        },
+        {
+          "x": 282,
+          "y": 867,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.41935483870967744,
+          "pixelSha256": "d83c957269a7256a706b7a85a33c7ac6fc0bf4f906f3cdf528c1db6ae807f73a",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.02145385742188,
+                "y": 141.83261108398438,
+                "mass": 233.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 208.8927001953125,
+                "y": 141.24034118652344,
+                "mass": 233.0,
+                "rx": 11.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 50,
+            "bottom": 370,
+            "left": 82,
+            "right": 355
+          }
+        },
+        {
+          "x": 564,
+          "y": 867,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.45161290322580644,
+          "pixelSha256": "d96c4f1e5a86b413b5b1972d96f700f75a38f5f3178b9b9956b4d0f91525d613",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.29385375976562,
+                "y": 143.0877227783203,
+                "mass": 228.0,
+                "rx": 10.5,
+                "ry": 8.0
+              },
+              {
+                "x": 209.1911163330078,
+                "y": 142.3111114501953,
+                "mass": 225.0,
+                "rx": 10.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 51,
+            "bottom": 370,
+            "left": 82,
+            "right": 354
+          }
+        },
+        {
+          "x": 846,
+          "y": 867,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.4838709677419355,
+          "pixelSha256": "38d37eb54d88adb83c0c08d172a52782c9f97d59bf6d0d73c49487904d394d23",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.1806182861328,
+                "y": 144.13656616210938,
+                "mass": 227.0,
+                "rx": 10.5,
+                "ry": 8.0
+              },
+              {
+                "x": 209.33920288085938,
+                "y": 143.43612670898438,
+                "mass": 227.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 53,
+            "bottom": 370,
+            "left": 81,
+            "right": 353
+          }
+        },
+        {
+          "x": 0,
+          "y": 1156,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5161290322580645,
+          "pixelSha256": "7cef50126e887885bc20ee4a896deff58f9294233de39592f4b42b271323aa49",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.2142791748047,
+                "y": 145.14285278320312,
+                "mass": 224.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 209.29957580566406,
+                "y": 144.4725799560547,
+                "mass": 237.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 55,
+            "bottom": 369,
+            "left": 81,
+            "right": 351
+          }
+        },
+        {
+          "x": 282,
+          "y": 1156,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5483870967741935,
+          "pixelSha256": "06c8a10b7a00d463a958b9710338d71c533a093ac8dfbc9c3223a76c225be470",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.33641052246094,
+                "y": 146.14285278320312,
+                "mass": 217.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 209.37974548339844,
+                "y": 145.57383728027344,
+                "mass": 237.0,
+                "rx": 10.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 56,
+            "bottom": 369,
+            "left": 80,
+            "right": 350
+          }
+        },
+        {
+          "x": 564,
+          "y": 1156,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5806451612903226,
+          "pixelSha256": "8d5b70ce3a00badfca071be6cb1223f068cb0f7408c719c25241b0f2e48ab1cd",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.3614959716797,
+                "y": 147.25352478027344,
+                "mass": 213.0,
+                "rx": 10.0,
+                "ry": 8.0
+              },
+              {
+                "x": 209.37069702148438,
+                "y": 146.5689697265625,
+                "mass": 232.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 58,
+            "bottom": 370,
+            "left": 81,
+            "right": 352
+          }
+        },
+        {
+          "x": 846,
+          "y": 1156,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6129032258064516,
+          "pixelSha256": "c2019b39e87aa93935a2cbc4b86369aa3877cd7f638e264207048344a36a2479",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.46009826660156,
+                "y": 148.24412536621094,
+                "mass": 213.0,
+                "rx": 10.5,
+                "ry": 8.0
+              },
+              {
+                "x": 209.35064697265625,
+                "y": 147.64068603515625,
+                "mass": 231.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 59,
+            "bottom": 370,
+            "left": 81,
+            "right": 353
+          }
+        },
+        {
+          "x": 0,
+          "y": 1445,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6451612903225806,
+          "pixelSha256": "6b35f86e1b45d784694688a884b08142fc9d4c3a1c0f2c01145724856d9f0b69",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.509521484375,
+                "y": 149.3238067626953,
+                "mass": 210.0,
+                "rx": 10.0,
+                "ry": 8.0
+              },
+              {
+                "x": 209.44537353515625,
+                "y": 148.68487548828125,
+                "mass": 238.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 60,
+            "bottom": 370,
+            "left": 81,
+            "right": 352
+          }
+        },
+        {
+          "x": 282,
+          "y": 1445,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6774193548387096,
+          "pixelSha256": "e6468ee0287bd68075f6f85b1030a6ebf41abe9ed87b116bbb3b1ef473aa919d",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.6792449951172,
+                "y": 150.46226501464844,
+                "mass": 212.0,
+                "rx": 10.0,
+                "ry": 8.0
+              },
+              {
+                "x": 209.67088317871094,
+                "y": 149.75949096679688,
+                "mass": 237.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 62,
+            "bottom": 369,
+            "left": 80,
+            "right": 352
+          }
+        },
+        {
+          "x": 564,
+          "y": 1445,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7096774193548387,
+          "pixelSha256": "c831e59709cdbdcdbf4285f92e85cecd4435340f8491f125b1bf9dac1a59faae",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.6090850830078,
+                "y": 151.63636779785156,
+                "mass": 220.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 209.7384033203125,
+                "y": 150.74684143066406,
+                "mass": 237.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 61,
+            "bottom": 369,
+            "left": 78,
+            "right": 352
+          }
+        },
+        {
+          "x": 846,
+          "y": 1445,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7419354838709677,
+          "pixelSha256": "334dfd582d38bf55581548001dc9785d33d443e794f392980b3bf204ab6bd699",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.7025909423828,
+                "y": 152.84483337402344,
+                "mass": 232.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 209.92796325683594,
+                "y": 151.7881317138672,
+                "mass": 236.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 62,
+            "bottom": 369,
+            "left": 77,
+            "right": 352
+          }
+        },
+        {
+          "x": 0,
+          "y": 1734,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7741935483870968,
+          "pixelSha256": "d2bc1d11173d2616609b996d2629cc7ee4898cabd8fe507e484c2a12eeb7155e",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.66378784179688,
+                "y": 153.96121215820312,
+                "mass": 232.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 209.87966918945312,
+                "y": 152.970947265625,
+                "mass": 241.0,
+                "rx": 11.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 63,
+            "bottom": 370,
+            "left": 76,
+            "right": 352
+          }
+        },
+        {
+          "x": 282,
+          "y": 1734,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8064516129032258,
+          "pixelSha256": "8d137968e8ffa7323cb71b74bddc588c1fe694c020713cb6429ceed233fb1ddc",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.6434783935547,
+                "y": 155.1478271484375,
+                "mass": 230.0,
+                "rx": 10.5,
+                "ry": 8.0
+              },
+              {
+                "x": 210.03292846679688,
+                "y": 154.10699462890625,
+                "mass": 243.0,
+                "rx": 11.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 64,
+            "bottom": 370,
+            "left": 71,
+            "right": 357
+          }
+        },
+        {
+          "x": 564,
+          "y": 1734,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8387096774193549,
+          "pixelSha256": "9c41aee809f4f6c933c6387d78162be36fe5dec584c6774414a5199aa6224a1e",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.62660217285156,
+                "y": 156.17596435546875,
+                "mass": 233.0,
+                "rx": 11.5,
+                "ry": 8.0
+              },
+              {
+                "x": 210.05905151367188,
+                "y": 155.3385772705078,
+                "mass": 254.0,
+                "rx": 11.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 63,
+            "bottom": 370,
+            "left": 68,
+            "right": 353
+          }
+        },
+        {
+          "x": 846,
+          "y": 1734,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8709677419354839,
+          "pixelSha256": "e7d0dd946e8a97c53b695af6feec3f5603f2f3f9669b9aa47946e1315501297c",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.6075897216797,
+                "y": 157.31224060058594,
+                "mass": 237.0,
+                "rx": 12.0,
+                "ry": 8.0
+              },
+              {
+                "x": 210.00784301757812,
+                "y": 156.34117126464844,
+                "mass": 255.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 62,
+            "bottom": 370,
+            "left": 65,
+            "right": 351
+          }
+        },
+        {
+          "x": 0,
+          "y": 2023,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9032258064516129,
+          "pixelSha256": "e9abcf9cef2f520c780bbb7cb4ddde8a58e829ef97714840d8af10f5f9024605",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.59210205078125,
+                "y": 158.4166717529297,
+                "mass": 228.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 210.0653839111328,
+                "y": 157.46153259277344,
+                "mass": 260.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 65,
+            "bottom": 370,
+            "left": 66,
+            "right": 351
+          }
+        },
+        {
+          "x": 282,
+          "y": 2023,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9354838709677419,
+          "pixelSha256": "97475def5ba8c48f58eec28fd8594299771ae72ec240f3f8d6e4ccc051ad42b2",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.80661010742188,
+                "y": 159.47169494628906,
+                "mass": 212.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 210.03018188476562,
+                "y": 158.64906311035156,
+                "mass": 265.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 67,
+            "bottom": 370,
+            "left": 67,
+            "right": 352
+          }
+        },
+        {
+          "x": 564,
+          "y": 2023,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 0.967741935483871,
+          "pixelSha256": "ab435b40d6bd11ccb91c49d2a9308063ab32c1183e930bc370238dac81f0fbbc",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.8097381591797,
+                "y": 160.59292602539062,
+                "mass": 226.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 210.14453125,
+                "y": 159.52734375,
+                "mass": 256.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 68,
+            "bottom": 370,
+            "left": 57,
+            "right": 353
+          }
+        },
+        {
+          "x": 846,
+          "y": 2023,
+          "width": 282,
+          "height": 289,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 26,
+          "anchorX": 132.0,
+          "anchorY": 284.0,
+          "referenceHeight": 280.0,
+          "phase": 1.0,
+          "pixelSha256": "ffcbfa32145d3e69e853df38dd179bf968535c3e66d2fb8fbd5519313aae6f95",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.92576599121094,
+                "y": 161.57205200195312,
+                "mass": 229.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 210.58921813964844,
+                "y": 160.65145874023438,
+                "mass": 241.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 69,
+            "bottom": 369,
+            "left": 46,
+            "right": 354
+          }
+        }
+      ],
+      "prealigned": true,
+      "path": "art/dog-continuous-sitdown.webp",
+      "bytes": 646922,
+      "sha256": "c792665428a5ea510f087e153b94f49ffd5b271956cfff062634019dc003ac9e"
+    },
+    "liedown": {
+      "key": "liedown",
+      "width": 1128,
+      "height": 2112,
+      "cell": 320,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0,
+          "pixelSha256": "ffcbfa32145d3e69e853df38dd179bf968535c3e66d2fb8fbd5519313aae6f95",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.92576599121094,
+                "y": 161.57205200195312,
+                "mass": 229.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 210.58921813964844,
+                "y": 160.65145874023438,
+                "mass": 241.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 69,
+            "bottom": 369,
+            "left": 46,
+            "right": 354
+          }
+        },
+        {
+          "x": 282,
+          "y": 0,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.03225806451612903,
+          "pixelSha256": "629f826921ee862863a2603f3add54e7ffc7fb2ecaa5c51824562051f6ac285b",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 159.41224670410156,
+                "y": 164.86122131347656,
+                "mass": 245.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 210.90310668945312,
+                "y": 164.01162719726562,
+                "mass": 258.0,
+                "rx": 11.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 73,
+            "bottom": 370,
+            "left": 79,
+            "right": 351
+          }
+        },
+        {
+          "x": 564,
+          "y": 0,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.06451612903225806,
+          "pixelSha256": "377e7930cfb95069c97ef8b8de0bab5b82974cbbe0a04069307f474ebf2e9bc9",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 159.99600219726562,
+                "y": 168.36000061035156,
+                "mass": 250.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 211.24806213378906,
+                "y": 167.68992614746094,
+                "mass": 258.0,
+                "rx": 11.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 76,
+            "bottom": 370,
+            "left": 79,
+            "right": 358
+          }
+        },
+        {
+          "x": 846,
+          "y": 0,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0967741935483871,
+          "pixelSha256": "70647f937248c8251c1f6ac0168776089a6cd91e167fa386e5318ae44c6b76f8",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 160.508544921875,
+                "y": 171.7820587158203,
+                "mass": 234.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 211.81854248046875,
+                "y": 170.9475860595703,
+                "mass": 248.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 81,
+            "bottom": 370,
+            "left": 82,
+            "right": 358
+          }
+        },
+        {
+          "x": 0,
+          "y": 264,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.12903225806451613,
+          "pixelSha256": "745b409080b7a3029ebc06144feb587dbd51a8dc9ffbec042f675d8381a71e52",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.1596221923828,
+                "y": 175.1877899169922,
+                "mass": 213.0,
+                "rx": 10.0,
+                "ry": 8.0
+              },
+              {
+                "x": 212.15353393554688,
+                "y": 174.39834594726562,
+                "mass": 241.0,
+                "rx": 12.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 86,
+            "bottom": 370,
+            "left": 84,
+            "right": 358
+          }
+        },
+        {
+          "x": 282,
+          "y": 264,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.16129032258064516,
+          "pixelSha256": "34aa3bdaf5ed5278b2b6f942727805d3d9af98ff36a915fdaacd1bb437e6e0c8",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.7047576904297,
+                "y": 178.56666564941406,
+                "mass": 210.0,
+                "rx": 10.0,
+                "ry": 8.0
+              },
+              {
+                "x": 212.7107391357422,
+                "y": 177.86776733398438,
+                "mass": 242.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 90,
+            "bottom": 370,
+            "left": 86,
+            "right": 357
+          }
+        },
+        {
+          "x": 564,
+          "y": 264,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.1935483870967742,
+          "pixelSha256": "fe38030078ae49fe8296b001ec4d395f91b70d4164d3abd50ae686757d81523f",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.24154663085938,
+                "y": 181.88888549804688,
+                "mass": 207.0,
+                "rx": 9.5,
+                "ry": 7.5
+              },
+              {
+                "x": 213.0166015625,
+                "y": 181.21990966796875,
+                "mass": 241.0,
+                "rx": 10.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 94,
+            "bottom": 370,
+            "left": 88,
+            "right": 355
+          }
+        },
+        {
+          "x": 846,
+          "y": 264,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.22580645161290322,
+          "pixelSha256": "78900a6e3db6f88521432cb2428045c349a4007ab5b6a6da9a6eae9d9560f2a2",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.80909729003906,
+                "y": 185.27272033691406,
+                "mass": 220.0,
+                "rx": 10.0,
+                "ry": 8.0
+              },
+              {
+                "x": 213.6144561767578,
+                "y": 184.81927490234375,
+                "mass": 249.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 96,
+            "bottom": 370,
+            "left": 86,
+            "right": 358
+          }
+        },
+        {
+          "x": 0,
+          "y": 528,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.25806451612903225,
+          "pixelSha256": "25462773cbb3ab59343cd40d7a6a42304d1d5f9f87d1941a858510926b7cf717",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 163.27659606933594,
+                "y": 188.8595733642578,
+                "mass": 235.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 214.02352905273438,
+                "y": 188.1764678955078,
+                "mass": 255.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 97,
+            "bottom": 370,
+            "left": 85,
+            "right": 361
+          }
+        },
+        {
+          "x": 282,
+          "y": 528,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.2903225806451613,
+          "pixelSha256": "3554ac4a4c485dfe5dda2ce325c1dc6967d8c5d229429891c5b64a9f98746d77",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 163.91775512695312,
+                "y": 192.21212768554688,
+                "mass": 231.0,
+                "rx": 10.5,
+                "ry": 8.0
+              },
+              {
+                "x": 214.36032104492188,
+                "y": 191.6194305419922,
+                "mass": 247.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 102,
+            "bottom": 370,
+            "left": 85,
+            "right": 360
+          }
+        },
+        {
+          "x": 564,
+          "y": 528,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3225806451612903,
+          "pixelSha256": "aa83846cce33c27d2d5415f99f577addbc4f2698eb96fea4ebe937dc44f41865",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 164.31739807128906,
+                "y": 195.69564819335938,
+                "mass": 230.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 214.72357177734375,
+                "y": 195.10162353515625,
+                "mass": 246.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 107,
+            "bottom": 370,
+            "left": 87,
+            "right": 358
+          }
+        },
+        {
+          "x": 846,
+          "y": 528,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3548387096774194,
+          "pixelSha256": "26882f52080a2a4eaa42409efe95fc4b67f445a468eac233d15d098d685011c7",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 164.7802734375,
+                "y": 199.14349365234375,
+                "mass": 223.0,
+                "rx": 10.0,
+                "ry": 8.0
+              },
+              {
+                "x": 214.95797729492188,
+                "y": 198.579833984375,
+                "mass": 238.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 112,
+            "bottom": 370,
+            "left": 89,
+            "right": 357
+          }
+        },
+        {
+          "x": 0,
+          "y": 792,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3870967741935484,
+          "pixelSha256": "c1f1d41f30d99d0ce05f100644c37200f48f84489a32ebcf778cb0ff1d18f597",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 165.32272338867188,
+                "y": 202.48635864257812,
+                "mass": 220.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 215.27499389648438,
+                "y": 202.0124969482422,
+                "mass": 240.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 116,
+            "bottom": 370,
+            "left": 90,
+            "right": 357
+          }
+        },
+        {
+          "x": 282,
+          "y": 792,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.41935483870967744,
+          "pixelSha256": "8e5062328b3bfedb63e9f6177cf0f43e2566e882c09fb2cca0c12eca7fb3b8c5",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 165.81900024414062,
+                "y": 205.9592742919922,
+                "mass": 221.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 215.88888549804688,
+                "y": 205.49794006347656,
+                "mass": 243.0,
+                "rx": 12.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 119,
+            "bottom": 370,
+            "left": 90,
+            "right": 356
+          }
+        },
+        {
+          "x": 564,
+          "y": 792,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.45161290322580644,
+          "pixelSha256": "98fc668f361316d686ea5962de90d7d901583c0a3bd51eebe92844efb9fc6c56",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 166.49789428710938,
+                "y": 209.2615966796875,
+                "mass": 237.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 216.4857177734375,
+                "y": 208.8653106689453,
+                "mass": 245.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 122,
+            "bottom": 370,
+            "left": 89,
+            "right": 356
+          }
+        },
+        {
+          "x": 846,
+          "y": 792,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.4838709677419355,
+          "pixelSha256": "e906da2d2fa1cdf90e1cce23bf3a6f2675e0e3ddaf82bee596a9dd8947f483d4",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 167.05128479003906,
+                "y": 212.54701232910156,
+                "mass": 234.0,
+                "rx": 10.5,
+                "ry": 8.0
+              },
+              {
+                "x": 216.87966918945312,
+                "y": 212.3278045654297,
+                "mass": 241.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 125,
+            "bottom": 370,
+            "left": 87,
+            "right": 356
+          }
+        },
+        {
+          "x": 0,
+          "y": 1056,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5161290322580645,
+          "pixelSha256": "a32aa3d1a887974a30aab3e2fcf8dbe917d4d40acc713e25a61e47430c1c8db5",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 167.3930206298828,
+                "y": 216.07423400878906,
+                "mass": 229.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 217.19671630859375,
+                "y": 215.79507446289062,
+                "mass": 244.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 129,
+            "bottom": 370,
+            "left": 84,
+            "right": 356
+          }
+        },
+        {
+          "x": 282,
+          "y": 1056,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5483870967741935,
+          "pixelSha256": "5cc635f8e37cfae4972a69589081c598654afd879ef7b22b616e3e9a9ff970a3",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 167.8095245361328,
+                "y": 219.35931396484375,
+                "mass": 231.0,
+                "rx": 10.5,
+                "ry": 8.0
+              },
+              {
+                "x": 217.572021484375,
+                "y": 219.20986938476562,
+                "mass": 243.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 132,
+            "bottom": 370,
+            "left": 82,
+            "right": 358
+          }
+        },
+        {
+          "x": 564,
+          "y": 1056,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5806451612903226,
+          "pixelSha256": "b5afa978c31cb67a6dc93623c9bc04ccf63c26c359ff0fb8d475512851bd5af9",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 168.4425506591797,
+                "y": 222.76596069335938,
+                "mass": 235.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 218.10040283203125,
+                "y": 222.65060424804688,
+                "mass": 249.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 135,
+            "bottom": 370,
+            "left": 84,
+            "right": 360
+          }
+        },
+        {
+          "x": 846,
+          "y": 1056,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6129032258064516,
+          "pixelSha256": "53f9c8715ca650a262ff14bfb4cc4cd7fdcc277f765d2f9cf40fb3ff75ec5df9",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 169.0336151123047,
+                "y": 226.17227172851562,
+                "mass": 238.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 218.46774291992188,
+                "y": 226.10079956054688,
+                "mass": 248.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 138,
+            "bottom": 370,
+            "left": 84,
+            "right": 361
+          }
+        },
+        {
+          "x": 0,
+          "y": 1320,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6451612903225806,
+          "pixelSha256": "579f125aebb419fc38991777bdae2e31364ec66a8b4604875e0b76f86ac26f6b",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 169.6150665283203,
+                "y": 229.5606689453125,
+                "mass": 239.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 218.81512451171875,
+                "y": 229.4832000732422,
+                "mass": 238.0,
+                "rx": 10.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 141,
+            "bottom": 370,
+            "left": 81,
+            "right": 360
+          }
+        },
+        {
+          "x": 282,
+          "y": 1320,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6774193548387096,
+          "pixelSha256": "e5266a0ec07b357db6d63769679f66585f4ea40cc87b745792739fdb8a0f9478",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 170.1445770263672,
+                "y": 233.05221557617188,
+                "mass": 249.0,
+                "rx": 12.0,
+                "ry": 8.0
+              },
+              {
+                "x": 219.18292236328125,
+                "y": 233.10569763183594,
+                "mass": 246.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 145,
+            "bottom": 370,
+            "left": 78,
+            "right": 358
+          }
+        },
+        {
+          "x": 564,
+          "y": 1320,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7096774193548387,
+          "pixelSha256": "708c1a48cdb1cc7863aa754496381da558c67267dab94a0ba235bac49aa0ad5c",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 170.70916748046875,
+                "y": 236.4661407470703,
+                "mass": 251.0,
+                "rx": 11.5,
+                "ry": 8.0
+              },
+              {
+                "x": 219.46153259277344,
+                "y": 236.53036499023438,
+                "mass": 247.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 149,
+            "bottom": 370,
+            "left": 77,
+            "right": 357
+          }
+        },
+        {
+          "x": 846,
+          "y": 1320,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7419354838709677,
+          "pixelSha256": "a3782400998f026d5c149212897afaa20e6202b1be7c6ee83cf5fe2e467ab006",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 171.2248992919922,
+                "y": 239.92369079589844,
+                "mass": 249.0,
+                "rx": 11.5,
+                "ry": 8.5
+              },
+              {
+                "x": 219.86956787109375,
+                "y": 240.01185607910156,
+                "mass": 253.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 153,
+            "bottom": 370,
+            "left": 76,
+            "right": 356
+          }
+        },
+        {
+          "x": 0,
+          "y": 1584,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7741935483870968,
+          "pixelSha256": "ff5833a43a1aa100e2fb2da62d61f2fb0d55a27f552083d80889c4f94c3936c2",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 171.82627868652344,
+                "y": 243.36441040039062,
+                "mass": 236.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 220.40084838867188,
+                "y": 243.44725036621094,
+                "mass": 237.0,
+                "rx": 11.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 158,
+            "bottom": 369,
+            "left": 77,
+            "right": 356
+          }
+        },
+        {
+          "x": 282,
+          "y": 1584,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8064516129032258,
+          "pixelSha256": "b47892b641a3d36da69791d8c0af0ab26ac36da618468b46f387813e9adc324d",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 172.33035278320312,
+                "y": 246.70982360839844,
+                "mass": 224.0,
+                "rx": 11.5,
+                "ry": 8.0
+              },
+              {
+                "x": 220.77117919921875,
+                "y": 246.92796325683594,
+                "mass": 236.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 162,
+            "bottom": 369,
+            "left": 78,
+            "right": 356
+          }
+        },
+        {
+          "x": 564,
+          "y": 1584,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8387096774193549,
+          "pixelSha256": "7c18090ef02df9b938e7a593b459eda5c137c176137583bec3d668f5ad5a45b0",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 172.75115966796875,
+                "y": 250.22579956054688,
+                "mass": 217.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 221.22666931152344,
+                "y": 250.3955535888672,
+                "mass": 225.0,
+                "rx": 10.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 164,
+            "bottom": 370,
+            "left": 74,
+            "right": 357
+          }
+        },
+        {
+          "x": 846,
+          "y": 1584,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8709677419354839,
+          "pixelSha256": "e96894a5dafda0ba2677c6834ca32a22cdc9dc8e29ab0ac4deb0ca5c44bf91ca",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 173.23809814453125,
+                "y": 253.6571502685547,
+                "mass": 210.0,
+                "rx": 10.5,
+                "ry": 7.5
+              },
+              {
+                "x": 221.63063049316406,
+                "y": 253.8648681640625,
+                "mass": 222.0,
+                "rx": 11.0,
+                "ry": 7.5
+              }
+            ],
+            "top": 166,
+            "bottom": 370,
+            "left": 72,
+            "right": 358
+          }
+        },
+        {
+          "x": 0,
+          "y": 1848,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9032258064516129,
+          "pixelSha256": "57295458602080dfc4f226fc70032c574f037c44d55964b8b34a7dcdd2cdb991",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 173.7832489013672,
+                "y": 257.0147705078125,
+                "mass": 203.0,
+                "rx": 10.5,
+                "ry": 7.5
+              },
+              {
+                "x": 222.21461486816406,
+                "y": 257.1917724609375,
+                "mass": 219.0,
+                "rx": 10.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 170,
+            "bottom": 370,
+            "left": 72,
+            "right": 358
+          }
+        },
+        {
+          "x": 282,
+          "y": 1848,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9354838709677419,
+          "pixelSha256": "053cee623d3fee8e1d25327613b4c87291534274deb1e9e6263e46b119e87bca",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 174.4595947265625,
+                "y": 260.3636474609375,
+                "mass": 198.0,
+                "rx": 10.5,
+                "ry": 7.0
+              },
+              {
+                "x": 222.61395263671875,
+                "y": 260.6790771484375,
+                "mass": 215.0,
+                "rx": 10.5,
+                "ry": 7.5
+              }
+            ],
+            "top": 174,
+            "bottom": 370,
+            "left": 73,
+            "right": 358
+          }
+        },
+        {
+          "x": 564,
+          "y": 1848,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 0.967741935483871,
+          "pixelSha256": "2cb1d3dac8c244e02f98687287807ceb8a18f996c6ff81a79e630e7b43ede315",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 174.93658447265625,
+                "y": 263.7707214355469,
+                "mass": 205.0,
+                "rx": 10.5,
+                "ry": 7.5
+              },
+              {
+                "x": 223.10964965820312,
+                "y": 264.131591796875,
+                "mass": 228.0,
+                "rx": 10.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 178,
+            "bottom": 370,
+            "left": 70,
+            "right": 357
+          }
+        },
+        {
+          "x": 846,
+          "y": 1848,
+          "width": 282,
+          "height": 264,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 28,
+          "offsetY": 51,
+          "anchorX": 132.0,
+          "anchorY": 259.0,
+          "referenceHeight": 280.0,
+          "phase": 1.0,
+          "pixelSha256": "c53bd2d0b49e716f5da0923a1e692f3b62e738132c273781c6b5f967c4514e10",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 175.4193572998047,
+                "y": 267.24884033203125,
+                "mass": 217.0,
+                "rx": 11.0,
+                "ry": 8.0
+              },
+              {
+                "x": 223.33193969726562,
+                "y": 267.6764831542969,
+                "mass": 238.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 183,
+            "bottom": 370,
+            "left": 68,
+            "right": 355
+          }
+        }
+      ],
+      "prealigned": true,
+      "path": "art/dog-continuous-liedown.webp",
+      "bytes": 491466,
+      "sha256": "8ba668482fb8635b3c5774f51a2c2da8090699e6110fd5023f9f2b34372778b0"
+    },
+    "tiltleft": {
+      "key": "tiltleft",
+      "width": 1084,
+      "height": 2376,
+      "cell": 320,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0,
+          "pixelSha256": "d70cbb871bbd7f9ebdf945923b3b033d627dc2574b7526568451efc4efc3f7da",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.29702758789062,
+                "y": 127.77227783203125,
+                "mass": 202.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 207.72935485839844,
+                "y": 126.94036865234375,
+                "mass": 218.0,
+                "rx": 13.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 38,
+            "bottom": 370,
+            "left": 86,
+            "right": 353
+          }
+        },
+        {
+          "x": 271,
+          "y": 0,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.03225806451612903,
+          "pixelSha256": "476872e7b7192dc5ab0943eaec9639843cd94ed9417148ff8b5c5b4952ed52d7",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.2455291748047,
+                "y": 129.98660278320312,
+                "mass": 224.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 207.6923065185547,
+                "y": 130.44444274902344,
+                "mass": 234.0,
+                "rx": 11.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 39,
+            "bottom": 370,
+            "left": 80,
+            "right": 356
+          }
+        },
+        {
+          "x": 542,
+          "y": 0,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.06451612903225806,
+          "pixelSha256": "7578903a920c21d32764fc42932cb255005dfc10a53e53f11c2a3f264401c597",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.27049255371094,
+                "y": 132.42213439941406,
+                "mass": 244.0,
+                "rx": 12.0,
+                "ry": 8.0
+              },
+              {
+                "x": 208.09561157226562,
+                "y": 133.61752319335938,
+                "mass": 251.0,
+                "rx": 12.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 41,
+            "bottom": 370,
+            "left": 75,
+            "right": 359
+          }
+        },
+        {
+          "x": 813,
+          "y": 0,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0967741935483871,
+          "pixelSha256": "fab77a2e7493dfc7761fad90bb1fa82168447d7b73abf80297e66b0dc7ad2659",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.1223602294922,
+                "y": 133.65823364257812,
+                "mass": 237.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 207.52671813964844,
+                "y": 136.33206176757812,
+                "mass": 262.0,
+                "rx": 12.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 42,
+            "bottom": 370,
+            "left": 74,
+            "right": 358
+          }
+        },
+        {
+          "x": 0,
+          "y": 297,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.12903225806451613,
+          "pixelSha256": "703324b5c1185089582e119771cf46d26146ac24c5386339dd7b7c1ceee04c6c",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 156.98695373535156,
+                "y": 134.77825927734375,
+                "mass": 230.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 207.14614868164062,
+                "y": 139.00384521484375,
+                "mass": 260.0,
+                "rx": 13.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 43,
+            "bottom": 370,
+            "left": 74,
+            "right": 358
+          }
+        },
+        {
+          "x": 271,
+          "y": 297,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.16129032258064516,
+          "pixelSha256": "69f7acdb6f175528113a18af1a311038e2650442e9f6b7fb2dac4f5e56f6e390",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.6075897216797,
+                "y": 134.72573852539062,
+                "mass": 237.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 207.1846160888672,
+                "y": 140.48846435546875,
+                "mass": 260.0,
+                "rx": 11.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 43,
+            "bottom": 370,
+            "left": 76,
+            "right": 359
+          }
+        },
+        {
+          "x": 542,
+          "y": 297,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.1935483870967742,
+          "pixelSha256": "32cc23840ba5128038295d40f2771fd6d70d8e57437e8177b8b40f9f1f6c8a92",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.88671875,
+                "y": 134.55078125,
+                "mass": 256.0,
+                "rx": 11.0,
+                "ry": 9.0
+              },
+              {
+                "x": 207.34469604492188,
+                "y": 141.8030242919922,
+                "mass": 264.0,
+                "rx": 11.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 43,
+            "bottom": 370,
+            "left": 79,
+            "right": 361
+          }
+        },
+        {
+          "x": 813,
+          "y": 297,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.22580645161290322,
+          "pixelSha256": "953d42b99044fada59b09a09fa5a436afc08b7d8ac3795477e73b22227771d3e",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.69105529785156,
+                "y": 133.00405883789062,
+                "mass": 246.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 208.242431640625,
+                "y": 141.625,
+                "mass": 264.0,
+                "rx": 11.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 40,
+            "bottom": 370,
+            "left": 77,
+            "right": 362
+          }
+        },
+        {
+          "x": 0,
+          "y": 594,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.25806451612903225,
+          "pixelSha256": "6340ea055791743289b23249ba955de1097478b1eb7ec09598fbd12314ffddd2",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 159.59835815429688,
+                "y": 131.38523864746094,
+                "mass": 244.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 209.0358428955078,
+                "y": 141.07168579101562,
+                "mass": 279.0,
+                "rx": 11.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 37,
+            "bottom": 370,
+            "left": 74,
+            "right": 364
+          }
+        },
+        {
+          "x": 271,
+          "y": 594,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.2903225806451613,
+          "pixelSha256": "99db2b72aae50ac8b83248a6c324a1cd472ecb8eb0d28afa838c6a8bd90cd52e",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 160.14108276367188,
+                "y": 129.995849609375,
+                "mass": 241.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 209.70106506347656,
+                "y": 140.97152709960938,
+                "mass": 281.0,
+                "rx": 11.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 36,
+            "bottom": 370,
+            "left": 73,
+            "right": 364
+          }
+        },
+        {
+          "x": 542,
+          "y": 594,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3225806451612903,
+          "pixelSha256": "822b53704139b2144f81b551065a09ddfe606b709c54f4edbac181868a8618b7",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 160.73028564453125,
+                "y": 128.95851135253906,
+                "mass": 241.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 210.2042236328125,
+                "y": 140.97886657714844,
+                "mass": 284.0,
+                "rx": 11.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 35,
+            "bottom": 370,
+            "left": 74,
+            "right": 363
+          }
+        },
+        {
+          "x": 813,
+          "y": 594,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3548387096774194,
+          "pixelSha256": "12ceaea3deabca55d299ca41cfe00206b3ac0ea2e57a63746067b2aa6fa3a766",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.0661163330078,
+                "y": 128.4710693359375,
+                "mass": 242.0,
+                "rx": 10.0,
+                "ry": 9.0
+              },
+              {
+                "x": 210.47586059570312,
+                "y": 141.92068481445312,
+                "mass": 290.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 35,
+            "bottom": 370,
+            "left": 74,
+            "right": 364
+          }
+        },
+        {
+          "x": 0,
+          "y": 891,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3870967741935484,
+          "pixelSha256": "77f31af26c42847605ad30afff8fc3bfcc268e3c68095799949e980e664874d7",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.26907348632812,
+                "y": 128.20883178710938,
+                "mass": 249.0,
+                "rx": 10.5,
+                "ry": 8.5
+              },
+              {
+                "x": 210.71617126464844,
+                "y": 143.5148468017578,
+                "mass": 303.0,
+                "rx": 13.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 35,
+            "bottom": 370,
+            "left": 75,
+            "right": 365
+          }
+        },
+        {
+          "x": 271,
+          "y": 891,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.41935483870967744,
+          "pixelSha256": "295f476f5191b3e478f9daa51147290939c0562bf0647f3e35d68d5c2aacf9ad",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.15936279296875,
+                "y": 127.87649536132812,
+                "mass": 251.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 211.1324920654297,
+                "y": 144.60252380371094,
+                "mass": 317.0,
+                "rx": 13.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 34,
+            "bottom": 370,
+            "left": 76,
+            "right": 367
+          }
+        },
+        {
+          "x": 542,
+          "y": 891,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.45161290322580644,
+          "pixelSha256": "57e43f38afb2d1607fff9c8bc8178fc4223547b73c05770763a391f471709ac1",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 163.0890655517578,
+                "y": 127.34817504882812,
+                "mass": 247.0,
+                "rx": 9.5,
+                "ry": 9.0
+              },
+              {
+                "x": 211.87254333496094,
+                "y": 145.22222900390625,
+                "mass": 306.0,
+                "rx": 12.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 32,
+            "bottom": 370,
+            "left": 79,
+            "right": 370
+          }
+        },
+        {
+          "x": 813,
+          "y": 891,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.4838709677419355,
+          "pixelSha256": "12d98e4030278cceda1dbc8c69cbf4c36e09c7dc9c302e8371bf1e4fb49b7bde",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 164.1314697265625,
+                "y": 126.28684997558594,
+                "mass": 251.0,
+                "rx": 9.0,
+                "ry": 9.0
+              },
+              {
+                "x": 212.95379638671875,
+                "y": 145.15841674804688,
+                "mass": 303.0,
+                "rx": 12.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 31,
+            "bottom": 370,
+            "left": 77,
+            "right": 370
+          }
+        },
+        {
+          "x": 0,
+          "y": 1188,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5161290322580645,
+          "pixelSha256": "3e3558d7bf0e9067acfab014aeae4f814b7eaaee91d7fb387ddeae5c3f21636c",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 165.49603271484375,
+                "y": 124.93254089355469,
+                "mass": 252.0,
+                "rx": 9.5,
+                "ry": 9.0
+              },
+              {
+                "x": 214.2954559326172,
+                "y": 144.44805908203125,
+                "mass": 308.0,
+                "rx": 13.0,
+                "ry": 10.0
+              }
+            ],
+            "top": 30,
+            "bottom": 370,
+            "left": 70,
+            "right": 367
+          }
+        },
+        {
+          "x": 271,
+          "y": 1188,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5483870967741935,
+          "pixelSha256": "8e0cb1afe3e519bc8a10845c874cce789973f558b55916792ce97f0a1f886c1d",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 166.64639282226562,
+                "y": 123.615966796875,
+                "mass": 263.0,
+                "rx": 10.5,
+                "ry": 9.0
+              },
+              {
+                "x": 215.16287231445312,
+                "y": 143.9543914794922,
+                "mass": 307.0,
+                "rx": 12.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 29,
+            "bottom": 370,
+            "left": 68,
+            "right": 366
+          }
+        },
+        {
+          "x": 542,
+          "y": 1188,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5806451612903226,
+          "pixelSha256": "7b0f16a0b9e7714d08a5103f58ae409a8400a5ad9a3d5585f64760554de088c3",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 167.74525451660156,
+                "y": 122.34220886230469,
+                "mass": 263.0,
+                "rx": 10.0,
+                "ry": 9.0
+              },
+              {
+                "x": 215.47666931152344,
+                "y": 143.7566680908203,
+                "mass": 300.0,
+                "rx": 12.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 29,
+            "bottom": 369,
+            "left": 71,
+            "right": 367
+          }
+        },
+        {
+          "x": 813,
+          "y": 1188,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6129032258064516,
+          "pixelSha256": "179ec62c964f84b04e6605c1d2a58d32547ee0b7400d6a74e43fb973f0b6858b",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 168.776123046875,
+                "y": 121.4813461303711,
+                "mass": 268.0,
+                "rx": 10.5,
+                "ry": 9.0
+              },
+              {
+                "x": 215.80743408203125,
+                "y": 144.07432556152344,
+                "mass": 296.0,
+                "rx": 12.0,
+                "ry": 10.0
+              }
+            ],
+            "top": 29,
+            "bottom": 369,
+            "left": 73,
+            "right": 368
+          }
+        },
+        {
+          "x": 0,
+          "y": 1485,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6451612903225806,
+          "pixelSha256": "1c06b763894962fda143cdd395fb8b7a66ac2dd143355626fdfb5a392082d574",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 169.66412353515625,
+                "y": 121.0457992553711,
+                "mass": 262.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 216.0,
+                "y": 145.06930541992188,
+                "mass": 303.0,
+                "rx": 11.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 29,
+            "bottom": 369,
+            "left": 72,
+            "right": 370
+          }
+        },
+        {
+          "x": 271,
+          "y": 1485,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6774193548387096,
+          "pixelSha256": "561cebf25f27e019eb5bc7b404e1989dcef99b77708f54ae3afb39706f27a839",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 170.94444274902344,
+                "y": 120.87407684326172,
+                "mass": 270.0,
+                "rx": 10.0,
+                "ry": 9.0
+              },
+              {
+                "x": 216.8317108154297,
+                "y": 146.1682891845703,
+                "mass": 309.0,
+                "rx": 11.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 29,
+            "bottom": 369,
+            "left": 72,
+            "right": 371
+          }
+        },
+        {
+          "x": 542,
+          "y": 1485,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7096774193548387,
+          "pixelSha256": "05b96cc40e92313f202fe338a0c4cf34cba84543257e24da2de24029fca480e9",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 172.50735473632812,
+                "y": 121.4007339477539,
+                "mass": 272.0,
+                "rx": 10.5,
+                "ry": 9.0
+              },
+              {
+                "x": 218.0291290283203,
+                "y": 147.22329711914062,
+                "mass": 309.0,
+                "rx": 11.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 29,
+            "bottom": 369,
+            "left": 74,
+            "right": 371
+          }
+        },
+        {
+          "x": 813,
+          "y": 1485,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7419354838709677,
+          "pixelSha256": "4457722d03ba32d948c5342b2bddce1451d08242ccd5ef2ab7d9593998b6ce9e",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 174.34671020507812,
+                "y": 121.83941650390625,
+                "mass": 274.0,
+                "rx": 10.0,
+                "ry": 9.0
+              },
+              {
+                "x": 219.53488159179688,
+                "y": 148.1328887939453,
+                "mass": 301.0,
+                "rx": 11.0,
+                "ry": 10.0
+              }
+            ],
+            "top": 29,
+            "bottom": 370,
+            "left": 75,
+            "right": 371
+          }
+        },
+        {
+          "x": 0,
+          "y": 1782,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7741935483870968,
+          "pixelSha256": "abffe93ea38adc7fc1b8041045174685630ea7b44ed3ce9b9ea2215cf98ce897",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 175.93795776367188,
+                "y": 122.18247985839844,
+                "mass": 274.0,
+                "rx": 9.5,
+                "ry": 9.5
+              },
+              {
+                "x": 221.22772216796875,
+                "y": 148.20791625976562,
+                "mass": 303.0,
+                "rx": 11.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 30,
+            "bottom": 370,
+            "left": 73,
+            "right": 367
+          }
+        },
+        {
+          "x": 271,
+          "y": 1782,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8064516129032258,
+          "pixelSha256": "0a6087f695f178a55071b3a5100973a5b1ed6cbae836e2166793c27959ee5ba6",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 177.42379760742188,
+                "y": 122.42750549316406,
+                "mass": 269.0,
+                "rx": 10.0,
+                "ry": 9.0
+              },
+              {
+                "x": 222.44256591796875,
+                "y": 148.42230224609375,
+                "mass": 296.0,
+                "rx": 11.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 30,
+            "bottom": 370,
+            "left": 72,
+            "right": 365
+          }
+        },
+        {
+          "x": 542,
+          "y": 1782,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8387096774193549,
+          "pixelSha256": "c8112b7535eb9c55e9d84ce88aabc411151d70e54b97a2aad6684176ba6cf830",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 178.4626922607422,
+                "y": 121.85820770263672,
+                "mass": 268.0,
+                "rx": 10.0,
+                "ry": 9.0
+              },
+              {
+                "x": 222.95681762695312,
+                "y": 148.51162719726562,
+                "mass": 301.0,
+                "rx": 12.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 30,
+            "bottom": 370,
+            "left": 75,
+            "right": 366
+          }
+        },
+        {
+          "x": 813,
+          "y": 1782,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8709677419354839,
+          "pixelSha256": "f313c746b5d3af946ac90a18a8f724b4eac2668edf6b0a252644287898d5f578",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 179.37547302246094,
+                "y": 121.4061279296875,
+                "mass": 261.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 223.18006896972656,
+                "y": 148.63343811035156,
+                "mass": 311.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 30,
+            "bottom": 370,
+            "left": 77,
+            "right": 367
+          }
+        },
+        {
+          "x": 0,
+          "y": 2079,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9032258064516129,
+          "pixelSha256": "38278189d97856b8bf5e4411f4a66cca9894f4cbe2641ccc04b4e7d894f5ce66",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 179.79783630371094,
+                "y": 121.15162658691406,
+                "mass": 277.0,
+                "rx": 10.0,
+                "ry": 9.0
+              },
+              {
+                "x": 222.75570678710938,
+                "y": 149.4364776611328,
+                "mass": 307.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 30,
+            "bottom": 369,
+            "left": 76,
+            "right": 369
+          }
+        },
+        {
+          "x": 271,
+          "y": 2079,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9354838709677419,
+          "pixelSha256": "76c3b4c229ee4d4cc66de015afdc8e1e820671f0b2e232a7dd51939ff89a3f93",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 180.23973083496094,
+                "y": 121.16095733642578,
+                "mass": 292.0,
+                "rx": 10.5,
+                "ry": 10.0
+              },
+              {
+                "x": 222.16339111328125,
+                "y": 150.2189483642578,
+                "mass": 306.0,
+                "rx": 11.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 30,
+            "bottom": 369,
+            "left": 76,
+            "right": 371
+          }
+        },
+        {
+          "x": 542,
+          "y": 2079,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 0.967741935483871,
+          "pixelSha256": "b9558d324b7caa156e9071c4aeec51660adda59d0ae6d4b0052183903400a0cc",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 180.52577209472656,
+                "y": 122.46392059326172,
+                "mass": 291.0,
+                "rx": 10.0,
+                "ry": 9.5
+              },
+              {
+                "x": 221.46534729003906,
+                "y": 152.48184204101562,
+                "mass": 303.0,
+                "rx": 11.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 31,
+            "bottom": 370,
+            "left": 76,
+            "right": 371
+          }
+        },
+        {
+          "x": 813,
+          "y": 2079,
+          "width": 271,
+          "height": 297,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 18,
+          "anchorX": 112.0,
+          "anchorY": 292.0,
+          "referenceHeight": 280.0,
+          "phase": 1.0,
+          "pixelSha256": "d79fafb1f30d5a144fdceafdc3064665c2149a83f792e78e64a05466290085e7",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 180.8648681640625,
+                "y": 123.85472869873047,
+                "mass": 296.0,
+                "rx": 10.0,
+                "ry": 10.0
+              },
+              {
+                "x": 220.8006591796875,
+                "y": 154.87374877929688,
+                "mass": 301.0,
+                "rx": 11.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 33,
+            "bottom": 370,
+            "left": 77,
+            "right": 371
+          }
+        }
+      ],
+      "prealigned": true,
+      "path": "art/dog-continuous-tiltleft.webp",
+      "bytes": 625640,
+      "sha256": "e95283379d24ec125fbbaa7c4bcc88eac123c8a4706566e968eaf81a3e4c9a7b"
+    },
+    "tiltright": {
+      "key": "tiltright",
+      "width": 1080,
+      "height": 2456,
+      "cell": 320,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0,
+          "pixelSha256": "d70cbb871bbd7f9ebdf945923b3b033d627dc2574b7526568451efc4efc3f7da",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.29702758789062,
+                "y": 127.77227783203125,
+                "mass": 202.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 207.72935485839844,
+                "y": 126.94036865234375,
+                "mass": 218.0,
+                "rx": 13.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 38,
+            "bottom": 370,
+            "left": 86,
+            "right": 353
+          }
+        },
+        {
+          "x": 270,
+          "y": 0,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.03225806451612903,
+          "pixelSha256": "e12a1ab9925eb32d03b0dc6f7c0e4f099e63d43e7e55924e6da1e43c79e7a0f0",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.58963012695312,
+                "y": 133.79244995117188,
+                "mass": 212.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 209.270263671875,
+                "y": 130.30630493164062,
+                "mass": 222.0,
+                "rx": 10.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 37,
+            "bottom": 370,
+            "left": 77,
+            "right": 358
+          }
+        },
+        {
+          "x": 540,
+          "y": 0,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.06451612903225806,
+          "pixelSha256": "9cb04bab153fe795797a7e7d3b71773021e72d4debf1247ac2c82025a262d7aa",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.99069213867188,
+                "y": 139.73487854003906,
+                "mass": 215.0,
+                "rx": 12.0,
+                "ry": 8.0
+              },
+              {
+                "x": 211.03509521484375,
+                "y": 133.88597106933594,
+                "mass": 228.0,
+                "rx": 11.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 34,
+            "bottom": 370,
+            "left": 68,
+            "right": 362
+          }
+        },
+        {
+          "x": 810,
+          "y": 0,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0967741935483871,
+          "pixelSha256": "8394767c8d30abcf18fb12eebd9b334655d34c65a7758a96a63a80d9ef0dad76",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 158.94667053222656,
+                "y": 142.87110900878906,
+                "mass": 225.0,
+                "rx": 12.0,
+                "ry": 8.5
+              },
+              {
+                "x": 212.14767456054688,
+                "y": 135.02110290527344,
+                "mass": 237.0,
+                "rx": 10.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 34,
+            "bottom": 370,
+            "left": 70,
+            "right": 366
+          }
+        },
+        {
+          "x": 0,
+          "y": 307,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.12903225806451613,
+          "pixelSha256": "498ee3e423d9e770066cf00b9e692ec8e19b114d0d38f154682d8c47ec947219",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 160.02609252929688,
+                "y": 145.886962890625,
+                "mass": 230.0,
+                "rx": 12.0,
+                "ry": 8.5
+              },
+              {
+                "x": 213.62301635742188,
+                "y": 136.03175354003906,
+                "mass": 252.0,
+                "rx": 11.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 34,
+            "bottom": 370,
+            "left": 71,
+            "right": 371
+          }
+        },
+        {
+          "x": 270,
+          "y": 307,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.16129032258064516,
+          "pixelSha256": "87847feff03a2e26994a38f649eee5c7776914c542bcb5af6cd60655a2e2eb39",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.39675903320312,
+                "y": 147.5991973876953,
+                "mass": 247.0,
+                "rx": 12.0,
+                "ry": 9.0
+              },
+              {
+                "x": 215.11692810058594,
+                "y": 135.6975860595703,
+                "mass": 248.0,
+                "rx": 11.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 34,
+            "bottom": 370,
+            "left": 70,
+            "right": 367
+          }
+        },
+        {
+          "x": 540,
+          "y": 307,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.1935483870967742,
+          "pixelSha256": "3f9a13079cfb380bf993172d255213da79881fd547347217eb3f26915ab02838",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.7751007080078,
+                "y": 148.76304626464844,
+                "mass": 249.0,
+                "rx": 10.0,
+                "ry": 9.5
+              },
+              {
+                "x": 216.1975860595703,
+                "y": 135.1774139404297,
+                "mass": 248.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 34,
+            "bottom": 370,
+            "left": 69,
+            "right": 362
+          }
+        },
+        {
+          "x": 810,
+          "y": 307,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.22580645161290322,
+          "pixelSha256": "2c4ac40541bef1efa5183e2d2c826271d47d8637320250f8972d746e33e9706e",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 163.90614318847656,
+                "y": 150.02166748046875,
+                "mass": 277.0,
+                "rx": 13.5,
+                "ry": 9.5
+              },
+              {
+                "x": 217.2086639404297,
+                "y": 134.2755889892578,
+                "mass": 254.0,
+                "rx": 10.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 32,
+            "bottom": 370,
+            "left": 69,
+            "right": 365
+          }
+        },
+        {
+          "x": 0,
+          "y": 614,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.25806451612903225,
+          "pixelSha256": "f31049dc6abefd2c0d016222d1dffc2d5da90b152ef727977274bb6b2bee3aac",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 164.5729217529297,
+                "y": 150.85069274902344,
+                "mass": 288.0,
+                "rx": 14.0,
+                "ry": 9.5
+              },
+              {
+                "x": 217.92015075683594,
+                "y": 133.27757263183594,
+                "mass": 263.0,
+                "rx": 10.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 30,
+            "bottom": 370,
+            "left": 69,
+            "right": 370
+          }
+        },
+        {
+          "x": 270,
+          "y": 614,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.2903225806451613,
+          "pixelSha256": "8254e83375bfb48b45c643af64f3b2d996c94e31e8f125f443126b586c26b778",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 165.21986389160156,
+                "y": 151.87942504882812,
+                "mass": 282.0,
+                "rx": 14.0,
+                "ry": 9.5
+              },
+              {
+                "x": 218.64944458007812,
+                "y": 132.4907684326172,
+                "mass": 271.0,
+                "rx": 10.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 29,
+            "bottom": 370,
+            "left": 69,
+            "right": 369
+          }
+        },
+        {
+          "x": 540,
+          "y": 614,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3225806451612903,
+          "pixelSha256": "5fcc967236fb78700eed4e2e7457f4ed0de2a2311baa52416483c7b77419bd10",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 166.4535675048828,
+                "y": 152.6892852783203,
+                "mass": 280.0,
+                "rx": 14.0,
+                "ry": 9.0
+              },
+              {
+                "x": 219.38845825195312,
+                "y": 131.65769958496094,
+                "mass": 260.0,
+                "rx": 9.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 29,
+            "bottom": 370,
+            "left": 70,
+            "right": 366
+          }
+        },
+        {
+          "x": 810,
+          "y": 614,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3548387096774194,
+          "pixelSha256": "2dd3ce7c7f5fe3d14c0105ea5200772c5b24ea6830f226efd86062a9785bcb39",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 167.76641845703125,
+                "y": 153.572998046875,
+                "mass": 274.0,
+                "rx": 13.5,
+                "ry": 9.0
+              },
+              {
+                "x": 220.439208984375,
+                "y": 131.062744140625,
+                "mass": 255.0,
+                "rx": 9.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 28,
+            "bottom": 370,
+            "left": 70,
+            "right": 367
+          }
+        },
+        {
+          "x": 0,
+          "y": 921,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3870967741935484,
+          "pixelSha256": "722d0e1aff8f441c2acc92d35d2870222c1ac1cf365a82edd54fd024e097a726",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 169.3107147216797,
+                "y": 154.1999969482422,
+                "mass": 280.0,
+                "rx": 13.5,
+                "ry": 9.5
+              },
+              {
+                "x": 221.59925842285156,
+                "y": 130.51686096191406,
+                "mass": 267.0,
+                "rx": 10.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 27,
+            "bottom": 370,
+            "left": 70,
+            "right": 371
+          }
+        },
+        {
+          "x": 270,
+          "y": 921,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.41935483870967744,
+          "pixelSha256": "237c1895f9d70ec0fe9984f1204c1f1aa13c8b542a295aff0a0f1b79455ccafe",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 171.06689453125,
+                "y": 154.79225158691406,
+                "mass": 284.0,
+                "rx": 13.5,
+                "ry": 9.5
+              },
+              {
+                "x": 223.35687255859375,
+                "y": 130.2379150390625,
+                "mass": 269.0,
+                "rx": 10.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 27,
+            "bottom": 370,
+            "left": 71,
+            "right": 369
+          }
+        },
+        {
+          "x": 540,
+          "y": 921,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.45161290322580644,
+          "pixelSha256": "c5adf0f44e28a29228b72d6b472f1919b99eb98366a095c6cb3763d791e148c2",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 173.2986602783203,
+                "y": 155.14430236816406,
+                "mass": 298.0,
+                "rx": 13.5,
+                "ry": 10.0
+              },
+              {
+                "x": 224.9323272705078,
+                "y": 130.16165161132812,
+                "mass": 266.0,
+                "rx": 10.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 29,
+            "bottom": 370,
+            "left": 74,
+            "right": 363
+          }
+        },
+        {
+          "x": 810,
+          "y": 921,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.4838709677419355,
+          "pixelSha256": "c3e6270b8d030d5e3d55777b6f512ae892bdce5a30b053d3a68782f81f70afd9",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 175.2926025390625,
+                "y": 155.45016479492188,
+                "mass": 311.0,
+                "rx": 13.5,
+                "ry": 10.0
+              },
+              {
+                "x": 226.5511016845703,
+                "y": 129.70437622070312,
+                "mass": 274.0,
+                "rx": 10.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 29,
+            "bottom": 370,
+            "left": 74,
+            "right": 362
+          }
+        },
+        {
+          "x": 0,
+          "y": 1228,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5161290322580645,
+          "pixelSha256": "0a6b4ddb06c5ce4f7e88a1b91731e06455540333842b67abae6e848f9deb2030",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 176.8810272216797,
+                "y": 155.78456115722656,
+                "mass": 311.0,
+                "rx": 14.0,
+                "ry": 9.5
+              },
+              {
+                "x": 228.64102172851562,
+                "y": 129.3333282470703,
+                "mass": 273.0,
+                "rx": 9.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 27,
+            "bottom": 370,
+            "left": 74,
+            "right": 366
+          }
+        },
+        {
+          "x": 270,
+          "y": 1228,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5483870967741935,
+          "pixelSha256": "b4edde6427a626b9546d5c70d2bd8529f06ccffda56b2c18b1b39e27ca1ac9c5",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 178.54603576660156,
+                "y": 155.84762573242188,
+                "mass": 315.0,
+                "rx": 14.0,
+                "ry": 9.5
+              },
+              {
+                "x": 229.79786682128906,
+                "y": 128.6914825439453,
+                "mass": 282.0,
+                "rx": 10.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 26,
+            "bottom": 370,
+            "left": 73,
+            "right": 368
+          }
+        },
+        {
+          "x": 540,
+          "y": 1228,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5806451612903226,
+          "pixelSha256": "72d8e342b80531893eff4b65ebe0f3ac85733f4f183a87033ede333f6d508264",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 180.1941680908203,
+                "y": 155.68284606933594,
+                "mass": 309.0,
+                "rx": 14.0,
+                "ry": 9.5
+              },
+              {
+                "x": 230.98141479492188,
+                "y": 127.69145202636719,
+                "mass": 269.0,
+                "rx": 10.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 25,
+            "bottom": 370,
+            "left": 72,
+            "right": 368
+          }
+        },
+        {
+          "x": 810,
+          "y": 1228,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6129032258064516,
+          "pixelSha256": "5d945082dcb6ebb1aebc939ecbe30878a5e042745439e4d0e2254efb4c250b5c",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 181.87860107421875,
+                "y": 155.53993225097656,
+                "mass": 313.0,
+                "rx": 14.0,
+                "ry": 9.0
+              },
+              {
+                "x": 231.9962921142578,
+                "y": 126.89259338378906,
+                "mass": 270.0,
+                "rx": 10.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 25,
+            "bottom": 370,
+            "left": 71,
+            "right": 367
+          }
+        },
+        {
+          "x": 0,
+          "y": 1535,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6451612903225806,
+          "pixelSha256": "0cdd10a06db392ea347a6313b67c18cb74aa57085e938f194be5bc14448ab8da",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 183.1290283203125,
+                "y": 155.46128845214844,
+                "mass": 310.0,
+                "rx": 14.0,
+                "ry": 9.5
+              },
+              {
+                "x": 232.60984802246094,
+                "y": 126.17803192138672,
+                "mass": 264.0,
+                "rx": 9.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 26,
+            "bottom": 369,
+            "left": 73,
+            "right": 366
+          }
+        },
+        {
+          "x": 270,
+          "y": 1535,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6774193548387096,
+          "pixelSha256": "3afbae120df3816c7d3612b0e6c1c6d9ece3f6264dc1b9784707a8ffe5497ee6",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 184.1082763671875,
+                "y": 155.11782836914062,
+                "mass": 314.0,
+                "rx": 14.0,
+                "ry": 10.0
+              },
+              {
+                "x": 233.2985076904297,
+                "y": 125.33209228515625,
+                "mass": 268.0,
+                "rx": 9.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 25,
+            "bottom": 369,
+            "left": 73,
+            "right": 365
+          }
+        },
+        {
+          "x": 540,
+          "y": 1535,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7096774193548387,
+          "pixelSha256": "ddf2d6fefb67b594f98a24b8accbf10995404e91014bf5162dc446f45984c52e",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 185.0731658935547,
+                "y": 154.1981658935547,
+                "mass": 328.0,
+                "rx": 14.0,
+                "ry": 10.0
+              },
+              {
+                "x": 234.06617736816406,
+                "y": 124.21691131591797,
+                "mass": 272.0,
+                "rx": 9.5,
+                "ry": 10.0
+              }
+            ],
+            "top": 23,
+            "bottom": 369,
+            "left": 71,
+            "right": 363
+          }
+        },
+        {
+          "x": 810,
+          "y": 1535,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7419354838709677,
+          "pixelSha256": "aa5576d15cb17d5ee991ac830b557cd353de3025cacb558407ef7b6a4f55b955",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 186.20120239257812,
+                "y": 153.150146484375,
+                "mass": 333.0,
+                "rx": 14.0,
+                "ry": 10.0
+              },
+              {
+                "x": 235.38768005371094,
+                "y": 122.91304016113281,
+                "mass": 276.0,
+                "rx": 10.5,
+                "ry": 10.5
+              }
+            ],
+            "top": 22,
+            "bottom": 369,
+            "left": 71,
+            "right": 362
+          }
+        },
+        {
+          "x": 0,
+          "y": 1842,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7741935483870968,
+          "pixelSha256": "6231bf47c5be585af301122ddec977c16254d0dc20485459455c501992ffe76f",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 188.10279846191406,
+                "y": 151.07476806640625,
+                "mass": 321.0,
+                "rx": 13.5,
+                "ry": 9.5
+              },
+              {
+                "x": 237.7061004638672,
+                "y": 121.06451416015625,
+                "mass": 279.0,
+                "rx": 10.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 21,
+            "bottom": 370,
+            "left": 73,
+            "right": 368
+          }
+        },
+        {
+          "x": 270,
+          "y": 1842,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8064516129032258,
+          "pixelSha256": "090b7f661311e4f6b7631ecc4a016a7f18c8a55326016587adc11d47b95e5588",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 190.17088317871094,
+                "y": 149.27215576171875,
+                "mass": 316.0,
+                "rx": 13.5,
+                "ry": 9.5
+              },
+              {
+                "x": 240.1453857421875,
+                "y": 119.20922088623047,
+                "mass": 282.0,
+                "rx": 10.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 20,
+            "bottom": 370,
+            "left": 74,
+            "right": 372
+          }
+        },
+        {
+          "x": 540,
+          "y": 1842,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8387096774193549,
+          "pixelSha256": "e0d977fc6da03ef8cf5e3c1a3fc559079a316ecf721f7c002425101fcc2817c1",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 193.375,
+                "y": 148.13095092773438,
+                "mass": 336.0,
+                "rx": 14.5,
+                "ry": 9.5
+              },
+              {
+                "x": 243.846435546875,
+                "y": 117.6392822265625,
+                "mass": 280.0,
+                "rx": 10.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 18,
+            "bottom": 370,
+            "left": 71,
+            "right": 370
+          }
+        },
+        {
+          "x": 810,
+          "y": 1842,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8709677419354839,
+          "pixelSha256": "11a261effb68733a8835d3275a28852058dc63f598601babd8e0f06fc3784da0",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 196.696533203125,
+                "y": 147.0924835205078,
+                "mass": 346.0,
+                "rx": 14.5,
+                "ry": 9.5
+              },
+              {
+                "x": 247.32981872558594,
+                "y": 115.8386001586914,
+                "mass": 285.0,
+                "rx": 10.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 16,
+            "bottom": 369,
+            "left": 69,
+            "right": 369
+          }
+        },
+        {
+          "x": 0,
+          "y": 2149,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9032258064516129,
+          "pixelSha256": "a24c406b99ed633c43087d767a5f13bd11d6f365c629ddb751affd1ff9749611",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 200.18528747558594,
+                "y": 146.70294189453125,
+                "mass": 340.0,
+                "rx": 14.5,
+                "ry": 10.0
+              },
+              {
+                "x": 250.62416076660156,
+                "y": 114.9932861328125,
+                "mass": 298.0,
+                "rx": 10.5,
+                "ry": 10.5
+              }
+            ],
+            "top": 17,
+            "bottom": 370,
+            "left": 71,
+            "right": 369
+          }
+        },
+        {
+          "x": 270,
+          "y": 2149,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9354838709677419,
+          "pixelSha256": "cda5ee346085b4fd1d2e2b5f279f09e5c92853ec6d4e37ad9235d965f78bea2a",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 204.04678344726562,
+                "y": 146.4590606689453,
+                "mass": 342.0,
+                "rx": 14.5,
+                "ry": 10.0
+              },
+              {
+                "x": 254.03268432617188,
+                "y": 113.71241760253906,
+                "mass": 306.0,
+                "rx": 11.0,
+                "ry": 10.5
+              }
+            ],
+            "top": 17,
+            "bottom": 370,
+            "left": 72,
+            "right": 369
+          }
+        },
+        {
+          "x": 540,
+          "y": 2149,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 0.967741935483871,
+          "pixelSha256": "7fe1e58e5145236eabe082c487313df40faf9b6b98c7d026dd18c5a98223d1bd",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 207.8959503173828,
+                "y": 146.25433349609375,
+                "mass": 346.0,
+                "rx": 14.5,
+                "ry": 10.0
+              },
+              {
+                "x": 256.8869323730469,
+                "y": 112.43463134765625,
+                "mass": 283.0,
+                "rx": 10.0,
+                "ry": 10.0
+              }
+            ],
+            "top": 16,
+            "bottom": 370,
+            "left": 72,
+            "right": 368
+          }
+        },
+        {
+          "x": 810,
+          "y": 2149,
+          "width": 270,
+          "height": 307,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 48,
+          "offsetY": 8,
+          "anchorX": 112.0,
+          "anchorY": 302.0,
+          "referenceHeight": 280.0,
+          "phase": 1.0,
+          "pixelSha256": "ad3ffb4d56abe3204beb5d7fa1881d2fa7292fce49157d5de202164150aeca11",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 211.76300048828125,
+                "y": 145.9913330078125,
+                "mass": 346.0,
+                "rx": 15.0,
+                "ry": 10.5
+              },
+              {
+                "x": 259.9571838378906,
+                "y": 111.22567749023438,
+                "mass": 257.0,
+                "rx": 9.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 16,
+            "bottom": 370,
+            "left": 71,
+            "right": 366
+          }
+        }
+      ],
+      "prealigned": true,
+      "path": "art/dog-continuous-tiltright.webp",
+      "bytes": 645860,
+      "sha256": "89002ba078c920a36b86d98aa7ba9a19545a9ee15ebd5bf0bd865902de6c2bbe"
+    },
+    "greet": {
+      "key": "greet",
+      "width": 1076,
+      "height": 2368,
+      "cell": 320,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0,
+          "pixelSha256": "d70cbb871bbd7f9ebdf945923b3b033d627dc2574b7526568451efc4efc3f7da",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 157.29702758789062,
+                "y": 127.77227783203125,
+                "mass": 202.0,
+                "rx": 10.0,
+                "ry": 8.5
+              },
+              {
+                "x": 207.72935485839844,
+                "y": 126.94036865234375,
+                "mass": 218.0,
+                "rx": 13.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 38,
+            "bottom": 370,
+            "left": 86,
+            "right": 353
+          }
+        },
+        {
+          "x": 269,
+          "y": 0,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.03225806451612903,
+          "pixelSha256": "ee41b4707f4b4abe6c96affd22c4f35f1d7376fdb10251a44a9c27b171819fe1",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 159.8540802001953,
+                "y": 129.6051483154297,
+                "mass": 233.0,
+                "rx": 11.0,
+                "ry": 8.5
+              },
+              {
+                "x": 210.42477416992188,
+                "y": 128.8141632080078,
+                "mass": 226.0,
+                "rx": 11.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 39,
+            "bottom": 370,
+            "left": 81,
+            "right": 357
+          }
+        },
+        {
+          "x": 538,
+          "y": 0,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.06451612903225806,
+          "pixelSha256": "51ac717e3687e938589b45abfd2e5f20a169907359cf1cb9ebe1a75e648a43a9",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.26820373535156,
+                "y": 131.51724243164062,
+                "mass": 261.0,
+                "rx": 12.0,
+                "ry": 9.0
+              },
+              {
+                "x": 213.77406311035156,
+                "y": 130.95816040039062,
+                "mass": 239.0,
+                "rx": 11.5,
+                "ry": 7.5
+              }
+            ],
+            "top": 39,
+            "bottom": 370,
+            "left": 75,
+            "right": 361
+          }
+        },
+        {
+          "x": 807,
+          "y": 0,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.0967741935483871,
+          "pixelSha256": "a34f4f8b93e3ff81a92aa6b34ae07d29b9793d99a1f552210f48fd7083048aa7",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 163.1501922607422,
+                "y": 132.05532836914062,
+                "mass": 253.0,
+                "rx": 11.5,
+                "ry": 8.5
+              },
+              {
+                "x": 214.94650268554688,
+                "y": 131.56790161132812,
+                "mass": 243.0,
+                "rx": 11.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 39,
+            "bottom": 370,
+            "left": 75,
+            "right": 363
+          }
+        },
+        {
+          "x": 0,
+          "y": 296,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.12903225806451613,
+          "pixelSha256": "efb06537bac3491d10c3acaaf0d80be616716b4e639213925c65cae7c97ff035",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 163.74400329589844,
+                "y": 132.73599243164062,
+                "mass": 250.0,
+                "rx": 12.0,
+                "ry": 8.5
+              },
+              {
+                "x": 215.7848663330078,
+                "y": 132.3147430419922,
+                "mass": 251.0,
+                "rx": 12.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 39,
+            "bottom": 370,
+            "left": 76,
+            "right": 365
+          }
+        },
+        {
+          "x": 269,
+          "y": 296,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.16129032258064516,
+          "pixelSha256": "b9419e6f4531039e6562a425a3ee0351f03c4bed5132ab749577275a25f530f5",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 163.61154174804688,
+                "y": 131.90383911132812,
+                "mass": 260.0,
+                "rx": 12.0,
+                "ry": 8.5
+              },
+              {
+                "x": 215.87295532226562,
+                "y": 131.47950744628906,
+                "mass": 244.0,
+                "rx": 11.5,
+                "ry": 8.0
+              }
+            ],
+            "top": 38,
+            "bottom": 370,
+            "left": 75,
+            "right": 365
+          }
+        },
+        {
+          "x": 538,
+          "y": 296,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.1935483870967742,
+          "pixelSha256": "8f49b09c5464eba6591053e186d715818add1ac68fd007f8f0cdcb9804a9b96f",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.95970153808594,
+                "y": 131.00732421875,
+                "mass": 273.0,
+                "rx": 12.5,
+                "ry": 9.0
+              },
+              {
+                "x": 215.7857208251953,
+                "y": 130.36553955078125,
+                "mass": 238.0,
+                "rx": 11.5,
+                "ry": 7.5
+              }
+            ],
+            "top": 37,
+            "bottom": 369,
+            "left": 75,
+            "right": 364
+          }
+        },
+        {
+          "x": 807,
+          "y": 296,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.22580645161290322,
+          "pixelSha256": "69dbea51f94fdc799eb700da3621c54894400ba2d135e89ca3e0a04bf919ee0b",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.17625427246094,
+                "y": 129.42445373535156,
+                "mass": 278.0,
+                "rx": 12.5,
+                "ry": 9.0
+              },
+              {
+                "x": 215.35000610351562,
+                "y": 129.07916259765625,
+                "mass": 240.0,
+                "rx": 12.0,
+                "ry": 7.5
+              }
+            ],
+            "top": 36,
+            "bottom": 369,
+            "left": 74,
+            "right": 366
+          }
+        },
+        {
+          "x": 0,
+          "y": 592,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.25806451612903225,
+          "pixelSha256": "90db3acc256469850c58fb1cdd88a2e1ea4c8c7f34995045291c10c286cbfef6",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.46975708007812,
+                "y": 127.67259979248047,
+                "mass": 281.0,
+                "rx": 13.0,
+                "ry": 9.0
+              },
+              {
+                "x": 214.95101928710938,
+                "y": 127.43673706054688,
+                "mass": 245.0,
+                "rx": 12.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 34,
+            "bottom": 369,
+            "left": 73,
+            "right": 368
+          }
+        },
+        {
+          "x": 269,
+          "y": 592,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.2903225806451613,
+          "pixelSha256": "34f2b3939378f143176933df6b237423e1afdcd82291a2782387ce722e5dc6db",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 160.96141052246094,
+                "y": 127.02104949951172,
+                "mass": 285.0,
+                "rx": 13.5,
+                "ry": 9.0
+              },
+              {
+                "x": 214.67063903808594,
+                "y": 126.68650817871094,
+                "mass": 252.0,
+                "rx": 12.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 32,
+            "bottom": 369,
+            "left": 72,
+            "right": 370
+          }
+        },
+        {
+          "x": 538,
+          "y": 592,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3225806451612903,
+          "pixelSha256": "412d0532ee741b950b9e8840a9f0450106d73c487d3ecc2668423eca83a0848d",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 160.57769775390625,
+                "y": 126.39865112304688,
+                "mass": 296.0,
+                "rx": 13.5,
+                "ry": 9.0
+              },
+              {
+                "x": 214.53668212890625,
+                "y": 126.0,
+                "mass": 259.0,
+                "rx": 12.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 30,
+            "bottom": 369,
+            "left": 70,
+            "right": 372
+          }
+        },
+        {
+          "x": 807,
+          "y": 592,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3548387096774194,
+          "pixelSha256": "4b4223f8e36218ab02775b6108820eadc69d925f33ba60d9d91c529c7b0ff303",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 160.59588623046875,
+                "y": 126.34589385986328,
+                "mass": 292.0,
+                "rx": 13.5,
+                "ry": 9.0
+              },
+              {
+                "x": 214.60000610351562,
+                "y": 125.88301849365234,
+                "mass": 265.0,
+                "rx": 12.0,
+                "ry": 8.0
+              }
+            ],
+            "top": 30,
+            "bottom": 369,
+            "left": 70,
+            "right": 372
+          }
+        },
+        {
+          "x": 0,
+          "y": 888,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.3870967741935484,
+          "pixelSha256": "08f9aba846d4be76312b43dbccf9cf8a6b0c941f3f2c5508cb63043d807b41ea",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 160.83216857910156,
+                "y": 126.51398468017578,
+                "mass": 286.0,
+                "rx": 14.0,
+                "ry": 9.0
+              },
+              {
+                "x": 214.7896728515625,
+                "y": 126.15498352050781,
+                "mass": 271.0,
+                "rx": 12.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 31,
+            "bottom": 369,
+            "left": 72,
+            "right": 372
+          }
+        },
+        {
+          "x": 269,
+          "y": 888,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.41935483870967744,
+          "pixelSha256": "2a6aaa6b30ed00265400e2aee0033b34742ec209d7301ebd6c8df4d63096cfaf",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 160.91549682617188,
+                "y": 126.60563659667969,
+                "mass": 284.0,
+                "rx": 14.0,
+                "ry": 9.0
+              },
+              {
+                "x": 215.1691131591797,
+                "y": 126.31985473632812,
+                "mass": 272.0,
+                "rx": 11.5,
+                "ry": 8.5
+              }
+            ],
+            "top": 31,
+            "bottom": 369,
+            "left": 72,
+            "right": 371
+          }
+        },
+        {
+          "x": 538,
+          "y": 888,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.45161290322580644,
+          "pixelSha256": "c508c186d1c174977220afaa9b45101fbf0872c657d085f3c9de634292019dbf",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.19642639160156,
+                "y": 126.89286041259766,
+                "mass": 280.0,
+                "rx": 13.5,
+                "ry": 9.5
+              },
+              {
+                "x": 215.63970947265625,
+                "y": 126.5625,
+                "mass": 272.0,
+                "rx": 12.0,
+                "ry": 8.5
+              }
+            ],
+            "top": 30,
+            "bottom": 369,
+            "left": 71,
+            "right": 371
+          }
+        },
+        {
+          "x": 807,
+          "y": 888,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.4838709677419355,
+          "pixelSha256": "b4277880f0fdde0bcc176843afd03ec8ef7efbfba8c645c53b2d4f0db5e5db6a",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.36231994628906,
+                "y": 127.27173614501953,
+                "mass": 276.0,
+                "rx": 12.5,
+                "ry": 9.0
+              },
+              {
+                "x": 216.1290283203125,
+                "y": 126.88530731201172,
+                "mass": 279.0,
+                "rx": 12.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 31,
+            "bottom": 369,
+            "left": 70,
+            "right": 370
+          }
+        },
+        {
+          "x": 0,
+          "y": 1184,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5161290322580645,
+          "pixelSha256": "cbcb3175fa67d6f33a6bdcdaddadecd17477afb7e2c7c17f5ef77c5b681fee58",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.56272888183594,
+                "y": 127.62724304199219,
+                "mass": 279.0,
+                "rx": 11.5,
+                "ry": 9.5
+              },
+              {
+                "x": 216.6491241455078,
+                "y": 127.4771957397461,
+                "mass": 285.0,
+                "rx": 11.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 33,
+            "bottom": 369,
+            "left": 71,
+            "right": 370
+          }
+        },
+        {
+          "x": 269,
+          "y": 1184,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5483870967741935,
+          "pixelSha256": "491b3facb8c762a0af61e8a91bcd77c2ebcb3110b78fb7f026087cc853423c87",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.5894775390625,
+                "y": 128.0631561279297,
+                "mass": 285.0,
+                "rx": 11.5,
+                "ry": 9.5
+              },
+              {
+                "x": 216.87930297851562,
+                "y": 127.69309997558594,
+                "mass": 290.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 34,
+            "bottom": 370,
+            "left": 71,
+            "right": 370
+          }
+        },
+        {
+          "x": 538,
+          "y": 1184,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.5806451612903226,
+          "pixelSha256": "5a603f9654e9e4cbd573b7009d1e5a124f551ac2b2ab332a3570577c1db3bff9",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.47315979003906,
+                "y": 128.14430236816406,
+                "mass": 298.0,
+                "rx": 12.0,
+                "ry": 9.5
+              },
+              {
+                "x": 216.7177734375,
+                "y": 127.95470428466797,
+                "mass": 287.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 33,
+            "bottom": 369,
+            "left": 71,
+            "right": 371
+          }
+        },
+        {
+          "x": 807,
+          "y": 1184,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6129032258064516,
+          "pixelSha256": "958fccc48423c06e9750b2020b19aed463d1f7aa0ca5c0ecc23c900fc5ad785b",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.49508666992188,
+                "y": 128.25245666503906,
+                "mass": 305.0,
+                "rx": 12.0,
+                "ry": 9.5
+              },
+              {
+                "x": 216.76596069335938,
+                "y": 128.1914825439453,
+                "mass": 282.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 33,
+            "bottom": 369,
+            "left": 71,
+            "right": 372
+          }
+        },
+        {
+          "x": 0,
+          "y": 1480,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6451612903225806,
+          "pixelSha256": "df84f249c5be0f935224a3a9ee21c84c56a880da468242a2dc7e65978ccf1561",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.59866333007812,
+                "y": 128.42140197753906,
+                "mass": 299.0,
+                "rx": 12.5,
+                "ry": 9.0
+              },
+              {
+                "x": 216.49295043945312,
+                "y": 128.29930114746094,
+                "mass": 284.0,
+                "rx": 11.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 34,
+            "bottom": 370,
+            "left": 73,
+            "right": 372
+          }
+        },
+        {
+          "x": 269,
+          "y": 1480,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.6774193548387096,
+          "pixelSha256": "dd098fe6f517d49949e134ffeb3a8a17dcc4ec077e77327c6b11c216b18e1506",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.72882080078125,
+                "y": 128.47457885742188,
+                "mass": 295.0,
+                "rx": 13.0,
+                "ry": 9.0
+              },
+              {
+                "x": 216.6013946533203,
+                "y": 128.18881225585938,
+                "mass": 286.0,
+                "rx": 13.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 34,
+            "bottom": 370,
+            "left": 74,
+            "right": 371
+          }
+        },
+        {
+          "x": 538,
+          "y": 1480,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7096774193548387,
+          "pixelSha256": "ce49ee46c1e4c4436e653c4c01acb04f85bc113173360ec0e60f3384e5755656",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 161.92384338378906,
+                "y": 128.28146362304688,
+                "mass": 302.0,
+                "rx": 12.5,
+                "ry": 9.5
+              },
+              {
+                "x": 216.67010498046875,
+                "y": 127.88316345214844,
+                "mass": 291.0,
+                "rx": 13.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 34,
+            "bottom": 369,
+            "left": 73,
+            "right": 368
+          }
+        },
+        {
+          "x": 807,
+          "y": 1480,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7419354838709677,
+          "pixelSha256": "f79ba7c778434124970deaaafad84e407a29eaa7f134afd465cee17288002597",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.1172637939453,
+                "y": 128.09446716308594,
+                "mass": 307.0,
+                "rx": 12.5,
+                "ry": 9.5
+              },
+              {
+                "x": 216.6666717529297,
+                "y": 127.69047546386719,
+                "mass": 294.0,
+                "rx": 13.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 33,
+            "bottom": 369,
+            "left": 72,
+            "right": 367
+          }
+        },
+        {
+          "x": 0,
+          "y": 1776,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.7741935483870968,
+          "pixelSha256": "5770af26b2d075c0fc7b5a4a2e92fd59812971ec7e20cfbc8a12293635dc7cd2",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.3581085205078,
+                "y": 127.54054260253906,
+                "mass": 296.0,
+                "rx": 12.0,
+                "ry": 9.0
+              },
+              {
+                "x": 216.7770233154297,
+                "y": 127.39189147949219,
+                "mass": 296.0,
+                "rx": 13.5,
+                "ry": 9.0
+              }
+            ],
+            "top": 32,
+            "bottom": 370,
+            "left": 72,
+            "right": 370
+          }
+        },
+        {
+          "x": 269,
+          "y": 1776,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8064516129032258,
+          "pixelSha256": "be790570d011d2dd57719806656a580ff1b6cee0e16ea3b8fbdec902dc7ce0d2",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.21710205078125,
+                "y": 127.18421173095703,
+                "mass": 304.0,
+                "rx": 13.5,
+                "ry": 9.5
+              },
+              {
+                "x": 216.9595947265625,
+                "y": 126.89898681640625,
+                "mass": 297.0,
+                "rx": 14.5,
+                "ry": 9.5
+              }
+            ],
+            "top": 31,
+            "bottom": 370,
+            "left": 72,
+            "right": 372
+          }
+        },
+        {
+          "x": 538,
+          "y": 1776,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8387096774193549,
+          "pixelSha256": "95668dc119b109abf7d8e5afbf67ddbd4cc3e90945d4e9162538f35f20c503c0",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.17666625976562,
+                "y": 126.7699966430664,
+                "mass": 300.0,
+                "rx": 12.0,
+                "ry": 9.5
+              },
+              {
+                "x": 216.9698028564453,
+                "y": 126.58724975585938,
+                "mass": 298.0,
+                "rx": 12.0,
+                "ry": 9.0
+              }
+            ],
+            "top": 30,
+            "bottom": 369,
+            "left": 72,
+            "right": 372
+          }
+        },
+        {
+          "x": 807,
+          "y": 1776,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.8709677419354839,
+          "pixelSha256": "c6722dcc4ec37d552095b808cbab2736893f7b7273ccab412eeecdd38a3ccaea",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.0894012451172,
+                "y": 126.41059875488281,
+                "mass": 302.0,
+                "rx": 12.0,
+                "ry": 10.0
+              },
+              {
+                "x": 217.1326904296875,
+                "y": 126.33980560302734,
+                "mass": 309.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 30,
+            "bottom": 369,
+            "left": 72,
+            "right": 372
+          }
+        },
+        {
+          "x": 0,
+          "y": 2072,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9032258064516129,
+          "pixelSha256": "3da3248fd8700226b204e3a61b9ea9984ac2c727239d7b1272f5ce3633b29528",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.19801330566406,
+                "y": 126.27722930908203,
+                "mass": 303.0,
+                "rx": 14.0,
+                "ry": 9.5
+              },
+              {
+                "x": 217.33447265625,
+                "y": 126.12628173828125,
+                "mass": 293.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 31,
+            "bottom": 369,
+            "left": 73,
+            "right": 371
+          }
+        },
+        {
+          "x": 269,
+          "y": 2072,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.9354838709677419,
+          "pixelSha256": "1a86cd6297f1253c3907d6874845284195d3fc1933061978d350095187619085",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.35987854003906,
+                "y": 126.25796508789062,
+                "mass": 314.0,
+                "rx": 15.0,
+                "ry": 9.0
+              },
+              {
+                "x": 217.2421112060547,
+                "y": 125.97895050048828,
+                "mass": 285.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 31,
+            "bottom": 369,
+            "left": 75,
+            "right": 371
+          }
+        },
+        {
+          "x": 538,
+          "y": 2072,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 0.967741935483871,
+          "pixelSha256": "fc2f214fe7255c281e0614a8d969435642f99f69b00d6bf37628694a9ae68c29",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 162.86874389648438,
+                "y": 126.1500015258789,
+                "mass": 320.0,
+                "rx": 14.5,
+                "ry": 9.5
+              },
+              {
+                "x": 217.37722778320312,
+                "y": 125.83629608154297,
+                "mass": 281.0,
+                "rx": 12.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 31,
+            "bottom": 369,
+            "left": 74,
+            "right": 370
+          }
+        },
+        {
+          "x": 807,
+          "y": 2072,
+          "width": 269,
+          "height": 296,
+          "canvasWidth": 320,
+          "canvasHeight": 320,
+          "offsetX": 50,
+          "offsetY": 19,
+          "anchorX": 110.0,
+          "anchorY": 291.0,
+          "referenceHeight": 280.0,
+          "phase": 1.0,
+          "pixelSha256": "6284552e07d25c1f4dcfb546a054b058bd07e176a13c5e1ebb303f0f4aa00318",
+          "landmarks": {
+            "eyes": [
+              {
+                "x": 163.56756591796875,
+                "y": 126.34835052490234,
+                "mass": 333.0,
+                "rx": 14.0,
+                "ry": 9.5
+              },
+              {
+                "x": 217.65541076660156,
+                "y": 125.79054260253906,
+                "mass": 296.0,
+                "rx": 14.0,
+                "ry": 9.5
+              }
+            ],
+            "top": 30,
+            "bottom": 369,
+            "left": 73,
+            "right": 370
+          }
+        }
+      ],
+      "prealigned": true,
+      "path": "art/dog-continuous-greet.webp",
+      "bytes": 638440,
+      "sha256": "2893afef59b974d1cd2addf8aaa6ac52399fa05df4c24109398987c67e3805ff"
+    }
+  },
+  "sourceSheets": {
+    "sitdown": {
+      "path": "art/dog-home-sitdown.webp",
+      "sha256": "c210663a9f6628efb6047ce5dd034eaa821afab77f591682785cddb0e003886b"
+    },
+    "sitdown-metadata": {
+      "path": "art/dog-home-motion.json",
+      "sha256": "8f25d9d61beab91ecd69b1216c3ff34da05536566aa7c9d6cda205148022b957"
+    },
+    "liedown": {
+      "path": "art/dog-home-liedown.webp",
+      "sha256": "289a9673af1fef999538966a28d14f064dd644515b9aeb1be5905597d79e732a"
+    },
+    "liedown-metadata": {
+      "path": "art/dog-home-motion.json",
+      "sha256": "8f25d9d61beab91ecd69b1216c3ff34da05536566aa7c9d6cda205148022b957"
+    },
+    "tiltleft": {
+      "path": "art/dog-home-tiltleft.webp",
+      "sha256": "81519395ad4d3c9b1c6e0df17dceec40c614dca8361cbb98af3c23718ae72c6b"
+    },
+    "tiltleft-metadata": {
+      "path": "art/dog-home-motion.json",
+      "sha256": "8f25d9d61beab91ecd69b1216c3ff34da05536566aa7c9d6cda205148022b957"
+    },
+    "tiltright": {
+      "path": "art/dog-home-tiltright.webp",
+      "sha256": "44888c1c537985561ebdbfbc0c4c1b0fa2b42eb49f8208bf995e0122c91cd57c"
+    },
+    "tiltright-metadata": {
+      "path": "art/dog-home-motion.json",
+      "sha256": "8f25d9d61beab91ecd69b1216c3ff34da05536566aa7c9d6cda205148022b957"
+    },
+    "greet": {
+      "path": "art/dog-home-greet.webp",
+      "sha256": "5ba3e91047e7b66ae03c9693a70e521750874a8b5201327530bc780ad1591dd4"
+    },
+    "greet-metadata": {
+      "path": "art/dog-home-motion.json",
+      "sha256": "8f25d9d61beab91ecd69b1216c3ff34da05536566aa7c9d6cda205148022b957"
+    }
+  },
+  "generator": {
+    "path": "scripts/build-home-continuity.py",
+    "sha256": "323d2d27535a9e019f13b762515d5aba9c5512e51243d4484fcc15d83b5cae5e"
+  },
+  "opencv": "5.0.0",
+  "baseline": "8f25d9d61beab91ecd69b1216c3ff34da05536566aa7c9d6cda205148022b957",
+  "textureBytes": 51065216,
+  "compressedBytes": 3048328
+}

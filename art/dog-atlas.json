@@ -1,0 +1,192 @@
+{
+  "version": 1,
+  "mode": "baked-model-derived-sprites",
+  "triangleCount": 13681,
+  "materials": 2,
+  "textureSizes": [
+    [
+      1024,
+      1024
+    ],
+    [
+      1024,
+      1024
+    ]
+  ],
+  "textureCount": 2,
+  "modelHeight": 2.115000009536743,
+  "poses": {
+    "front": {
+      "idle": {
+        "durationMs": 900,
+        "loop": true,
+        "frames": [
+          {
+            "atlas": "front",
+            "x": 122,
+            "y": 10,
+            "width": 267,
+            "height": 492
+          },
+          {
+            "atlas": "front",
+            "x": 634,
+            "y": 10,
+            "width": 267,
+            "height": 492
+          }
+        ]
+      },
+      "finish": {
+        "durationMs": 800,
+        "loop": true,
+        "frames": [
+          {
+            "atlas": "front",
+            "x": 121,
+            "y": 522,
+            "width": 269,
+            "height": 492
+          },
+          {
+            "atlas": "front",
+            "x": 633,
+            "y": 522,
+            "width": 269,
+            "height": 492
+          }
+        ]
+      }
+    },
+    "back": {
+      "idle": {
+        "atlas": "back",
+        "x": 60,
+        "y": 10,
+        "width": 135,
+        "height": 236
+      },
+      "run": {
+        "durationMs": 500,
+        "loop": true,
+        "frames": [
+          {
+            "atlas": "back",
+            "x": 316,
+            "y": 10,
+            "width": 135,
+            "height": 236
+          },
+          {
+            "atlas": "back",
+            "x": 573,
+            "y": 10,
+            "width": 133,
+            "height": 236
+          },
+          {
+            "atlas": "back",
+            "x": 829,
+            "y": 10,
+            "width": 133,
+            "height": 236
+          },
+          {
+            "atlas": "back",
+            "x": 60,
+            "y": 266,
+            "width": 135,
+            "height": 236
+          }
+        ]
+      },
+      "leanLeft": {
+        "atlas": "back",
+        "x": 317,
+        "y": 266,
+        "width": 134,
+        "height": 236
+      },
+      "leanRight": {
+        "atlas": "back",
+        "x": 573,
+        "y": 266,
+        "width": 134,
+        "height": 236
+      },
+      "collect": {
+        "atlas": "back",
+        "x": 828,
+        "y": 266,
+        "width": 135,
+        "height": 236
+      },
+      "gold": {
+        "atlas": "back",
+        "x": 60,
+        "y": 522,
+        "width": 135,
+        "height": 236
+      },
+      "hit": {
+        "atlas": "back",
+        "x": 305,
+        "y": 522,
+        "width": 158,
+        "height": 236
+      },
+      "fall": {
+        "durationMs": 650,
+        "loop": false,
+        "frames": [
+          {
+            "atlas": "back",
+            "x": 573,
+            "y": 522,
+            "width": 134,
+            "height": 236
+          },
+          {
+            "atlas": "back",
+            "x": 812,
+            "y": 522,
+            "width": 167,
+            "height": 236
+          },
+          {
+            "atlas": "back",
+            "x": 15,
+            "y": 778,
+            "width": 225,
+            "height": 236
+          }
+        ]
+      },
+      "finish": {
+        "atlas": "back",
+        "x": 317,
+        "y": 778,
+        "width": 134,
+        "height": 236
+      }
+    },
+    "side": {
+      "idle": {
+        "atlas": "back",
+        "x": 539,
+        "y": 778,
+        "width": 201,
+        "height": 236
+      },
+      "run": {
+        "atlas": "back",
+        "x": 796,
+        "y": 778,
+        "width": 200,
+        "height": 236
+      }
+    }
+  },
+  "generatedAt": "2026-10-03T22:52:22.426Z",
+  "compressedBytes": 1288885
+}

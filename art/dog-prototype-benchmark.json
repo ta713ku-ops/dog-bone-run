@@ -1,0 +1,87 @@
+{
+  "generatedAt": "2026-10-03T22:30:57.848Z",
+  "model": {
+    "vertices": 7662,
+    "triangles": 13271,
+    "materials": 2,
+    "textures": 0,
+    "textureSizes": [],
+    "height": 2.115000009536743,
+    "bounds": {
+      "min": [
+        -0.5350000262260437,
+        -1.048392653465271,
+        0
+      ],
+      "max": [
+        0.5350000262260437,
+        0.8500000238418579,
+        2.115000009536743
+      ]
+    },
+    "packedGeometryBytes": 219045,
+    "compressedGeometryBytes": 76682,
+    "limits": {
+      "triangles": 15000,
+      "materials": 2,
+      "textureSize": 1024,
+      "textures": 2,
+      "compressedBytes": 3000000
+    }
+  },
+  "atlas": {
+    "path": "art/dog-prototype-atlas.png",
+    "bytes": 443045,
+    "dimensions": [
+      1024,
+      1024
+    ],
+    "cachedViews": [
+      "front",
+      "side",
+      "back"
+    ],
+    "actions": [
+      "idle"
+    ]
+  },
+  "benchmark": {
+    "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+    "viewportCss": "1440x1240",
+    "compareCss": {
+      "canvas": "158x190",
+      "dogHeight": 150
+    },
+    "liveMesh": {
+      "frames": 120,
+      "totalMs": 671.8,
+      "meanMs": 5.598,
+      "medianMs": 5.2,
+      "p95Ms": 8.1,
+      "equivalentFps": 178.6
+    },
+    "cachedSprite": {
+      "frames": 120,
+      "totalMs": 0.1,
+      "meanMs": 0.001,
+      "medianMs": 0,
+      "p95Ms": 0,
+      "equivalentFps": 1200000.1
+    },
+    "spriteStats": {
+      "mode": "cached-model-atlas-prototype",
+      "triangleCount": 13271,
+      "materials": 2,
+      "textureSizes": [
+        [
+          1024,
+          1024
+        ]
+      ],
+      "compressedBytes": 443376,
+      "ready": true
+    }
+  },
+  "pageErrors": [],
+  "note": "Desktop headless Chromium timing is directional evidence only; the target iPhone has not been measured. Side and back are design supplements where the reference photos are incomplete."
+}

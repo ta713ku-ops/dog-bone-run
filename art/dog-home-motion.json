@@ -1,0 +1,1469 @@
+{
+  "version": 1,
+  "mode": "detailed-home-motion",
+  "atlases": {
+    "sitdown": {
+      "key": "sitdown",
+      "width": 1536,
+      "height": 1536,
+      "cell": 384,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 48,
+            "y": 21,
+            "width": 248,
+            "height": 295,
+            "count": 51481
+          },
+          "sourcePixelHash": "617ba349"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 359,
+            "y": 30,
+            "width": 241,
+            "height": 286,
+            "count": 48436
+          },
+          "sourcePixelHash": "c5216b4e"
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 667,
+            "y": 41,
+            "width": 243,
+            "height": 275,
+            "count": 47387
+          },
+          "sourcePixelHash": "e8cbf091"
+        },
+        {
+          "x": 1152,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 983,
+            "y": 46,
+            "width": 243,
+            "height": 270,
+            "count": 46718
+          },
+          "sourcePixelHash": "28151b2b"
+        },
+        {
+          "x": 0,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 48,
+            "y": 346,
+            "width": 247,
+            "height": 281,
+            "count": 49803
+          },
+          "sourcePixelHash": "1e7aa35b"
+        },
+        {
+          "x": 384,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 360,
+            "y": 352,
+            "width": 246,
+            "height": 274,
+            "count": 48789
+          },
+          "sourcePixelHash": "3d99e39d"
+        },
+        {
+          "x": 768,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 664,
+            "y": 360,
+            "width": 248,
+            "height": 266,
+            "count": 48040
+          },
+          "sourcePixelHash": "5e7e7f0b"
+        },
+        {
+          "x": 1152,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 982,
+            "y": 367,
+            "width": 244,
+            "height": 259,
+            "count": 45982
+          },
+          "sourcePixelHash": "b0d483c2"
+        },
+        {
+          "x": 0,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 47,
+            "y": 668,
+            "width": 255,
+            "height": 264,
+            "count": 48730
+          },
+          "sourcePixelHash": "6d91fdcb"
+        },
+        {
+          "x": 384,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 362,
+            "y": 674,
+            "width": 250,
+            "height": 257,
+            "count": 47078
+          },
+          "sourcePixelHash": "5e4fb29c"
+        },
+        {
+          "x": 768,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 662,
+            "y": 679,
+            "width": 254,
+            "height": 251,
+            "count": 46452
+          },
+          "sourcePixelHash": "ba3bc06a"
+        },
+        {
+          "x": 1152,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 983,
+            "y": 686,
+            "width": 248,
+            "height": 244,
+            "count": 44362
+          },
+          "sourcePixelHash": "4f1e0331"
+        },
+        {
+          "x": 0,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 46,
+            "y": 961,
+            "width": 265,
+            "height": 265,
+            "count": 52062
+          },
+          "sourcePixelHash": "391e8dda"
+        },
+        {
+          "x": 384,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 362,
+            "y": 967,
+            "width": 255,
+            "height": 258,
+            "count": 48952
+          },
+          "sourcePixelHash": "860515c4"
+        },
+        {
+          "x": 768,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 664,
+            "y": 962,
+            "width": 260,
+            "height": 264,
+            "count": 50566
+          },
+          "sourcePixelHash": "bdc26941"
+        },
+        {
+          "x": 1152,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 977,
+            "y": 958,
+            "width": 257,
+            "height": 269,
+            "count": 50071
+          },
+          "sourcePixelHash": "2a5f1264"
+        }
+      ],
+      "referenceHeight": 336,
+      "sourceRef": 295,
+      "transparentFraction": 0.5152159796820747,
+      "edgeOpaque": 0,
+      "path": "art/dog-home-sitdown.webp",
+      "bytes": 608282,
+      "sha256": "c210663a9f6628efb6047ce5dd034eaa821afab77f591682785cddb0e003886b"
+    },
+    "liedown": {
+      "key": "liedown",
+      "width": 1536,
+      "height": 1536,
+      "cell": 384,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 40,
+            "y": 23,
+            "width": 263,
+            "height": 299,
+            "count": 55924
+          },
+          "sourcePixelHash": "4e74a32"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 355,
+            "y": 37,
+            "width": 257,
+            "height": 285,
+            "count": 53089
+          },
+          "sourcePixelHash": "e9b89c95"
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 667,
+            "y": 48,
+            "width": 259,
+            "height": 274,
+            "count": 52511
+          },
+          "sourcePixelHash": "4df978b4"
+        },
+        {
+          "x": 1152,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 982,
+            "y": 52,
+            "width": 257,
+            "height": 270,
+            "count": 51434
+          },
+          "sourcePixelHash": "20497e7"
+        },
+        {
+          "x": 0,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 41,
+            "y": 374,
+            "width": 265,
+            "height": 270,
+            "count": 53126
+          },
+          "sourcePixelHash": "7c396c0"
+        },
+        {
+          "x": 384,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 355,
+            "y": 381,
+            "width": 264,
+            "height": 262,
+            "count": 51182
+          },
+          "sourcePixelHash": "ec995e13"
+        },
+        {
+          "x": 768,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 665,
+            "y": 394,
+            "width": 265,
+            "height": 250,
+            "count": 49633
+          },
+          "sourcePixelHash": "ee57204"
+        },
+        {
+          "x": 1152,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 981,
+            "y": 406,
+            "width": 261,
+            "height": 238,
+            "count": 46446
+          },
+          "sourcePixelHash": "a2226aed"
+        },
+        {
+          "x": 0,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 34,
+            "y": 713,
+            "width": 272,
+            "height": 227,
+            "count": 46101
+          },
+          "sourcePixelHash": "44744893"
+        },
+        {
+          "x": 384,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 349,
+            "y": 722,
+            "width": 273,
+            "height": 218,
+            "count": 44760
+          },
+          "sourcePixelHash": "e5ca3ed8"
+        },
+        {
+          "x": 768,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 652,
+            "y": 727,
+            "width": 277,
+            "height": 213,
+            "count": 43785
+          },
+          "sourcePixelHash": "8c222682"
+        },
+        {
+          "x": 1152,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 965,
+            "y": 735,
+            "width": 277,
+            "height": 205,
+            "count": 41786
+          },
+          "sourcePixelHash": "47ba5043"
+        },
+        {
+          "x": 0,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 24,
+            "y": 1008,
+            "width": 281,
+            "height": 211,
+            "count": 43755
+          },
+          "sourcePixelHash": "86e7dd7b"
+        },
+        {
+          "x": 384,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 333,
+            "y": 1013,
+            "width": 286,
+            "height": 206,
+            "count": 43225
+          },
+          "sourcePixelHash": "fb4bad84"
+        },
+        {
+          "x": 768,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 642,
+            "y": 1017,
+            "width": 287,
+            "height": 202,
+            "count": 42579
+          },
+          "sourcePixelHash": "d99b2e3e"
+        },
+        {
+          "x": 1152,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 951,
+            "y": 1032,
+            "width": 291,
+            "height": 187,
+            "count": 40034
+          },
+          "sourcePixelHash": "f34fb0a4"
+        }
+      ],
+      "referenceHeight": 336,
+      "sourceRef": 327.89962825278815,
+      "transparentFraction": 0.642295413547092,
+      "edgeOpaque": 0,
+      "path": "art/dog-home-liedown.webp",
+      "bytes": 404000,
+      "sha256": "289a9673af1fef999538966a28d14f064dd644515b9aeb1be5905597d79e732a"
+    },
+    "tiltleft": {
+      "key": "tiltleft",
+      "width": 1536,
+      "height": 1536,
+      "cell": 384,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 55,
+            "y": 27,
+            "width": 244,
+            "height": 275,
+            "count": 46769
+          },
+          "sourcePixelHash": "b45b3d93"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 368,
+            "y": 29,
+            "width": 242,
+            "height": 272,
+            "count": 45894
+          },
+          "sourcePixelHash": "cf0ceb99"
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 677,
+            "y": 29,
+            "width": 244,
+            "height": 272,
+            "count": 45887
+          },
+          "sourcePixelHash": "2b8622df"
+        },
+        {
+          "x": 1152,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 988,
+            "y": 33,
+            "width": 239,
+            "height": 268,
+            "count": 43595
+          },
+          "sourcePixelHash": "b4122ace"
+        },
+        {
+          "x": 0,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 56,
+            "y": 336,
+            "width": 246,
+            "height": 278,
+            "count": 46406
+          },
+          "sourcePixelHash": "9f5f3dbc"
+        },
+        {
+          "x": 384,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 368,
+            "y": 336,
+            "width": 247,
+            "height": 278,
+            "count": 46328
+          },
+          "sourcePixelHash": "59b016cf"
+        },
+        {
+          "x": 768,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 678,
+            "y": 335,
+            "width": 249,
+            "height": 279,
+            "count": 46503
+          },
+          "sourcePixelHash": "e3b65521"
+        },
+        {
+          "x": 1152,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 989,
+            "y": 334,
+            "width": 248,
+            "height": 280,
+            "count": 46038
+          },
+          "sourcePixelHash": "9b48a018"
+        },
+        {
+          "x": 0,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 54,
+            "y": 642,
+            "width": 253,
+            "height": 283,
+            "count": 47571
+          },
+          "sourcePixelHash": "bd8d727"
+        },
+        {
+          "x": 384,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 365,
+            "y": 642,
+            "width": 254,
+            "height": 284,
+            "count": 47525
+          },
+          "sourcePixelHash": "83a0bead"
+        },
+        {
+          "x": 768,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 676,
+            "y": 643,
+            "width": 255,
+            "height": 283,
+            "count": 47829
+          },
+          "sourcePixelHash": "a1c1bf40"
+        },
+        {
+          "x": 1152,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 989,
+            "y": 644,
+            "width": 251,
+            "height": 281,
+            "count": 46661
+          },
+          "sourcePixelHash": "938e1f6e"
+        },
+        {
+          "x": 0,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 56,
+            "y": 950,
+            "width": 249,
+            "height": 283,
+            "count": 46906
+          },
+          "sourcePixelHash": "2a9c9af5"
+        },
+        {
+          "x": 384,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 369,
+            "y": 951,
+            "width": 250,
+            "height": 282,
+            "count": 46695
+          },
+          "sourcePixelHash": "2e88b3ab"
+        },
+        {
+          "x": 768,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 679,
+            "y": 950,
+            "width": 250,
+            "height": 284,
+            "count": 47089
+          },
+          "sourcePixelHash": "cb9dbea3"
+        },
+        {
+          "x": 1152,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 990,
+            "y": 953,
+            "width": 251,
+            "height": 280,
+            "count": 46722
+          },
+          "sourcePixelHash": "439c79c8"
+        }
+      ],
+      "referenceHeight": 336,
+      "sourceRef": 275,
+      "transparentFraction": 0.49905098809136283,
+      "edgeOpaque": 0,
+      "path": "art/dog-home-tiltleft.webp",
+      "bytes": 535780,
+      "sha256": "81519395ad4d3c9b1c6e0df17dceec40c614dca8361cbb98af3c23718ae72c6b"
+    },
+    "tiltright": {
+      "key": "tiltright",
+      "width": 1536,
+      "height": 1536,
+      "cell": 384,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 41,
+            "y": 24,
+            "width": 261,
+            "height": 281,
+            "count": 52359
+          },
+          "sourcePixelHash": "88eccf17"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 357,
+            "y": 21,
+            "width": 259,
+            "height": 284,
+            "count": 51798
+          },
+          "sourcePixelHash": "46cd1596"
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 671,
+            "y": 21,
+            "width": 259,
+            "height": 284,
+            "count": 51538
+          },
+          "sourcePixelHash": "237f1ac0"
+        },
+        {
+          "x": 1152,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 986,
+            "y": 21,
+            "width": 254,
+            "height": 284,
+            "count": 49646
+          },
+          "sourcePixelHash": "8be5ceff"
+        },
+        {
+          "x": 0,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 43,
+            "y": 327,
+            "width": 263,
+            "height": 289,
+            "count": 52704
+          },
+          "sourcePixelHash": "dbd83263"
+        },
+        {
+          "x": 384,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 360,
+            "y": 326,
+            "width": 259,
+            "height": 290,
+            "count": 51632
+          },
+          "sourcePixelHash": "ea293708"
+        },
+        {
+          "x": 768,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 673,
+            "y": 326,
+            "width": 259,
+            "height": 290,
+            "count": 51394
+          },
+          "sourcePixelHash": "37d55ed9"
+        },
+        {
+          "x": 1152,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 990,
+            "y": 326,
+            "width": 251,
+            "height": 290,
+            "count": 50148
+          },
+          "sourcePixelHash": "4ec61ac4"
+        },
+        {
+          "x": 0,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 50,
+            "y": 637,
+            "width": 255,
+            "height": 291,
+            "count": 51149
+          },
+          "sourcePixelHash": "b5d768b0"
+        },
+        {
+          "x": 384,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 364,
+            "y": 636,
+            "width": 256,
+            "height": 292,
+            "count": 51307
+          },
+          "sourcePixelHash": "1baa0df9"
+        },
+        {
+          "x": 768,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 678,
+            "y": 636,
+            "width": 256,
+            "height": 292,
+            "count": 51243
+          },
+          "sourcePixelHash": "55f7c4da"
+        },
+        {
+          "x": 1152,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 993,
+            "y": 636,
+            "width": 251,
+            "height": 292,
+            "count": 50498
+          },
+          "sourcePixelHash": "f543d65b"
+        },
+        {
+          "x": 0,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 49,
+            "y": 941,
+            "width": 259,
+            "height": 297,
+            "count": 52709
+          },
+          "sourcePixelHash": "6df71231"
+        },
+        {
+          "x": 384,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 362,
+            "y": 940,
+            "width": 261,
+            "height": 299,
+            "count": 53263
+          },
+          "sourcePixelHash": "84f1f594"
+        },
+        {
+          "x": 768,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 678,
+            "y": 939,
+            "width": 259,
+            "height": 300,
+            "count": 53240
+          },
+          "sourcePixelHash": "7fe45fef"
+        },
+        {
+          "x": 1152,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 993,
+            "y": 939,
+            "width": 256,
+            "height": 300,
+            "count": 52566
+          },
+          "sourcePixelHash": "2dc722e2"
+        }
+      ],
+      "referenceHeight": 336,
+      "sourceRef": 281,
+      "transparentFraction": 0.47240787082248265,
+      "edgeOpaque": 0,
+      "path": "art/dog-home-tiltright.webp",
+      "bytes": 538142,
+      "sha256": "44888c1c537985561ebdbfbc0c4c1b0fa2b42eb49f8208bf995e0122c91cd57c"
+    },
+    "greet": {
+      "key": "greet",
+      "width": 1536,
+      "height": 1536,
+      "cell": 384,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 51,
+            "y": 18,
+            "width": 246,
+            "height": 277,
+            "count": 47387
+          },
+          "sourcePixelHash": "af06d46a"
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 365,
+            "y": 18,
+            "width": 245,
+            "height": 276,
+            "count": 47468
+          },
+          "sourcePixelHash": "73abbbbc"
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 680,
+            "y": 18,
+            "width": 245,
+            "height": 276,
+            "count": 47075
+          },
+          "sourcePixelHash": "6e74776f"
+        },
+        {
+          "x": 1152,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 993,
+            "y": 18,
+            "width": 244,
+            "height": 276,
+            "count": 46575
+          },
+          "sourcePixelHash": "1a08c9d5"
+        },
+        {
+          "x": 0,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 49,
+            "y": 326,
+            "width": 256,
+            "height": 284,
+            "count": 50378
+          },
+          "sourcePixelHash": "57318699"
+        },
+        {
+          "x": 384,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 363,
+            "y": 326,
+            "width": 255,
+            "height": 283,
+            "count": 50230
+          },
+          "sourcePixelHash": "1a5b9475"
+        },
+        {
+          "x": 768,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 676,
+            "y": 326,
+            "width": 256,
+            "height": 283,
+            "count": 50241
+          },
+          "sourcePixelHash": "a406b115"
+        },
+        {
+          "x": 1152,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 990,
+            "y": 326,
+            "width": 254,
+            "height": 283,
+            "count": 49718
+          },
+          "sourcePixelHash": "fffafc9d"
+        },
+        {
+          "x": 0,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 47,
+            "y": 641,
+            "width": 258,
+            "height": 281,
+            "count": 50592
+          },
+          "sourcePixelHash": "39bce75"
+        },
+        {
+          "x": 384,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 363,
+            "y": 641,
+            "width": 255,
+            "height": 281,
+            "count": 49933
+          },
+          "sourcePixelHash": "52aa96c9"
+        },
+        {
+          "x": 768,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 678,
+            "y": 641,
+            "width": 254,
+            "height": 280,
+            "count": 49545
+          },
+          "sourcePixelHash": "defc5893"
+        },
+        {
+          "x": 1152,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 992,
+            "y": 642,
+            "width": 250,
+            "height": 280,
+            "count": 48708
+          },
+          "sourcePixelHash": "c5566c62"
+        },
+        {
+          "x": 0,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 48,
+            "y": 952,
+            "width": 256,
+            "height": 283,
+            "count": 50184
+          },
+          "sourcePixelHash": "10b8f761"
+        },
+        {
+          "x": 384,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 362,
+            "y": 952,
+            "width": 255,
+            "height": 284,
+            "count": 50109
+          },
+          "sourcePixelHash": "62d9784f"
+        },
+        {
+          "x": 768,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 676,
+            "y": 952,
+            "width": 255,
+            "height": 284,
+            "count": 50089
+          },
+          "sourcePixelHash": "51cd32bb"
+        },
+        {
+          "x": 1152,
+          "y": 1152,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 990,
+            "y": 952,
+            "width": 253,
+            "height": 284,
+            "count": 49682
+          },
+          "sourcePixelHash": "89b6f0b3"
+        }
+      ],
+      "referenceHeight": 336,
+      "sourceRef": 277,
+      "transparentFraction": 0.47836218939887154,
+      "edgeOpaque": 0,
+      "path": "art/dog-home-greet.webp",
+      "bytes": 530902,
+      "sha256": "5ba3e91047e7b66ae03c9693a70e521750874a8b5201327530bc780ad1591dd4"
+    }
+  },
+  "sourceSheets": {
+    "sitdown": {
+      "path": "art/source/dog-home-sitdown-v1.png",
+      "sha256": "bdb291428470ba86e9e1bd3ccb307ed47513c2c13d27eff7968b01c7fbebab43"
+    },
+    "liedown": {
+      "path": "art/source/dog-home-liedown-v1.png",
+      "sha256": "a0e00188849730504337d98e1c0aa42caf770844a7b520f99439d45b69b215ab"
+    },
+    "tiltleft": {
+      "path": "art/source/dog-home-tiltleft-v1.png",
+      "sha256": "79efd8bd4d403991cfafabd6164f12ebc23a20ba28436354f6d6b30d0f4e0957"
+    },
+    "tiltright": {
+      "path": "art/source/dog-home-tiltright-v1.png",
+      "sha256": "e0888eb157e6d4ea35f61ffbb66be154e7692f60df8679624a9b615278b82037"
+    },
+    "greet": {
+      "path": "art/source/dog-home-greet-v1.png",
+      "sha256": "fce9428fac4f87e37f5a85381127058f440e62ce3556e511df038928f728fde1"
+    }
+  },
+  "generator": {
+    "path": "scripts/build-home-motion.mjs",
+    "sha256": "fe9ccf5b9e34eca2f82d46ba9e70d746a78161480b884eafc4272cb6cbf3481e"
+  },
+  "textureBytes": 47185920,
+  "compressedBytes": 2617106
+}

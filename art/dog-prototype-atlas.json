@@ -1,0 +1,35 @@
+{
+  "mode": "cached-model-atlas-prototype",
+  "triangleCount": 13271,
+  "materials": 2,
+  "textureSizes": [
+    [
+      1024,
+      1024
+    ]
+  ],
+  "textureCount": 1,
+  "poses": {
+    "idle": {
+      "front": {
+        "x": 132,
+        "y": 48,
+        "width": 247,
+        "height": 432
+      },
+      "side": {
+        "x": 566,
+        "y": 48,
+        "width": 404,
+        "height": 432
+      },
+      "back": {
+        "x": 135,
+        "y": 1072,
+        "width": 242,
+        "height": 432
+      }
+    }
+  },
+  "generatedAt": "2026-10-03T22:30:56.984Z"
+}

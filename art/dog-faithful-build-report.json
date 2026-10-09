@@ -1,0 +1,296 @@
+{
+  "runtime": {
+    "front": {
+      "path": "art/dog-faithful-front.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "bytes": 1375234
+    },
+    "back": {
+      "path": "art/dog-faithful-back.png",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "bytes": 1425192
+    },
+    "metadata": {
+      "path": "art/dog-faithful-atlas.json",
+      "bytes": 6090
+    },
+    "compressedBytes": 2806516,
+    "limitBytes": 3000000
+  },
+  "sourceSheets": {
+    "front": {
+      "path": "art/source/dog-faithful-front-source.png",
+      "bytes": 1905861,
+      "sha256": "4145f5b267f754636544ac3b06704d9d4ccd95d015394b66529211bb1373c06e"
+    },
+    "back": {
+      "path": "art/source/dog-faithful-back-source.png",
+      "bytes": 1985716,
+      "sha256": "55f0bd117af5ad38dd5f0ebf6f1c2622ca66bc3382ff60cdb0acdabf32fada7a"
+    }
+  },
+  "cells": {
+    "sourceDimensions": [
+      1254,
+      1254
+    ],
+    "frontNormalizedCell": 512,
+    "backNormalizedCell": 256,
+    "measuredBounds": {
+      "front": [
+        {
+          "row": 0,
+          "col": 0,
+          "cellX": 0,
+          "cellY": 0,
+          "x": 111,
+          "y": 22,
+          "width": 390,
+          "height": 486,
+          "anchorX": 171.66152689751314,
+          "componentPixels": 133226
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "cellX": 512,
+          "cellY": 0,
+          "x": 71,
+          "y": 18,
+          "width": 385,
+          "height": 490,
+          "anchorX": 170.6414886089641,
+          "componentPixels": 128005
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "cellX": 0,
+          "cellY": 512,
+          "x": 121,
+          "y": 7,
+          "width": 391,
+          "height": 485,
+          "anchorX": 169.62334061463102,
+          "componentPixels": 131771
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "cellX": 512,
+          "cellY": 512,
+          "x": 92,
+          "y": 4,
+          "width": 383,
+          "height": 488,
+          "anchorX": 160.06082718290713,
+          "componentPixels": 125392
+        }
+      ],
+      "back": [
+        {
+          "row": 0,
+          "col": 0,
+          "cellX": 0,
+          "cellY": 0,
+          "x": 54,
+          "y": 14,
+          "width": 150,
+          "height": 234,
+          "anchorX": 76.25862981577853,
+          "componentPixels": 24383
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "cellX": 256,
+          "cellY": 0,
+          "x": 35,
+          "y": 10,
+          "width": 208,
+          "height": 239,
+          "anchorX": 79.43947926994218,
+          "componentPixels": 31775
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "cellX": 512,
+          "cellY": 0,
+          "x": 25,
+          "y": 9,
+          "width": 206,
+          "height": 233,
+          "anchorX": 67.18682704120775,
+          "componentPixels": 32133
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "cellX": 768,
+          "cellY": 0,
+          "x": 36,
+          "y": 12,
+          "width": 196,
+          "height": 230,
+          "anchorX": 71.84987304594317,
+          "componentPixels": 29580
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "cellX": 0,
+          "cellY": 256,
+          "x": 35,
+          "y": 11,
+          "width": 210,
+          "height": 238,
+          "anchorX": 60.96671337016741,
+          "componentPixels": 30421
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "cellX": 256,
+          "cellY": 256,
+          "x": 39,
+          "y": 5,
+          "width": 197,
+          "height": 245,
+          "anchorX": 59.79602206736353,
+          "componentPixels": 31009
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "cellX": 512,
+          "cellY": 256,
+          "x": 27,
+          "y": 5,
+          "width": 202,
+          "height": 244,
+          "anchorX": 124.15115410937597,
+          "componentPixels": 31763
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "cellX": 768,
+          "cellY": 256,
+          "x": 53,
+          "y": 3,
+          "width": 156,
+          "height": 247,
+          "anchorX": 74.2977041096751,
+          "componentPixels": 28064
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "cellX": 0,
+          "cellY": 512,
+          "x": 20,
+          "y": 2,
+          "width": 221,
+          "height": 243,
+          "anchorX": 100.57975407492137,
+          "componentPixels": 33547
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "cellX": 256,
+          "cellY": 512,
+          "x": 20,
+          "y": 14,
+          "width": 207,
+          "height": 242,
+          "anchorX": 114.21798265334242,
+          "componentPixels": 32362
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "cellX": 512,
+          "cellY": 512,
+          "x": 4,
+          "y": 26,
+          "width": 243,
+          "height": 211,
+          "anchorX": 122.81867188536833,
+          "componentPixels": 35288
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "cellX": 768,
+          "cellY": 512,
+          "x": 4,
+          "y": 27,
+          "width": 238,
+          "height": 197,
+          "anchorX": 95.49314555637801,
+          "componentPixels": 30705
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "cellX": 0,
+          "cellY": 768,
+          "x": 12,
+          "y": 31,
+          "width": 233,
+          "height": 179,
+          "anchorX": 99.60935904743413,
+          "componentPixels": 28755
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "cellX": 256,
+          "cellY": 768,
+          "x": 30,
+          "y": 0,
+          "width": 171,
+          "height": 234,
+          "anchorX": 102.98504586027312,
+          "componentPixels": 27608
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "cellX": 512,
+          "cellY": 768,
+          "x": 0,
+          "y": 8,
+          "width": 255,
+          "height": 219,
+          "anchorX": 129.99378269770264,
+          "componentPixels": 40397
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "cellX": 768,
+          "cellY": 768,
+          "x": 6,
+          "y": 13,
+          "width": 240,
+          "height": 209,
+          "anchorX": 132.755565841342,
+          "componentPixels": 37641
+        }
+      ]
+    }
+  },
+  "poseCells": {
+    "front": "idle row 0; finish row 1; two frames each",
+    "back": "row-major: idle; run x4; lean left/right; collect; gold; hit; fall x3; finish; side idle/run"
+  }
+}

@@ -1,0 +1,462 @@
+{
+  "metrics": {
+    "sitdown": {
+      "frontPawDriftCss": 1.6733973026275635,
+      "maxEyeStepPx": 3.105942726135254,
+      "count": 48,
+      "sourceKeyframes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "replacedSourceIndices": [],
+      "distinct": 48,
+      "endpointsPreserved": true,
+      "alphaEdgePixels": 0,
+      "authoredHeadEyeMidY": [
+        127.3563232421875,
+        127.62034606933594,
+        129.08169555664062,
+        130.87997436523438,
+        133.2379150390625,
+        136.10992431640625,
+        139.1986541748047,
+        142.64044189453125,
+        146.01361083984375,
+        149.27304077148438,
+        152.35040283203125,
+        155.0170135498047,
+        157.4437255859375,
+        159.58447265625,
+        160.78353881835938,
+        161.08782958984375
+      ],
+      "authoredHeadMaxReversePx": -0.2640228271484375
+    },
+    "liedown": {
+      "count": 48,
+      "distinct": 48,
+      "sourceKeyframes": [
+        0,
+        3,
+        7,
+        11,
+        14,
+        15
+      ],
+      "replacedSourceIndices": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13
+      ],
+      "candidateRegistrations": {
+        "20": {
+          "keyframe": 3,
+          "inputEyeDistance": 56.51366424560547,
+          "uniformScale": 0.8925131750735991,
+          "inputEyeCenter": [
+            171.27081298828125,
+            148.8232421875
+          ],
+          "targetEyeCenterX": 187.7065002441406,
+          "inputFootBaseline": 383.0,
+          "outputFootBaseline": 372.0,
+          "translation": [
+            34.84504699707031,
+            30.167453946811577
+          ],
+          "pawCentersBefore": [
+            149.602783203125,
+            229.1448211669922
+          ],
+          "sharedPawTarget": [
+            148.4097900390625,
+            229.97238159179688
+          ]
+        },
+        "45": {
+          "keyframe": 7,
+          "inputEyeDistance": 57.68721389770508,
+          "uniformScale": 0.874356490856551,
+          "inputEyeCenter": [
+            163.5556640625,
+            206.02951049804688
+          ],
+          "targetEyeCenterX": 191.5962137858073,
+          "inputFootBaseline": 383.0,
+          "outputFootBaseline": 372.0,
+          "translation": [
+            48.590240478515625,
+            37.12146400194098
+          ],
+          "pawCentersBefore": [
+            152.66427612304688,
+            231.4822998046875
+          ],
+          "sharedPawTarget": [
+            148.4097900390625,
+            229.97238159179688
+          ]
+        },
+        "70": {
+          "keyframe": 11,
+          "inputEyeDistance": 59.751304626464844,
+          "uniformScale": 0.8441521105892024,
+          "inputEyeCenter": [
+            172.71188354492188,
+            202.7669677734375
+          ],
+          "targetEyeCenterX": 195.48592732747395,
+          "inputFootBaseline": 329.0,
+          "outputFootBaseline": 372.0,
+          "translation": [
+            49.690826416015625,
+            94.27395561615242
+          ],
+          "pawCentersBefore": [
+            144.15530395507812,
+            228.4624481201172
+          ],
+          "sharedPawTarget": [
+            148.4097900390625,
+            229.97238159179688
+          ]
+        },
+        "90": {
+          "keyframe": 14,
+          "inputEyeDistance": 59.91707229614258,
+          "uniformScale": 0.8418166638982445,
+          "inputEyeCenter": [
+            172.42486572265625,
+            225.7494659423828
+          ],
+          "targetEyeCenterX": 198.40321248372396,
+          "inputFootBaseline": 330.0,
+          "outputFootBaseline": 372.0,
+          "translation": [
+            53.253082275390625,
+            94.20050091357933
+          ],
+          "pawCentersBefore": [
+            149.42665100097656,
+            224.37123107910156
+          ],
+          "sharedPawTarget": [
+            148.4097900390625,
+            229.97238159179688
+          ]
+        }
+      },
+      "maxEyeStepPx": 5.587372303009033,
+      "supportReview": {
+        "path": "art/continuity/liedown-support-review.png",
+        "times": [
+          0.4,
+          0.45,
+          0.5,
+          0.55
+        ]
+      },
+      "tailReview": {
+        "path": "art/continuity/liedown-tail-review.png",
+        "frames": [
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47
+        ]
+      },
+      "endpointPawSupport": {
+        "sourceKeyframe": 15,
+        "graftedTo": [
+          11,
+          14
+        ],
+        "supportPairs": [
+          [
+            11,
+            14
+          ],
+          [
+            14,
+            15
+          ]
+        ],
+        "maskBounds": {
+          "xHalfWidth": 28,
+          "xFeather": 8,
+          "yStart": 330,
+          "yFeather": 8
+        },
+        "restoredAfterFaceGraftFromFrame": 35
+      },
+      "endpointsPreserved": true,
+      "sharedSeatExact": true,
+      "originalLieEndpointExact": true,
+      "alphaEdgePixels": 0
+    },
+    "tiltleft": {
+      "count": 32,
+      "distinct": 32,
+      "retainedBaseline": true,
+      "sourceKeyframes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "replacedSourceIndices": [],
+      "endpointsPreserved": true,
+      "alphaEdgePixels": 0
+    },
+    "tiltright": {
+      "count": 32,
+      "distinct": 32,
+      "retainedBaseline": true,
+      "sourceKeyframes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "replacedSourceIndices": [],
+      "endpointsPreserved": true,
+      "alphaEdgePixels": 0
+    },
+    "greet": {
+      "frontPawDriftCss": null,
+      "maxEyeStepPx": 1.6371989250183105,
+      "count": 32,
+      "sourceKeyframes": [
+        0,
+        3,
+        6,
+        10,
+        15
+      ],
+      "replacedSourceIndices": [
+        1,
+        2,
+        4,
+        5,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14
+      ],
+      "distinct": 32,
+      "endpointsPreserved": true,
+      "alphaEdgePixels": 0
+    }
+  },
+  "candidateInputs": {
+    "generator": "built-in image_gen",
+    "sheet": {
+      "path": "art/motion-repair-v15/lowering-candidate.png",
+      "sha256": "8ba967ab4466acf734cb93d66efbef7981ed4c800860c2967fb25704080c4b12",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    "references": [
+      {
+        "path": "art/motion-repair-v15/seated-reference.png",
+        "sha256": "508ba25b3e2c72f210a84ac065fab9b1333ae520226a0e57913ede5a8fc58d84"
+      },
+      {
+        "path": "art/motion-repair-v15/lying-reference.png",
+        "sha256": "cbf2aa58771837c47df02e2491b16155da1d8764f849e939108ff21ff8de3cae"
+      }
+    ],
+    "layout": {
+      "grid": [
+        2,
+        2
+      ],
+      "rowMajorPoses": [
+        "20%",
+        "45%",
+        "70%",
+        "90%"
+      ],
+      "cellResize": "cv2.INTER_AREA to 384x384"
+    },
+    "processing": {
+      "alphaCleanup": "8-connected components over alpha>32; retain components with area >= max(48, 0.001 * largest component), then dilate the retained mask by one pixel to preserve antialias fringe",
+      "registration": "one uniform scale to canonical eye distance; translate eye midpoint to the seat-to-lie endpoint x trajectory and alpha>160 foot baseline to y=372; premultiplied RGBA warpAffine; locally plant candidate feet to the shared mean of the 45% and 70% source paw centers",
+      "face": "apply stable_face after registration and to each interpolated lie pose with narrow central chin extension (24px half-width, feather 12px; through eyeY+90 then feather 24px); preserve target alpha and exact shared seat/original lie endpoint",
+      "pawSupport": "graft original lie endpoint paw pixels to keyframes 11 and 14 in two narrow masks (x half-width 28px + 8px feather; y starts at 330 + 8px feather); preserve keyframe 15 exactly, use direct source support over transitions 11-14 and 14-15, then restore the planted patch after face graft for phases >=11",
+      "keyframes": {
+        "0": "exact shared seat",
+        "3": "generated 20%",
+        "7": "generated 45%",
+        "11": "generated 70%",
+        "14": "generated 90%",
+        "15": "exact original lie endpoint"
+      },
+      "registrations": {
+        "20": {
+          "keyframe": 3,
+          "inputEyeDistance": 56.51366424560547,
+          "uniformScale": 0.8925131750735991,
+          "inputEyeCenter": [
+            171.27081298828125,
+            148.8232421875
+          ],
+          "targetEyeCenterX": 187.7065002441406,
+          "inputFootBaseline": 383.0,
+          "outputFootBaseline": 372.0,
+          "translation": [
+            34.84504699707031,
+            30.167453946811577
+          ],
+          "pawCentersBefore": [
+            149.602783203125,
+            229.1448211669922
+          ],
+          "sharedPawTarget": [
+            148.4097900390625,
+            229.97238159179688
+          ]
+        },
+        "45": {
+          "keyframe": 7,
+          "inputEyeDistance": 57.68721389770508,
+          "uniformScale": 0.874356490856551,
+          "inputEyeCenter": [
+            163.5556640625,
+            206.02951049804688
+          ],
+          "targetEyeCenterX": 191.5962137858073,
+          "inputFootBaseline": 383.0,
+          "outputFootBaseline": 372.0,
+          "translation": [
+            48.590240478515625,
+            37.12146400194098
+          ],
+          "pawCentersBefore": [
+            152.66427612304688,
+            231.4822998046875
+          ],
+          "sharedPawTarget": [
+            148.4097900390625,
+            229.97238159179688
+          ]
+        },
+        "70": {
+          "keyframe": 11,
+          "inputEyeDistance": 59.751304626464844,
+          "uniformScale": 0.8441521105892024,
+          "inputEyeCenter": [
+            172.71188354492188,
+            202.7669677734375
+          ],
+          "targetEyeCenterX": 195.48592732747395,
+          "inputFootBaseline": 329.0,
+          "outputFootBaseline": 372.0,
+          "translation": [
+            49.690826416015625,
+            94.27395561615242
+          ],
+          "pawCentersBefore": [
+            144.15530395507812,
+            228.4624481201172
+          ],
+          "sharedPawTarget": [
+            148.4097900390625,
+            229.97238159179688
+          ]
+        },
+        "90": {
+          "keyframe": 14,
+          "inputEyeDistance": 59.91707229614258,
+          "uniformScale": 0.8418166638982445,
+          "inputEyeCenter": [
+            172.42486572265625,
+            225.7494659423828
+          ],
+          "targetEyeCenterX": 198.40321248372396,
+          "inputFootBaseline": 330.0,
+          "outputFootBaseline": 372.0,
+          "translation": [
+            53.253082275390625,
+            94.20050091357933
+          ],
+          "pawCentersBefore": [
+            149.42665100097656,
+            224.37123107910156
+          ],
+          "sharedPawTarget": [
+            148.4097900390625,
+            229.97238159179688
+          ]
+        }
+      },
+      "commonPawTarget": [
+        148.4097900390625,
+        229.97238159179688
+      ]
+    }
+  },
+  "motionChecks": {
+    "sitEyeStepPxAtMost18": true,
+    "sitPawDriftCssAtMost2": true,
+    "sitAuthoredHeadReverseAtMost2": true,
+    "lieEyeStepPxAtMost18": true
+  },
+  "textureBytes": 73180928,
+  "compressedBytes": 4455152,
+  "opencv": "5.0.0"
+}

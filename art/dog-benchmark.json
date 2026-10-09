@@ -1,0 +1,115 @@
+{
+  "generatedAt": "2026-10-03T22:52:24.393Z",
+  "model": {
+    "vertices": 7938,
+    "triangles": 13681,
+    "materials": 2,
+    "textures": 0,
+    "height": 2.115000009536743,
+    "bounds": {
+      "min": [
+        -0.5350000262260437,
+        -0.8399999737739563,
+        0
+      ],
+      "max": [
+        0.5350000262260437,
+        0.8500000238418579,
+        2.115000009536743
+      ]
+    },
+    "packedGeometryBytes": 226323,
+    "compressedGeometryBytes": 78702,
+    "limits": {
+      "triangles": 15000,
+      "materials": 2,
+      "textureSize": 1024,
+      "textures": 2,
+      "compressedBytes": 3000000
+    }
+  },
+  "runtimeAssets": {
+    "frontAtlas": {
+      "path": "art/dog-front-atlas.png",
+      "bytes": 619336,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "poses": [
+        "front idle (2 frames)",
+        "front finish (2 frames)"
+      ]
+    },
+    "backAtlas": {
+      "path": "art/dog-back-atlas.png",
+      "bytes": 665900,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "poses": [
+        "back idle",
+        "run (4 frames)",
+        "lean left",
+        "lean right",
+        "collect",
+        "gold",
+        "hit",
+        "fall (3 frames)",
+        "finish",
+        "side idle",
+        "side run"
+      ]
+    },
+    "metadata": {
+      "path": "art/dog-atlas.json",
+      "bytes": 3649
+    },
+    "compressedBytes": 1288885
+  },
+  "benchmark": {
+    "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/151.0.7922.34 Safari/537.36",
+    "viewportCss": "1440x1680",
+    "compareCss": {
+      "canvas": "158x190",
+      "dogHeight": 150
+    },
+    "timingScope": "Canvas 2D command submission; no raster or GPU completion synchronization",
+    "liveMesh": {
+      "frames": 240,
+      "totalMs": 1728.4,
+      "meanMs": 7.2017,
+      "medianMs": 7.17,
+      "p95Ms": 7.7433,
+      "timerResolutionMs": 0.1
+    },
+    "cachedSprite": {
+      "frames": 240,
+      "totalMs": 0.1,
+      "meanMs": 0.0004,
+      "medianMs": 0,
+      "p95Ms": 0.0033,
+      "timerResolutionMs": 0.1
+    },
+    "spriteStats": {
+      "mode": "baked-model-derived-sprites",
+      "triangleCount": 13681,
+      "materials": 2,
+      "textureSizes": [
+        [
+          1024,
+          1024
+        ],
+        [
+          1024,
+          1024
+        ]
+      ],
+      "compressedBytes": 1288885,
+      "ready": true
+    }
+  },
+  "pageErrors": [],
+  "note": "Desktop headless Chromium timing is Canvas 2D command submission only; it does not wait for raster/GPU completion, and target iPhone performance is unmeasured."
+}

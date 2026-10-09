@@ -1,0 +1,520 @@
+{
+  "version": 1,
+  "mode": "authored-image-animation",
+  "strideLength": 0.78,
+  "atlases": {
+    "walk": {
+      "key": "walk",
+      "width": 1024,
+      "height": 512,
+      "cell": 256,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 256,
+          "anchorX": 128,
+          "anchorY": 244,
+          "referenceHeight": 208,
+          "sourceBounds": {
+            "x": 98,
+            "y": 12,
+            "width": 288,
+            "height": 411,
+            "count": 81299
+          }
+        },
+        {
+          "x": 256,
+          "y": 0,
+          "width": 256,
+          "height": 256,
+          "anchorX": 128,
+          "anchorY": 244,
+          "referenceHeight": 208,
+          "sourceBounds": {
+            "x": 533,
+            "y": 12,
+            "width": 294,
+            "height": 415,
+            "count": 80703
+          }
+        },
+        {
+          "x": 512,
+          "y": 0,
+          "width": 256,
+          "height": 256,
+          "anchorX": 128,
+          "anchorY": 244,
+          "referenceHeight": 208,
+          "sourceBounds": {
+            "x": 958,
+            "y": 13,
+            "width": 299,
+            "height": 414,
+            "count": 86013
+          }
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "width": 256,
+          "height": 256,
+          "anchorX": 128,
+          "anchorY": 244,
+          "referenceHeight": 208,
+          "sourceBounds": {
+            "x": 1389,
+            "y": 17,
+            "width": 288,
+            "height": 410,
+            "count": 82568
+          }
+        },
+        {
+          "x": 0,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "anchorX": 128,
+          "anchorY": 244,
+          "referenceHeight": 208,
+          "sourceBounds": {
+            "x": 104,
+            "y": 446,
+            "width": 289,
+            "height": 400,
+            "count": 80853
+          }
+        },
+        {
+          "x": 256,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "anchorX": 128,
+          "anchorY": 244,
+          "referenceHeight": 208,
+          "sourceBounds": {
+            "x": 534,
+            "y": 446,
+            "width": 295,
+            "height": 396,
+            "count": 81763
+          }
+        },
+        {
+          "x": 512,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "anchorX": 128,
+          "anchorY": 244,
+          "referenceHeight": 208,
+          "sourceBounds": {
+            "x": 960,
+            "y": 446,
+            "width": 299,
+            "height": 422,
+            "count": 85079
+          }
+        },
+        {
+          "x": 768,
+          "y": 256,
+          "width": 256,
+          "height": 256,
+          "anchorX": 128,
+          "anchorY": 244,
+          "referenceHeight": 208,
+          "sourceBounds": {
+            "x": 1389,
+            "y": 447,
+            "width": 287,
+            "height": 417,
+            "count": 83773
+          }
+        }
+      ],
+      "referenceHeight": 208,
+      "sourceRef": 414,
+      "transparentFraction": 0.6482486724853516,
+      "edgeOpaque": 0,
+      "path": "art/dog-walk-animated.webp",
+      "bytes": 146582,
+      "sha256": "75f12e0e63058abe518d315490a2190ff6f86a9d2944e8f8041e2701a65c07f4"
+    },
+    "expressions": {
+      "key": "expressions",
+      "width": 1536,
+      "height": 768,
+      "cell": 384,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 94,
+            "y": 13,
+            "width": 370,
+            "height": 416,
+            "count": 108639
+          }
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 526,
+            "y": 14,
+            "width": 364,
+            "height": 415,
+            "count": 106987
+          }
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 965,
+            "y": 16,
+            "width": 371,
+            "height": 413,
+            "count": 107744
+          }
+        },
+        {
+          "x": 1152,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 1421,
+            "y": 8,
+            "width": 346,
+            "height": 420,
+            "count": 99636
+          }
+        },
+        {
+          "x": 0,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 25,
+            "y": 446,
+            "width": 370,
+            "height": 425,
+            "count": 107893
+          }
+        },
+        {
+          "x": 384,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 535,
+            "y": 452,
+            "width": 367,
+            "height": 417,
+            "count": 107512
+          }
+        },
+        {
+          "x": 768,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 961,
+            "y": 449,
+            "width": 376,
+            "height": 423,
+            "count": 111793
+          }
+        },
+        {
+          "x": 1152,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 1416,
+            "y": 449,
+            "width": 358,
+            "height": 422,
+            "count": 107518
+          }
+        }
+      ],
+      "referenceHeight": 336,
+      "sourceRef": 415,
+      "transparentFraction": 0.4931708441840278,
+      "edgeOpaque": 0,
+      "path": "art/dog-expressions-animated.webp",
+      "bytes": 309784,
+      "sha256": "536de6e618d9dccf44ec4842e3b0c6a03c280d988de0f9459e4e02b3ffae6e20"
+    },
+    "postures": {
+      "key": "postures",
+      "width": 1536,
+      "height": 1152,
+      "cell": 384,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 59,
+            "y": 13,
+            "width": 325,
+            "height": 357,
+            "count": 81347
+          }
+        },
+        {
+          "x": 384,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 448,
+            "y": 31,
+            "width": 293,
+            "height": 339,
+            "count": 72091
+          }
+        },
+        {
+          "x": 768,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 800,
+            "y": 58,
+            "width": 284,
+            "height": 319,
+            "count": 68761
+          }
+        },
+        {
+          "x": 1152,
+          "y": 0,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 1159,
+            "y": 34,
+            "width": 253,
+            "height": 341,
+            "count": 68265
+          }
+        },
+        {
+          "x": 0,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 60,
+            "y": 393,
+            "width": 275,
+            "height": 357,
+            "count": 75687
+          }
+        },
+        {
+          "x": 384,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 435,
+            "y": 392,
+            "width": 289,
+            "height": 358,
+            "count": 76797
+          }
+        },
+        {
+          "x": 768,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 783,
+            "y": 465,
+            "width": 309,
+            "height": 285,
+            "count": 65796
+          }
+        },
+        {
+          "x": 1152,
+          "y": 384,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 1129,
+            "y": 501,
+            "width": 300,
+            "height": 247,
+            "count": 54637
+          }
+        },
+        {
+          "x": 0,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 19,
+            "y": 787,
+            "width": 358,
+            "height": 248,
+            "count": 65590
+          }
+        },
+        {
+          "x": 384,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 395,
+            "y": 795,
+            "width": 345,
+            "height": 239,
+            "count": 61767
+          }
+        },
+        {
+          "x": 768,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 756,
+            "y": 797,
+            "width": 344,
+            "height": 237,
+            "count": 60838
+          }
+        },
+        {
+          "x": 1152,
+          "y": 768,
+          "width": 384,
+          "height": 384,
+          "anchorX": 192,
+          "anchorY": 372,
+          "referenceHeight": 336,
+          "sourceBounds": {
+            "x": 1120,
+            "y": 821,
+            "width": 311,
+            "height": 211,
+            "count": 52128
+          }
+        }
+      ],
+      "referenceHeight": 336,
+      "sourceRef": 357,
+      "transparentFraction": 0.5684424506293403,
+      "edgeOpaque": 0,
+      "path": "art/dog-postures-animated.webp",
+      "bytes": 394892,
+      "sha256": "c842a4e61176dece95953c29ca57060aadcdff3bce3f4cbe1baedc5bf366bb0c"
+    }
+  },
+  "sourceSheets": {
+    "walk": {
+      "path": "art/source/dog-walk-v1.png",
+      "sha256": "6eb3c82aae65d386847320d07f9d2431a1e0c5defcbba11aa0159609e16e8479"
+    },
+    "expressions": {
+      "path": "art/source/dog-expressions-v2.png",
+      "sha256": "1969d9869fe19618f1a8bca07e9bacbd56756e2418d31643c36c65c3ae9f50c5"
+    },
+    "postures": {
+      "path": "art/source/dog-postures-v1.png",
+      "sha256": "886e1f791a6a3c7a437d68a911e9b0bbdf8b4980d4620ad093aeae83ad95b600"
+    }
+  },
+  "generator": {
+    "path": "scripts/build-sprite-animation.mjs",
+    "sha256": "2f2cf6992086acf81cc24d69dc972b4a2042d35dd79df46740d8d4ac306b6f08"
+  },
+  "textureBytes": 13893632,
+  "compressedBytes": 851258
+}

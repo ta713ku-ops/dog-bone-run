@@ -1,0 +1,29 @@
+{
+  "generator": "built-in image_gen",
+  "date": "2026-10-09",
+  "prompts": "art/home-room/GENERATION.md",
+  "assets": [
+    {
+      "path": "art/home-room/landscape-v18.webp",
+      "width": 1152,
+      "height": 768,
+      "bytes": 105996,
+      "sha256": "c6402f5fe4c94ebd8046d0c3351c76be6dcf42c835e513be6a877cfea5ee6508"
+    },
+    {
+      "path": "art/home-room/portrait-v18.webp",
+      "width": 863,
+      "height": 1823,
+      "bytes": 174402,
+      "sha256": "9761824ff6317dd2745593afce85b5090e0b3b9af1f7d8a352b9a5771bda796f"
+    },
+    {
+      "source": "art/source/home-room-landscape-v18.png",
+      "sha256": "5dc5d91bb2deb55e271bfa370c4a7aaead78c65b2921cba7c9d8d44db3a8cf47"
+    },
+    {
+      "source": "art/source/home-room-portrait-v18.png",
+      "sha256": "1ec07b0e648370c4931bce2fd25fcbc83db0db7dd09763b01c2b8535e9a0aafe"
+    }
+  ]
+}

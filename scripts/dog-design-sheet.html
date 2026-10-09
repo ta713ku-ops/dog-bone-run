@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dog sprite design sheet · Phase 4</title>
+  <style>
+    :root { color-scheme: light; --paper:#fff6e8; --card:#fffdf8; --ink:#493426; --brown:#9d6032; --green:#617a4a; --line:#dfc9a8; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-width:1100px; background:var(--paper); color:var(--ink); font:15px/1.45 Georgia,"Hiragino Mincho ProN",serif; }
+    main { width:1360px; margin:0 auto; padding:32px 38px 28px; }
+    header { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; padding:0 2px 20px; border-bottom:2px solid var(--ink); }
+    .eyebrow { margin:0 0 8px; color:var(--green); font:700 12px/1.2 system-ui,sans-serif; letter-spacing:.16em; text-transform:uppercase; }
+    h1 { margin:0; font-size:34px; line-height:1.05; letter-spacing:-.035em; }
+    .lede { margin:9px 0 0; color:#775d46; font:14px/1.4 system-ui,sans-serif; }
+    .budget { flex:none; border:1.5px solid var(--brown); border-radius:999px; padding:9px 15px; color:var(--brown); font:700 12px system-ui,sans-serif; letter-spacing:.08em; }
+    .section-label { display:flex; align-items:center; gap:12px; margin:22px 2px 12px; color:var(--green); font:800 12px system-ui,sans-serif; letter-spacing:.15em; text-transform:uppercase; }
+    .section-label::after { content:""; height:1px; flex:1; background:var(--line); }
+    .views { display:grid; grid-template-columns:repeat(3,1fr); gap:17px; }
+    .view-card,.bench-card,.action-card { overflow:hidden; border:1.5px solid var(--line); border-radius:18px; background:var(--card); }
+    .view-card { padding:12px 12px 13px; }
+    .card-top { display:flex; justify-content:space-between; align-items:baseline; padding:0 5px 8px; }
+    .card-top strong { font-size:19px; }
+    .card-top span { color:#9b7658; font:700 10px system-ui,sans-serif; letter-spacing:.1em; }
+    .figure { display:block; width:100%; height:342px; border-radius:12px; background:#f9f1df; }
+    .caption { margin:9px 5px 0; min-height:40px; color:#745d49; font:12px/1.4 system-ui,sans-serif; }
+    .note { margin:13px 2px 0; padding:10px 14px; border-left:4px solid #c47c43; border-radius:0 9px 9px 0; background:#f4e7ce; color:#694e38; font:12px/1.45 system-ui,sans-serif; }
+    .actions { display:grid; grid-template-columns:repeat(11,1fr); gap:9px; }
+    .action-card { padding:7px; text-align:center; }
+    .action-card canvas { display:block; width:100%; aspect-ratio:6 / 7; border-radius:9px; background:#f9f1df; }
+    .action-card span { display:block; padding:5px 0 1px; color:#745d49; font:700 10px/1.2 system-ui,sans-serif; }
+    .benchmark { display:grid; grid-template-columns:1fr 1fr 1fr; gap:17px; align-items:stretch; }
+    .bench-card { display:flex; align-items:center; gap:15px; padding:13px; }
+    .bench-canvas { flex:none; width:158px; height:190px; border-radius:12px; background:#f9f1df; }
+    .bench-copy strong { display:block; margin:0 0 5px; font-size:18px; }
+    .bench-copy p { margin:0; color:#745d49; font:12px/1.4 system-ui,sans-serif; }
+    .bench-copy .result { display:block; margin-top:9px; color:var(--green); font:800 13px system-ui,sans-serif; }
+    .run-note { display:flex; align-items:center; padding:14px 17px; border-radius:15px; background:#e4ecd5; color:#4c653a; font:12px/1.5 system-ui,sans-serif; }
+    .foot { display:flex; justify-content:space-between; gap:16px; margin-top:17px; color:#997b61; font:10px system-ui,sans-serif; letter-spacing:.08em; }
+    @media print { body { min-width:0; } main { width:100%; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><p class="eyebrow">PHASE 04 · BAKED MODEL ASSETS</p><h1>A small, bright companion</h1><p class="lede">A soft-edged, shaded mesh study guided by the cream blaze, round eyes, upright ears and long coat.</p></div>
+      <div class="budget" id="mesh-budget">BUILDING OFFLINE ATLAS</div>
+    </header>
+
+    <div class="section-label">正面・横・背面</div>
+    <section class="views" aria-label="Front, side, and back dog model views">
+      <article class="view-card"><div class="card-top"><strong>正面</strong><span>写真を基準に制作</span></div><canvas class="figure" id="front-view" width="392" height="342"></canvas><p class="caption">白いブレーズと茶色の鼻、大きく丸い目から、胸の豊かな白い毛並みへつなげています。</p></article>
+      <article class="view-card"><div class="card-top"><strong>横</strong><span>デザイン補完</span></div><canvas class="figure" id="side-view" width="392" height="342"></canvas><p class="caption">丸みのある短い体に、背中へ巻き上がる厚い白い尾を合わせました。</p></article>
+      <article class="view-card"><div class="card-top"><strong>背面</strong><span>デザイン補完</span></div><canvas class="figure" id="back-view" width="392" height="342"></canvas><p class="caption">キャラメル色の毛並みに、ふくらみのある白い巻き尾を重ねています。</p></article>
+    </section>
+    <p class="note">横・背面の比率と巻き尾は、参考写真に写っている範囲が限られるためデザインとして補っています。</p>
+
+    <div class="section-label">Model-derived action frames</div>
+    <section class="actions" aria-label="Rendered sprite actions">
+      <div class="action-card"><canvas width="240" height="280" data-view="front" data-action="finish"></canvas><span>Front · finish</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="back" data-action="idle"></canvas><span>Back · idle</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="back" data-action="run" data-time="250"></canvas><span>Back · run</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="back" data-action="lean" data-direction="-1"></canvas><span>Back · lean L</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="back" data-action="lean" data-direction="1"></canvas><span>Back · lean R</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="back" data-action="collect"></canvas><span>Back · collect</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="back" data-action="gold"></canvas><span>Back · gold</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="back" data-action="hit"></canvas><span>Back · hit</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="back" data-action="fall" data-time="650"></canvas><span>Back · fall</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="back" data-action="finish"></canvas><span>Back · finish</span></div>
+      <div class="action-card"><canvas width="240" height="280" data-view="side" data-action="idle"></canvas><span>Side · idle</span></div>
+    </section>
+    <p class="note">正式版は事前生成したPNGアトラス2枚を読み込みます。ゲーム中にメッシュを投影したり、フレームを生成したりしません。</p>
+
+    <div class="section-label">Same model · same display height · render-path comparison</div>
+    <section class="benchmark" aria-label="Live mesh and cached sprite comparison">
+      <article class="bench-card"><canvas class="bench-canvas" id="live-bench" width="316" height="380"></canvas><div class="bench-copy"><strong>Live mesh</strong><p>Projects and shades the triangle mesh every draw.</p><span class="result" id="live-result">Measuring…</span></div></article>
+      <article class="bench-card"><canvas class="bench-canvas" id="cached-bench" width="316" height="380"></canvas><div class="bench-copy"><strong>Cached sprite</strong><p>Blits the baked frame at the same CSS height.</p><span class="result" id="cached-result">Preparing…</span></div></article>
+      <div class="run-note" id="comparison-note">Benchmark measures Canvas 2D command submission only; target iPhone has not been measured.</div>
+    </section>
+    <div class="foot"><span>DOG BONE RUN · FICTION PALETTE</span><span id="mesh-stats">Preparing two offline atlases…</span></div>
+  </main>
+  <script type="module">
+    import { buildDogModel, renderDogMesh } from '../src/dog-model.js';
+    import { DogSprites } from '../src/dog-sprites.js';
+
+    const mesh = buildDogModel();
+    const frontAtlas = document.createElement('canvas'); frontAtlas.width = 1024; frontAtlas.height = 1024;
+    const backAtlas = document.createElement('canvas'); backAtlas.width = 1024; backAtlas.height = 1024;
+    const frontCtx = frontAtlas.getContext('2d'), backCtx = backAtlas.getContext('2d');
+    const poses = { front: {}, back: {}, side: {} };
+
+    function bake(ctx, atlas, view, action, cellX, cellY, cellSize, { timeMs = 0, direction = 1 } = {}) {
+      const targetHeight = cellSize - 20, foot = cellY + cellSize - 10;
+      const bounds = renderDogMesh(ctx, mesh, {
+        view, action, timeMs, direction, reducedMotion: false,
+        x: cellX + cellSize / 2, foot, size: targetHeight,
+      });
+      const width = Math.min(cellSize, Math.ceil(bounds.width + 18));
+      return {
+        atlas, x: cellX + Math.floor((cellSize - width) / 2), y: foot - targetHeight,
+        width, height: targetHeight,
+      };
+    }
+    function frameInCell(ctx, atlas, view, action, index, cellSize, options = {}) {
+      return bake(ctx, atlas, view, action, (index % (1024 / cellSize)) * cellSize,
+        Math.floor(index / (1024 / cellSize)) * cellSize, cellSize, options);
+    }
+
+    const frontCellSize = 512;
+    const frontFrame = (action, index, timeMs) => bake(frontCtx, 'front', 'front', action,
+      (index % 2) * frontCellSize, Math.floor(index / 2) * frontCellSize, frontCellSize, { timeMs });
+    poses.front.idle = { durationMs: 900, loop: true, frames: [frontFrame('idle', 0, 0), frontFrame('idle', 1, 300)] };
+    poses.front.finish = { durationMs: 800, loop: true, frames: [frontFrame('finish', 2, 0), frontFrame('finish', 3, 320)] };
+
+    const backCellSize = 256;
+    let slot = 0;
+    const backFrame = (view, action, options) => frameInCell(backCtx, 'back', view, action, slot++, backCellSize, options);
+    poses.back.idle = backFrame('back', 'idle');
+    poses.back.run = { durationMs: 500, loop: true, frames: [0, 125, 250, 375].map(timeMs => backFrame('back', 'run', { timeMs })) };
+    poses.back.leanLeft = backFrame('back', 'lean', { direction: -1 });
+    poses.back.leanRight = backFrame('back', 'lean', { direction: 1 });
+    poses.back.collect = backFrame('back', 'collect');
+    poses.back.gold = backFrame('back', 'gold');
+    poses.back.hit = backFrame('back', 'hit');
+    poses.back.fall = { durationMs: 650, loop: false, frames: [0, 325, 650].map(timeMs => backFrame('back', 'fall', { timeMs })) };
+    poses.back.finish = backFrame('back', 'finish');
+    poses.side.idle = backFrame('side', 'idle');
+    poses.side.run = backFrame('side', 'run', { timeMs: 250 });
+
+    const metadata = {
+      version: 1, mode: 'baked-model-derived-sprites', triangleCount: mesh.triangleCount, materials: mesh.materialCount,
+      textureSizes: [[1024, 1024], [1024, 1024]], textureCount: 2, modelHeight: mesh.height,
+      poses,
+    };
+    const pngBase64 = canvas => canvas.toDataURL('image/png').split(',')[1];
+    window.__dogBuildResult = {
+      metadata, frontAtlasPngBase64: pngBase64(frontAtlas), backAtlasPngBase64: pngBase64(backAtlas),
+    };
+
+    for (const [view, canvasId] of [['front', 'front-view'], ['side', 'side-view'], ['back', 'back-view']]) {
+      const canvas = document.getElementById(canvasId), ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#f9f1df'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#d4bf96'; ctx.fillRect(26, 308, canvas.width - 52, 2);
+      ctx.beginPath(); ctx.ellipse(canvas.width / 2, 307, view === 'side' ? 116 : 76, 8, 0, 0, Math.PI * 2); ctx.fillStyle = '#9f815544'; ctx.fill();
+      renderDogMesh(ctx, mesh, { view, x: canvas.width / 2, foot: 306, size: 266, action: 'idle' });
+    }
+
+    document.querySelector('#mesh-budget').textContent = `${mesh.triangleCount.toLocaleString()} TRIANGLES · 2 MATERIAL GROUPS`;
+    document.querySelector('#mesh-stats').textContent = `${mesh.vertexCount.toLocaleString()} vertices · ${mesh.triangleCount.toLocaleString()} triangles · z=0 paw plane · no runtime mesh drawing`;
+
+    window.__dogRenderPresentation = async () => {
+      const sprites = new DogSprites();
+      await sprites.ready;
+      for (const canvas of document.querySelectorAll('.action-card canvas')) {
+        const ctx = canvas.getContext('2d'); ctx.setTransform(2, 0, 0, 2, 0, 0);
+        sprites.draw(ctx, {
+          view: canvas.dataset.view, action: canvas.dataset.action,
+          direction: Number(canvas.dataset.direction || 1), timeMs: Number(canvas.dataset.time || 0),
+          x: canvas.width / 4, foot: canvas.height / 2 - 4, size: 124,
+        });
+      }
+
+      const liveCanvas = document.querySelector('#live-bench'), cachedCanvas = document.querySelector('#cached-bench');
+      const prepare = canvas => { const ctx = canvas.getContext('2d'); ctx.setTransform(2, 0, 0, 2, 0, 0); return ctx; };
+      const liveCtx = prepare(liveCanvas), cachedCtx = prepare(cachedCanvas);
+      const liveDraw = () => {
+        liveCtx.clearRect(0, 0, 158, 190);
+        renderDogMesh(liveCtx, mesh, { view: 'front', action: 'idle', x: 79, foot: 180, size: 150 });
+      };
+      const cachedDraw = () => {
+        cachedCtx.clearRect(0, 0, 158, 190);
+        sprites.draw(cachedCtx, { view: 'front', action: 'idle', x: 79, foot: 180, size: 150 });
+      };
+      const timerResolutionMs = (() => {
+        let previous = performance.now(), smallest = Infinity;
+        for (let i = 0; i < 10000; i++) {
+          const current = performance.now(), delta = current - previous;
+          if (delta > 0) smallest = Math.min(smallest, delta);
+          previous = current;
+        }
+        return Number(smallest.toFixed(4));
+      })();
+      const measure = draw => {
+        for (let i = 0; i < 8; i++) draw();
+        const samples = [], framesPerBatch = 30;
+        for (let batch = 0; batch < 8; batch++) {
+          const start = performance.now();
+          for (let frame = 0; frame < framesPerBatch; frame++) draw();
+          samples.push((performance.now() - start) / framesPerBatch);
+        }
+        const sorted = [...samples].sort((a, b) => a - b), totalMs = samples.reduce((sum, value) => sum + value, 0) * framesPerBatch;
+        return {
+          frames: framesPerBatch * samples.length, totalMs: Number(totalMs.toFixed(3)),
+          meanMs: Number((totalMs / (framesPerBatch * samples.length)).toFixed(4)),
+          medianMs: Number(sorted[Math.floor(sorted.length * .5)].toFixed(4)),
+          p95Ms: Number(sorted[Math.floor(sorted.length * .95)].toFixed(4)),
+          timerResolutionMs,
+        };
+      };
+      liveDraw(); cachedDraw();
+      const result = {
+        browser: navigator.userAgent, viewportCss: `${innerWidth}x${innerHeight}`,
+        compareCss: { canvas: '158x190', dogHeight: 150 },
+        timingScope: 'Canvas 2D command submission; no raster or GPU completion synchronization',
+        liveMesh: measure(liveDraw), cachedSprite: measure(cachedDraw), spriteStats: sprites.stats,
+      };
+      document.querySelector('#live-result').textContent = `${result.liveMesh.meanMs.toFixed(3)} ms/draw · p95 ${result.liveMesh.p95Ms.toFixed(3)} ms`;
+      document.querySelector('#cached-result').textContent = `${result.cachedSprite.meanMs.toFixed(4)} ms/draw · p95 ${result.cachedSprite.p95Ms.toFixed(4)} ms`;
+      document.querySelector('#comparison-note').textContent = `Canvas-call timing only, without waiting for raster/GPU completion. Measured clock quantum: ${timerResolutionMs} ms. Cached draw times near or below that floor are resolution-limited; iPhone is unmeasured.`;
+      window.__dogBenchmarkResults = result;
+      return result;
+    };
+  </script>
+</body>
+</html>
