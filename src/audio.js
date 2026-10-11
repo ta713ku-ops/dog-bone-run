@@ -1,3 +1,5 @@
+import { PickupBark } from './pickup-bark.js';
+
 const MUSIC_LOOKAHEAD_MS = 120;
 const MUSIC_DISCONTINUITY_MS = 500;
 // Six 4/4 bars at 120 BPM (12 seconds): C, G, Am, G, F, C. Gaps in
@@ -45,7 +47,7 @@ const MUSIC_EVENTS = [
 ];
 
 export class Audio {
-  constructor(onState = () => {}, { Context = globalThis.AudioContext ?? globalThis.webkitAudioContext, timeoutMs = 2000 } = {}) {
+  constructor(onState = () => {}, { Context = globalThis.AudioContext ?? globalThis.webkitAudioContext, timeoutMs = 2000, bark = new PickupBark() } = {}) {
     this.Context = Context; this.timeoutMs = timeoutMs; this.onState = onState;
     this.context = null; this.enabled = true; this.musicEnabled = true;
     this.volumes = { music: 0.35, sfx: 1 };
@@ -53,7 +55,10 @@ export class Audio {
     this.voices = new Set(); this.contextCount = 0;
     this.musicRunning = false; this.musicAnchorActiveMs = 0; this.musicAnchorAudioTime = 0;
     this.musicLastActiveMs = null; this.musicScheduled = new Map();
+    this.bark = bark;
   }
+
+  preload() { return this.bark.preload(); }
 
   // Called synchronously from the click handler so Safari keeps user activation.
   async unlock() {
@@ -72,6 +77,8 @@ export class Audio {
       // resume() must happen before the first await. Some interrupted contexts
       // resolve resume before they become running, so observe the state too.
       const resume = context.resume();
+      // Never delay the user-activation resume or the start of the game for an SFX file.
+      void this.bark.prepare(context);
       await Promise.race([
         Promise.resolve(resume).then(() => new Promise(resolve => {
           if (completed) { resolve(); return; }
@@ -168,12 +175,13 @@ export class Audio {
   play(level, kind = 'normal') {
     const ctx = this.context;
     if (!this.enabled || ctx?.state !== 'running') return;
+    const barkPlayed = this.bark.play(ctx, this.sfxGain ?? ctx.destination);
     const frequencies = [523.25, 659.25, 783.99, 1046.5, 1318.51];
     const oscillator = ctx.createOscillator(), gain = ctx.createGain(), now = ctx.currentTime;
     const frequency = frequencies[level - 1] * (kind === 'gold' ? 1.5 : 1);
     oscillator.type = kind === 'gold' ? 'triangle' : 'sine'; oscillator.frequency.setValueAtTime(frequency, now);
     oscillator.frequency.exponentialRampToValueAtTime(frequency * (kind === 'gold' ? 2 : 1.3), now + .08);
-    gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(.14, now + .008);
+    gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(barkPlayed ? .05 : .14, now + .008);
     gain.gain.exponentialRampToValueAtTime(.0001, now + .16);
     oscillator.connect(gain); gain.connect(this.sfxGain ?? ctx.destination);
     const voice = { oscillator, gain, type: 'sfx' }; this._trackVoice(voice);
@@ -181,6 +189,7 @@ export class Audio {
   }
 
   stop() {
+    this.bark.stop();
     this._stopVoices(() => true);
     this._resetMusicScheduler();
   }

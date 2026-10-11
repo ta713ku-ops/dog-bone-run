@@ -3,7 +3,7 @@ export const USE_CONTINUOUS_HOME_DOG = true;
 export const USE_GPU_HOME_DOG = true;
 export const USE_HD_HOME_DOG = true;
 export const CONFIG = Object.freeze({
-  buildVersion: '0.22.0', configVersion: 'continuous-head-path-preview-1', courseVersion: 'sprint-30s-1', logVersion: 5,
+  buildVersion: '0.22.1', configVersion: 'continuous-head-path-preview-1', courseVersion: 'sprint-30s-1', logVersion: 5,
   durationMs: 60_000, stepMs: 1000 / 60, moveMs: 200, cooldownMs: 100,
   swipePx: 24, swipeRatio: 1.25, comboMs: 1200,
   dogHalfWidth: .22, boneHalfWidth: .12, dogHalfLength: .06, boneHalfLength: .04,

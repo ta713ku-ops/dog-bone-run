@@ -70,6 +70,7 @@ const audio = new Audio((state, failure) => {
 });
 audio.setMusicEnabled(presentationPhase >= 4);
 audio.setVolumes({ music: .35, sfx: .8 });
+void audio.preload();
 renderer.setReducedMotion(false);
 
 

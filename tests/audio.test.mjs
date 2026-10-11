@@ -83,6 +83,36 @@ function installFakeTimers() {
   };
 }
 
+test('bark preparation never delays unlock, and pickup/mute/stop share the SFX controls', async () => {
+  class RunningAudioContext extends MockAudioContext {
+    constructor() { super(); this.state = 'running'; }
+  }
+  const calls = [], bark = {
+    preload() { calls.push('preload'); return Promise.resolve(true); },
+    prepare(context) { calls.push(['prepare', context]); return new Promise(() => {}); },
+    play(context, destination) { calls.push(['play', context, destination]); return true; },
+    stop() { calls.push('stop'); },
+  };
+  const audio = new Audio(() => {}, { Context: RunningAudioContext, bark });
+  assert.equal(await audio.preload(), true);
+  assert.deepEqual(await audio.unlock(), { ok: true });
+  audio.setVolumes({ music: 0, sfx: .4 });
+  audio.play(1);
+  const played = calls.find(call => Array.isArray(call) && call[0] === 'play');
+  assert.equal(played[1], audio.context);
+  assert.equal(played[2], audio.sfxGain);
+  assert.equal(audio.sfxGain.gain.value, .4);
+  assert.equal([...audio.voices][0].gain.gain.rampValues[0], .05, 'bark gets priority over the chime');
+  audio.setEnabled(false);
+  audio.play(2);
+  assert.equal(calls.filter(call => Array.isArray(call) && call[0] === 'play').length, 1);
+  assert.equal(calls.at(-1), 'stop');
+  assert.equal(audio.voices.size, 0);
+  audio.setEnabled(true);
+  audio.stop();
+  assert.equal(calls.at(-1), 'stop');
+});
+
 test('creates and resumes audio synchronously from unlock, then waits for running', async () => {
   MockAudioContext.created = [];
   const order = [];

@@ -35,7 +35,7 @@ async function collect(path) {
     if (!target.startsWith('src/')) throw new Error(`Unexpected module dependency: ${target}`);
     await collect(target);
   }
-  for (const match of source.matchAll(/new URL\(['"](\.{1,2}\/[^'"?]+\.(?:png|webp|json))['"]/g)) {
+  for (const match of source.matchAll(/new URL\(['"](\.{1,2}\/[^'"?]+\.(?:png|webp|json|mp3))['"]/g)) {
     const target = relative(root, resolve(dirname(path), match[1]));
     if (!target.startsWith('art/')) throw new Error(`Unexpected asset dependency: ${target}`);
     assets.add(target);
@@ -55,7 +55,7 @@ for (const [modulePath, source] of modules) {
   await mkdir(dirname(path), {recursive: true});
   const output = source.replace(/(\bfrom\s*|\bimport\s*)(['"])(\.{1,2}\/[^'"?]+\.js)\2/g,
     (_, prefix, quote, url) => `${prefix}${quote}${versioned(url)}${quote}`)
-    .replace(/(new URL\()(['"])(\.{1,2}\/[^'"?]+\.(?:png|webp|json))\2/g,
+    .replace(/(new URL\()(['"])(\.{1,2}\/[^'"?]+\.(?:png|webp|json|mp3))\2/g,
       (_, prefix, quote, url) => `${prefix}${quote}${versioned(url)}${quote}`);
   await writeFile(path, output);
 }

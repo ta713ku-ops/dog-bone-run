@@ -8,7 +8,7 @@ const index = process.argv.indexOf('--port');
 const port = index >= 0 ? Number(process.argv[index + 1]) : Number(process.env.PORT || 4173);
 const hostIndex = process.argv.indexOf('--host');
 const host = hostIndex >= 0 ? process.argv[hostIndex + 1] : '127.0.0.1';
-const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.json': 'application/json', '.png': 'image/png', '.webp': 'image/webp' };
+const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.json': 'application/json', '.png': 'image/png', '.webp': 'image/webp', '.mp3': 'audio/mpeg' };
 const server = http.createServer(async (req, res) => {
   try {
     const requestUrl=new URL(req.url,'http://localhost');
