@@ -19,6 +19,16 @@ for(const source of [hdMetadata.generator,hdMetadata.sourceMetadata,...hdMetadat
   if(!path||!source.sha256||createHash('sha256').update(await readFile(path)).digest('hex')!==source.sha256)
     throw new Error(`HD dog source or output changed: rebuild scripts/build-dog-hd.py (${path})`);
 }
+for (const metadataPath of ['art/park-v23/metadata.json', 'art/neighborhood-v24/metadata.json', 'art/street-v25/metadata.json', 'art/street-v26/metadata.json']) {
+  const sceneryMetadata = JSON.parse(await readFile(metadataPath, 'utf8'));
+  for (const asset of Object.values(sceneryMetadata.assets)) {
+    for (const [path, expected] of [[asset.path, asset.sha256], [asset.source, asset.sourceSha256]]) {
+      if (!path || !expected || createHash('sha256').update(await readFile(path)).digest('hex') !== expected) {
+        throw new Error(`Scenery art source or output changed: rebuild ${sceneryMetadata.generator} (${path})`);
+      }
+    }
+  }
+}
 await rm(destination, { recursive: true, force: true });
 await mkdir(destination);
 for (const file of ['index.html', 'styles.css', 'favicon.svg']) await cp(file, `${destination}/${file}`);

@@ -1,0 +1,137 @@
+{
+  "generator": "scripts/build-park-art.py",
+  "assets": {
+    "trees": {
+      "path": "art/park-v23/trees.webp",
+      "source": "art/park-v23/source/trees.png",
+      "width": 1024,
+      "height": 1024,
+      "decodedBytes": 4194304,
+      "bytes": 345960,
+      "sha256": "9091d13bda2d2bc4b4d12f7afc9414e8d2ffc1dd0bca85c279bbbf2b67bf9eca",
+      "sourceSha256": "0bd954397462f090c82b9275aa26dbf0becf3f595d4f5d72f4da3c4c935faa0a"
+    },
+    "horizon": {
+      "path": "art/park-v23/horizon.webp",
+      "source": "art/park-v23/source/horizon.png",
+      "width": 1280,
+      "height": 427,
+      "decodedBytes": 2186240,
+      "bytes": 22322,
+      "sha256": "d59ae5c4ab61d8002fddd9bacc1f0a0da5fd9dfd2a70e818628b9ddd6df77685",
+      "sourceSha256": "0e068a7048a8b076968d8dcaad76b5c50f84e25c3afc8e1914a6fe54589205c4"
+    },
+    "soil": {
+      "path": "art/park-v23/soil.webp",
+      "source": "art/park-v23/source/soil.png",
+      "width": 384,
+      "height": 384,
+      "decodedBytes": 589824,
+      "bytes": 25334,
+      "sha256": "e04a83c6a0fcc01e15936c0eba32b81c98da8f07de5768203bb3cf5a3ca6e1c3",
+      "sourceSha256": "60f81d0d599c88e5e0947b0ae055782a4ceaff9131fb2356ff39998cfdc39f4c"
+    },
+    "grass": {
+      "path": "art/park-v23/grass.webp",
+      "source": "art/park-v23/source/grass.png",
+      "width": 384,
+      "height": 384,
+      "decodedBytes": 589824,
+      "bytes": 65944,
+      "sha256": "605e3295ddbd2df4536bf7ff3ae463e7eb73d8d8f6e37aa2f691b9a06298b5ff",
+      "sourceSha256": "d01fa56bfbe143f906aac13f6f1fee998845e52d859175643240b21af7c4d317"
+    }
+  },
+  "treeCells": {
+    "oak": {
+      "cell": [
+        0,
+        0
+      ],
+      "visibleBounds": [
+        47,
+        71,
+        508,
+        498
+      ],
+      "crop": [
+        47,
+        71,
+        461,
+        427
+      ],
+      "rootAnchor": [
+        256,
+        496
+      ]
+    },
+    "birch": {
+      "cell": [
+        1,
+        0
+      ],
+      "visibleBounds": [
+        72,
+        66,
+        439,
+        499
+      ],
+      "crop": [
+        584,
+        66,
+        367,
+        433
+      ],
+      "rootAnchor": [
+        768,
+        497
+      ]
+    },
+    "pine": {
+      "cell": [
+        0,
+        1
+      ],
+      "visibleBounds": [
+        68,
+        39,
+        511,
+        464
+      ],
+      "crop": [
+        68,
+        551,
+        443,
+        425
+      ],
+      "rootAnchor": [
+        256,
+        974
+      ]
+    },
+    "willow": {
+      "cell": [
+        1,
+        1
+      ],
+      "visibleBounds": [
+        56,
+        54,
+        474,
+        464
+      ],
+      "crop": [
+        568,
+        566,
+        418,
+        410
+      ],
+      "rootAnchor": [
+        768,
+        974
+      ]
+    }
+  },
+  "totalBytes": 459560,
+  "totalDecodedBytes": 7560192
+}

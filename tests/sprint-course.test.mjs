@@ -68,7 +68,8 @@ test('the 30-second course uses the phase-4 rule and generates dense, seeded col
   const oldCourse = createPhase2Course(seed);
 
   assert.equal(PHASE4.durationMs, 30_000);
-  assert.equal(PHASE4.ruleVersion, 'sprint30-hard-v1');
+  assert.equal(PHASE4.ruleVersion, 'sprint30-penalty-v1');
+  assert.equal(CONFIG.courseVersion, 'sprint-30s-penalty-1');
   assert.deepEqual(Object.keys(course).sort(), ['bones', 'goldCandidates', 'goldIds', 'obstacles', 'seed']);
   assert.equal(course.seed, seed);
   assert.deepEqual(course, repeated);
@@ -99,6 +100,16 @@ test('the 30-second course uses the phase-4 rule and generates dense, seeded col
   const ids = [...course.bones, ...course.obstacles].map(item => item.id);
   assert.equal(new Set(ids).size, ids.length, 'bone and obstacle ids are globally unique');
   assert.ok(course.obstacles.every(obstacle => obstacle.distance >= 2));
+  assert.ok(course.obstacles.every(obstacle => ['litter', 'crow', 'cat'].includes(obstacle.type)));
+});
+
+test('the obstacle subtype stream leaves the existing bone route and gold choices intact', () => {
+  const course = createSprintCourse(42);
+  assert.deepEqual(course.bones.map(bone => bone.lane), [
+    0, -1, 0, 0, -1, 0, -1, 0, -1, 0, -1, 0, 0, -1, 0, 1, 0, 0, -1, 0, -1, -1,
+    0, 1, 0, 1, 0, -1, -1, 0, 1, 1, 0, -1, -1, -1, 0, 1, 1, 0, 1, 1, 0,
+  ]);
+  assert.deepEqual(course.goldIds, ['bone-018', 'bone-039']);
 });
 
 test('every seeded obstacle avoids the complete 200ms all-bone route with a clearance margin', () => {
@@ -122,8 +133,9 @@ test('every seeded obstacle avoids the complete 200ms all-bone route with a clea
   }
 });
 
-test('hazards grow denser, hole-heavy, and paired without ever blocking all three lanes', () => {
-  let earlyHoles = 0, earlyTotal = 0, lateHoles = 0, lateTotal = 0;
+test('hazards stay paired and safe while subtype frequencies remain balanced through the late course', () => {
+  const totals = { litter: 0, crow: 0, cat: 0 };
+  const lateTotals = { litter: 0, crow: 0, cat: 0 };
   let observedPairs = 0;
   let maxPerRow = 0;
 
@@ -138,20 +150,25 @@ test('hazards grow denser, hole-heavy, and paired without ever blocking all thre
       const routeBone = bones.find(bone => Math.abs(bone.distance - row[0].distance) < 1e-9);
       assert.ok(routeBone, 'hazard rows align with a collectible bone distance');
       assert.ok(row.every(item => item.lane !== routeBone.lane), 'hazards occupy lanes outside the all-bone route');
-      if (row[0].distance < 15) {
-        earlyTotal += row.length;
-        earlyHoles += row.filter(item => item.type === 'hole').length;
-      } else {
-        lateTotal += row.length;
-        lateHoles += row.filter(item => item.type === 'hole').length;
+      for (const item of row) {
+        assert.ok(item.type in totals, `${item.type} is a supported current obstacle type`);
+        totals[item.type]++;
+        if (item.distance >= 15) lateTotals[item.type]++;
       }
     }
+    const lateTypes = new Set(obstacles.filter(item => item.distance >= 15).map(item => item.type));
+    assert.deepEqual([...lateTypes].sort(), ['cat', 'crow', 'litter'], `seed ${seed} keeps all types in the late course`);
   }
 
   assert.ok(observedPairs > 0, 'seeded runs include two-lane hazard rows');
   assert.equal(maxPerRow, 2);
-  assert.ok(lateHoles / lateTotal > earlyHoles / earlyTotal,
-    `late hole rate ${lateHoles}/${lateTotal} exceeds early rate ${earlyHoles}/${earlyTotal}`);
+  const total = Object.values(totals).reduce((sum, count) => sum + count, 0);
+  const lateTotal = Object.values(lateTotals).reduce((sum, count) => sum + count, 0);
+  assert.ok(totals.litter / total > 0.45 && totals.litter / total < 0.55);
+  assert.ok(totals.crow / total > 0.25 && totals.crow / total < 0.35);
+  assert.ok(totals.cat / total > 0.15 && totals.cat / total < 0.25);
+  assert.ok(lateTotals.litter > lateTotals.cat && lateTotals.crow > lateTotals.cat,
+    `late litter/crow counts (${lateTotals.litter}/${lateTotals.crow}) exceed late cats (${lateTotals.cat})`);
 });
 
 test('seed normalization and returned arrays/objects are isolated across runs', () => {

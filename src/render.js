@@ -1,7 +1,10 @@
 import { CONFIG, PHASE2, PHASE3 } from './config.js';
 import { drawPuddle, drawTrashBin } from './obstacle-art.js';
+import { STREET_OBSTACLE_ART, drawStreetObstacle, drawStreetObstacleAt } from './street-obstacle-art.js';
 import { DogSprites } from './dog-sprites.js';
 import { AdventureScene } from './adventure-scene.js';
+import { projectStreet } from './street-camera.js';
+import { STREET_TOY_ART, drawToy } from './street-toy-art.js';
 import { ImageRoomBackdrop } from './image-room-backdrop.js';
 import {sampleWalk, sampleHome, homeInteractionDuration} from './sprite-animation.js';
 import {createHomeCommand, sampleHomeCommand} from './home-command-motion.js';
@@ -12,6 +15,15 @@ import {
 
 const INK = '#65412a', BROWN = '#bf783e', LIGHT = '#dfaa68', WHITE = '#fff8e9';
 const OBSTACLE_HALF_WIDTH = .28, OBSTACLE_HALF_LENGTH = .10;
+const CONTACT_SHADOW = 'rgba(68, 51, 30, .18)';
+const PICKUP_EFFECT_MS = 520, PICKUP_FLIGHT_MS = 360, PICKUP_SPARKLE_MS = 220;
+
+function linearGradient(ctx, x0, y0, x1, y1, stops, fallback) {
+  const gradient = ctx.createLinearGradient?.(x0, y0, x1, y1);
+  if (!gradient || typeof gradient.addColorStop !== 'function') return fallback;
+  for (const [position, color] of stops) gradient.addColorStop(position, color);
+  return gradient;
+}
 
 export class Renderer {
   constructor(canvas, {useSprites = false} = {}) {
@@ -26,6 +38,8 @@ export class Renderer {
     this.liveDog = null;
     this.dogs = useSprites ? new DogSprites() : null;
     this.adventure = useSprites ? new AdventureScene() : null;
+    this.streetArt = useSprites ? STREET_OBSTACLE_ART : null;
+    this.toyArt = useSprites ? STREET_TOY_ART : null;
     this.room = new ImageRoomBackdrop();
     this.petStartedAt = null;
     this.menuElapsedMs = 0; this.menuLastFrameNow = null; this.menuPaused = false;
@@ -41,6 +55,7 @@ export class Renderer {
     this.resize();
   }
   resize() {
+    this.frozenGame = null;
     const rect = this.canvas.getBoundingClientRect();
     this.width = rect.width; this.height = rect.height;
     const dpr = Math.min(devicePixelRatio || 1, CONFIG.dprCap);
@@ -87,14 +102,15 @@ export class Renderer {
       reducedMotion: this.reducedMotion, essential, near, flags: this.roadComfortFlags,
     });
   }
-  recordRoadDecoration({ objectId, generation = this.roadGeneration, category, bounds, alpha, lineId } = {}) {
+  recordRoadDecoration({ objectId, generation = this.roadGeneration, category, bounds, alpha, lineId, worldLaneBounds } = {}) {
     return this.roadComfort.record({
       objectId, generation, category, bounds,
       alpha: Number.isFinite(alpha) ? alpha : this.ctx.globalAlpha,
-      lineId,
+      lineId, worldLaneBounds,
     });
   }
   reset() {
+    this.frozenGame = null;
     this.effects = []; this.petStartedAt = null; this.lastDrawState = null;
     this.menuElapsedMs = 0; this.menuLastFrameNow = null; this.menuPaused = false;
     this.homeClockOffset = 0; this.homeInteraction = null; this.homeSample = null; this.homeStillPose = null;
@@ -172,6 +188,7 @@ export class Renderer {
   }
   project(lane, distance) {
     const w = this.width, h = this.height;
+    if (this.streetPerspective) return projectStreet(w, h, lane, distance, 0, this.trailBend ?? 0);
     const progress = distance / CONFIG.lookAhead;
     const y = h * .80 - h * .56 * Math.sign(progress) * Math.abs(progress) ** .72;
     const scale = 1 - .68 * progress;
@@ -181,28 +198,64 @@ export class Renderer {
     return { x: w * .5 + bend + lane * w * .235 * scale, y, scale };
   }
   bone(x, y, scale, time = 0, kind = 'normal') {
+    if (this.streetPerspective && this.toyArt?.atlasReady) {
+      this.ellipse(x + 2 * scale, y + 7 * scale, 26 * scale, 5 * scale, CONTACT_SHADOW, null, -.22);
+      if (drawToy(this.ctx, x, y - 2 * scale, 69 * scale, kind)) return;
+    }
     const c = this.ctx; c.save(); c.translate(x, y); c.scale(scale, scale); c.rotate(-.35);
-    this.ellipse(1, 8, 20, 7, '#947c4a22');
-    c.beginPath(); c.moveTo(-13, -5); c.lineTo(13, -5);
-    c.bezierCurveTo(10, -17, 25, -18, 24, -6); c.bezierCurveTo(34, -4, 31, 10, 20, 6);
-    c.lineTo(-14, 6); c.bezierCurveTo(-25, 17, -33, 4, -24, -2); c.bezierCurveTo(-29, -14, -14, -17, -13, -5);
-    c.fillStyle = kind === 'gold' ? '#ffd45a' : '#fffcf0'; c.fill(); c.strokeStyle = kind === 'gold' ? '#9a681d' : '#936e3e'; c.lineWidth = 2; c.stroke();
-    c.beginPath(); c.moveTo(-8, -1); c.lineTo(10, -1); c.strokeStyle = kind === 'gold' ? '#d29427' : '#e8d8b3'; c.lineWidth = 2; c.stroke();
+    this.ellipse(1, 8, 21, 6.5, CONTACT_SHADOW);
+    c.beginPath(); c.moveTo(-22, -13);
+    c.bezierCurveTo(-29, -19, -37, -13, -32, -5);
+    c.bezierCurveTo(-38, 2, -29, 11, -21, 6);
+    c.bezierCurveTo(-17, 3, -15, 2, -12, 3);
+    c.lineTo(12, 3);
+    c.bezierCurveTo(15, 2, 17, 3, 21, 6);
+    c.bezierCurveTo(29, 11, 38, 2, 32, -5);
+    c.bezierCurveTo(37, -13, 29, -19, 22, -13);
+    c.bezierCurveTo(18, -10, 16, -9, 13, -10);
+    c.lineTo(-13, -10);
+    c.bezierCurveTo(-16, -9, -18, -10, -22, -13);
+    c.closePath();
+    c.fillStyle = kind === 'gold'
+      ? linearGradient(c, -27, -17, 24, 10, [[0, '#fff1b5'], [.48, '#f8cf61'], [1, '#cf8b27']], '#f1bd4c')
+      : linearGradient(c, -27, -17, 24, 10, [[0, '#fffdf5'], [.5, '#f6ecd8'], [1, '#d7c39e']], '#f8efdc');
+    c.fill(); c.strokeStyle = kind === 'gold' ? '#946728' : '#9d8865'; c.lineWidth = 1.8; c.stroke();
+    c.beginPath(); c.moveTo(-8, -2); c.lineTo(9, -2);
+    c.strokeStyle = kind === 'gold' ? '#bd8226' : '#d9c7a4'; c.lineWidth = 1.7; c.stroke();
     if (kind === 'gold') {
-      // A fixed glint and small enamel chip distinguish the bonus bone without moving it.
-      c.beginPath(); c.moveTo(24, -19); c.lineTo(26, -14); c.lineTo(31, -12); c.lineTo(26, -10); c.lineTo(24, -5); c.lineTo(22, -10); c.lineTo(17, -12); c.lineTo(22, -14); c.closePath();
-      c.fillStyle = '#fff7c4'; c.fill(); c.strokeStyle = '#c88b25'; c.lineWidth = 1.3; c.stroke();
-      c.beginPath(); c.moveTo(-20, 3); c.lineTo(-15, 0); c.lineTo(-13, 5); c.lineTo(-18, 8); c.closePath();
-      c.fillStyle = '#fff0a7'; c.fill(); c.strokeStyle = '#d69a2e'; c.lineWidth = 1; c.stroke();
+      // A molded amber groove is fixed to the rubber toy, with no ambient glint.
+      this.ellipse(1, -5, 3.1, 1.9, '#cb8c2d');
     }
     c.restore();
-    if (time && !this.reducedMotion) { this.ellipse(x + 22 * scale, y - 16 * scale, 2 * scale, 2 * scale, '#fff9dd'); }
   }
   worldDistance(game) {
     return game.phase >= 2 && Number.isFinite(game.distance) ? game.distance : game.timeMs / 1000;
   }
+  pickupHudAnchor() {
+    const canvasRect = this.canvas.getBoundingClientRect?.();
+    const hud = this.canvas.closest?.('.game')?.querySelector?.('.hud');
+    const scoreBox = hud?.querySelector?.('.score-box');
+    const scoreValue = hud?.querySelector?.('#score');
+    const hudRect = hud?.getBoundingClientRect?.();
+    const scoreRect = scoreValue?.getBoundingClientRect?.() ?? scoreBox?.getBoundingClientRect?.();
+    if (canvasRect && hudRect?.height > 0 && scoreRect?.width > 0) {
+      const boxRect = scoreBox?.getBoundingClientRect?.() ?? scoreRect;
+      return {
+        targetX: scoreRect.left + scoreRect.width / 2 - canvasRect.left,
+        targetY: scoreRect.top + scoreRect.height / 2 - canvasRect.top,
+        labelX: boxRect.left + boxRect.width / 2 - canvasRect.left,
+        labelY: hudRect.bottom - canvasRect.top + 24,
+      };
+    }
+    const x = this.width * .18;
+    return { targetX: x, targetY: 32, labelX: x, labelY: 70 };
+  }
   contact(event) {
     const obstacleType = event.obstacleType ?? event.kind;
+    if (['litter', 'crow', 'cat'].includes(obstacleType)) {
+      this.effects.push({ ...event, visualType: 'streetContact' });
+      return;
+    }
     if (!['puddle', 'trash'].includes(obstacleType)) return;
     this.effects.push({ ...event, visualType: obstacleType === 'puddle' ? 'puddleContact' : 'trashContact' });
   }
@@ -216,40 +269,65 @@ export class Renderer {
   puddle(lane, distance) { drawPuddle(this, lane, distance); }
   hole(lane, distance) {
     const c = this.ctx, { p, width, height } = this.obstacleFootprint(lane, distance);
-    const rx = Math.max(1, width / 2 - 1), ry = Math.max(.8, height / 2 - .7);
     const edge = Math.max(.8, p.scale * 1.4);
-    const rim = [
+    const rx = Math.max(.5, width / 2 - edge * 1.25), ry = Math.max(.5, height / 2 - edge * 1.25);
+    const rimPoints = [
       [.98, -.18], [.88, -.62], [.65, -.88], [.34, -.94], [.08, -.82], [-.24, -.98],
       [-.58, -.83], [-.89, -.65], [-.97, -.2], [-.88, .4], [-.61, .84], [-.28, .92],
       [.02, .79], [.32, .96], [.66, .77], [.9, .42],
-    ].map(([x, y]) => [p.x + rx * x, p.y + ry * y]);
-    this.path(rim, '#9a6338', '#68452f', edge);
+    ];
+    const rim = rimPoints.map(([x, y]) => [p.x + rx * x, p.y + ry * y]);
+    // The irregular fracture reads as chipped asphalt, with a dark cut line
+    // outside the exposed gray aggregate and a clearly open center.
+    this.path(rim, '#353d41', '#252d31', edge);
+    const ledge = rimPoints.map(([x, y]) => [p.x + rx * x * .9, p.y + ry * y * .9]);
+    const asphaltEdge = linearGradient(c, p.x - rx * .55, p.y - ry * .6, p.x + rx * .5, p.y + ry * .6,
+      [[0, '#a0a3a0'], [.5, '#777f81'], [1, '#555f63']], '#777f81');
+    this.path(ledge, asphaltEdge, '#424b4f', Math.max(.5, edge * .45));
 
-    const openingX = rx * .77, openingY = ry * .67;
+    const openingX = rx * .74, openingY = ry * .63;
     const opening = [
       [.95, -.13], [.73, -.64], [.39, -.9], [.06, -.78], [-.32, -.93], [-.72, -.61],
       [-.96, -.08], [-.79, .53], [-.43, .77], [-.07, .64], [.31, .79], [.75, .48],
-    ].map(([x, y]) => [p.x + openingX * x, p.y + openingY * y]);
-    this.path(opening, '#16151b', '#493a2d', Math.max(.6, edge * .65));
+    ].map(([x, y]) => [p.x + openingX * x, p.y + openingY * y + ry * .035]);
+    const recess = linearGradient(c, p.x - openingX * .25, p.y - openingY,
+      p.x + openingX * .15, p.y + openingY,
+      [[0, '#323a3e'], [.42, '#1c2327'], [1, '#090e11']], '#171e22');
+    this.path(opening, recess, '#343d41', Math.max(.6, edge * .55));
 
-    // A muted earthen lip and a deeper lower shadow give the opening depth without a watery shine.
+    // A lower dark well reinforces depth while the jagged gray edges stay visible.
     c.save(); c.beginPath();
-    c.ellipse(p.x, p.y, openingX * .68, openingY * .43, 0, 0, Math.PI * 2);
-    const depth = c.createLinearGradient(p.x, p.y - openingY * .4, p.x, p.y + openingY * .45);
-    depth.addColorStop(0, '#29232a'); depth.addColorStop(1, '#080d14');
+    c.ellipse(p.x + openingX * .04, p.y + openingY * .12, openingX * .55, openingY * .35, 0, 0, Math.PI * 2);
+    const depth = linearGradient(c, p.x, p.y - openingY * .2, p.x, p.y + openingY * .5,
+      [[0, '#222a2e'], [1, '#080d10']], '#12181c');
     c.fillStyle = depth; c.fill();
-    c.beginPath(); c.ellipse(p.x, p.y, openingX * .9, openingY * .8, 0, Math.PI * 1.08, Math.PI * 1.92);
-    c.strokeStyle = '#c28a50'; c.lineWidth = Math.max(.7, edge * .8); c.stroke();
+    c.beginPath(); c.ellipse(p.x, p.y + ry * .035, openingX * .9, openingY * .82, 0, Math.PI * 1.08, Math.PI * 1.92);
+    c.strokeStyle = '#838b8b'; c.lineWidth = Math.max(.6, edge * .55); c.stroke();
     c.restore();
   }
   holeFrontRim(lane, distance) {
     const c = this.ctx, { p, width, height } = this.obstacleFootprint(lane, distance);
-    const rx = Math.max(1, width / 2 - 1), ry = Math.max(.8, height / 2 - .7);
+    const edge = Math.max(.8, p.scale * 1.4);
+    const rx = Math.max(.5, width / 2 - edge * 1.25), ry = Math.max(.5, height / 2 - edge * 1.25);
+    const outerStroke = Math.min(
+      Math.max(2, p.scale * 2.4, rx * .14),
+      Math.max(0, width - rx * 1.88),
+      Math.max(0, height - ry * 1.82),
+    );
+    const innerStroke = Math.min(
+      Math.max(.7, p.scale * .9),
+      Math.max(0, width - rx * 1.52),
+      Math.max(0, height - ry * 1.24),
+    );
     c.save();
-    c.beginPath(); c.ellipse(p.x, p.y, rx * .94, ry * .91, 0, 0, Math.PI);
-    c.strokeStyle = '#70482e'; c.lineWidth = Math.max(2, p.scale * 2.4, rx * .14); c.stroke();
-    c.beginPath(); c.ellipse(p.x, p.y - ry * .04, rx * .76, ry * .62, 0, 0, Math.PI);
-    c.strokeStyle = '#c28a50'; c.lineWidth = Math.max(.7, p.scale * .9); c.stroke();
+    if (outerStroke > 0) {
+      c.beginPath(); c.ellipse(p.x, p.y, rx * .94, ry * .91, 0, 0, Math.PI);
+      c.strokeStyle = '#343c40'; c.lineWidth = outerStroke; c.stroke();
+    }
+    if (innerStroke > 0) {
+      c.beginPath(); c.ellipse(p.x, p.y - ry * .04, rx * .76, ry * .62, 0, 0, Math.PI);
+      c.strokeStyle = '#7b8485'; c.lineWidth = innerStroke; c.stroke();
+    }
     c.restore();
   }
   trashBin(lane, distance) { drawTrashBin(this, lane, distance); }
@@ -352,9 +430,9 @@ export class Renderer {
       let pickup=null;
       for (let i=this.effects.length-1;i>=0;i--) if(this.effects[i].type==='collect'){pickup=this.effects[i];break;}
       const age=pickup?game.timeMs-pickup.activeMs:Infinity;
-      const joy=motionAllowed&&age>=0&&age<420?Math.sin(age/420*Math.PI):0;
+      const joy=motionAllowed&&age>=0&&age<320?Math.sin(age/320*Math.PI):0;
       this.pickupReaction={age,weight:joy,gold:pickup?.kind==='gold'||pickup?.boneKind==='gold'};
-      this.ellipse(x, foot + 2 * scale, 27 * scale * shadowSpread, 7 * scale, '#6b50292b');
+      this.ellipse(x, foot + 2 * scale, 27 * scale * shadowSpread, 7 * scale, CONTACT_SHADOW);
       c.save();
       c.translate(x, foot + bob - joy*2.8*scale);
       c.rotate(lean + (joy>0?Math.sin(age/90)*joy*.014:0));
@@ -370,7 +448,7 @@ export class Renderer {
     const strength = recent?.visualType === 'puddleContact' ? -.04 : .05;
     const react = !this.reducedMotion && age >= 0 && age < 180 ? Math.sin(age / 180 * Math.PI) * strength : 0;
     c.save(); c.translate(x, foot); c.scale(scale, scale);
-    this.ellipse(0, 3, 30, 9, '#6b50292b');
+    this.ellipse(0, 3, 30, 9, CONTACT_SHADOW);
     for (const dir of [-1, 1]) {
       const step = Math.sin(phase + (dir > 0 ? Math.PI : 0));
       this.ellipse(dir * 19, -4 + step * 3, 9, 12, WHITE, INK, dir * .12);
@@ -425,6 +503,33 @@ export class Renderer {
   contactEffects(game, dog) {
     const c = this.ctx, scale = this.width / 390;
     for (const effect of this.effects) {
+      if (effect.visualType === 'streetContact') {
+        const age = game.timeMs - effect.activeMs;
+        if (age < 0 || age >= 520) continue;
+        const hud = this.pickupHudAnchor(), fade = age < 380 ? 1 : (520 - age) / 140;
+        c.save(); c.globalAlpha *= fade;
+        c.textAlign = 'center'; c.font = `800 ${Math.max(12, Math.min(15, Math.round(this.width / 25)))}px Georgia,serif`;
+        const label = String(effect.points ?? -10).replace('-', '−');
+        c.fillStyle = '#fff6efee';
+        c.beginPath();
+        if (typeof c.roundRect === 'function') c.roundRect(hud.labelX - 18, hud.labelY + 7, 36, 20, 7);
+        else c.rect(hud.labelX - 18, hud.labelY + 7, 36, 20);
+        c.fill(); c.fillStyle = '#a34231'; c.fillText(label, hud.labelX, hud.labelY + 22);
+        c.restore();
+        if (!this.reducedMotion && ['crow', 'cat'].includes(effect.obstacleType) && age < 380) {
+          const t = age / 380, side = effect.lane < 0 ? -1 : 1;
+          const distance = (effect.obstacleDistance ?? effect.distance) - this.worldDistance(game);
+          const footprint = this.obstacleFootprint(effect.lane, Math.max(-.1, distance));
+          const width = footprint.width * .94;
+          const aspect = STREET_OBSTACLE_ART.geometry(effect.obstacleType).aspect;
+          drawStreetObstacleAt(this, effect.obstacleType, {
+            x: footprint.p.x + side * t * 88 * scale,
+            y: footprint.p.y - (effect.obstacleType === 'crow' ? t * 34 * scale : 0),
+            width, height: width / aspect, alpha: 1 - t * .85,
+          });
+        }
+        continue;
+      }
       if (!['puddleContact', 'trashContact'].includes(effect.visualType)) continue;
       const age = game.timeMs - effect.activeMs, duration = effect.visualType === 'puddleContact' ? 520 : 380;
       if (age < 0 || age > duration) continue;
@@ -453,7 +558,7 @@ export class Renderer {
   landscape(game, menu) {
     const c = this.ctx, w = this.width, h = this.height, horizon = h * (menu ? .43 : .24);
     c.fillStyle = '#daeacd'; c.fillRect(0, 0, w, h);
-    const sky = c.createLinearGradient(0, 0, 0, horizon + 80); sky.addColorStop(0, '#ffe9ce'); sky.addColorStop(1, '#e6edcd');
+    const sky = linearGradient(c, 0, 0, 0, horizon + 80, [[0, '#ffe9ce'], [1, '#e6edcd']], '#e6edcd');
     c.fillStyle = sky; c.fillRect(0, 0, w, horizon + 60);
     this.ellipse(w * .86, horizon * .52, 29, 29, '#fff6d9');
     // Distant tree line and gentle hills; decorative objects stay off the lanes.
@@ -494,11 +599,53 @@ export class Renderer {
     c.beginPath(); corners.forEach((p, i) => i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y)); c.closePath();
     c.strokeStyle = color; c.lineWidth = 2; c.stroke();
   }
-  draw(game) {
+  drawAdventure(game, options) {
+    if (options.menu) return this.adventure.draw(this, game, options);
+    // Keep the gameplay sprites crisp while bounding background raster work
+    // on high-density screens. The camera still uses the same CSS coordinates.
+    if (!this.streetBackdrop) {
+      const surface = this.canvas.ownerDocument?.createElement?.('canvas');
+      const context = surface?.getContext?.('2d');
+      if (surface && context) this.streetBackdrop = { surface, context };
+    }
+    if (!this.streetBackdrop) return this.adventure.draw(this, game, options);
+    const {surface, context} = this.streetBackdrop;
+    const density = Math.min(1, devicePixelRatio || 1);
+    const width = Math.max(1, Math.round(this.width * density));
+    const height = Math.max(1, Math.round(this.height * density));
+    if (surface.width !== width || surface.height !== height) {
+      surface.width = width; surface.height = height;
+    }
+    context.setTransform(width / this.width, 0, 0, height / this.height, 0, 0);
+    const foreground = this.ctx;
+    try {
+      this.ctx = context;
+      this.adventure.draw(this, game, options);
+    } finally { this.ctx = foreground; }
+    foreground.drawImage(surface, 0, 0, width, height, 0, 0, this.width, this.height);
+  }
+  draw(game, { force = false } = {}) {
+    // A stopped course is one stable frame. Reusing it avoids needless work
+    // and subpixel rerasterization differences between WebKit's GPU/CPU paths.
+    const paused = game.state === 'paused';
+    const signature = paused ? JSON.stringify([
+      this.width, this.height, this.canvas.width, this.canvas.height,
+      game.phase, game.seed, game.timeMs, game.distance, game.x, game.lane, game.move, game.score,
+      this.effects, this.debug, this.reducedMotion, this.roadDecoration, this.roadComfortFlags,
+      this.dogs?.stats.ready, this.dogs?.stats.hd?.pending,
+      this.dogs?.stats.hd?.decodeCount, this.adventure?.stats, this.streetArt?.stats, this.toyArt?.stats,
+    ]) : null;
+    if (!force && paused && this.frozenGame === game && this.frozenSignature === signature) return;
+    this.drawFrame(game);
+    this.frozenGame = paused ? game : null;
+    this.frozenSignature = signature;
+  }
+  drawFrame(game) {
     const c = this.ctx, w = this.width, h = this.height;
     if (!w || !h) return;
     c.clearRect(0, 0, w, h);
     const menu = ['ready', 'result'].includes(game.state);
+    this.streetPerspective = Boolean(this.adventure) && !menu;
     const runSeed = Number.isFinite(game.seed) ? game.seed >>> 0 : 1;
     const runKey = `${game.phase ?? 1}:${runSeed}`;
     const runOpen = ['running', 'falling', 'paused'].includes(game.state);
@@ -514,13 +661,13 @@ export class Renderer {
       distance: this.worldDistance(game), activeMs: game.timeMs,
       state: game.state,
       visible: typeof document === 'undefined' || !document.hidden,
-      lineVisible: lineId => this.roadComfortFlags.crossLines
+      lineVisible: lineId => !this.streetPerspective && this.roadComfortFlags.crossLines
         && this.roadDecoration !== 'minimal'
         && this.shouldDrawRoadDecoration(lineId),
     });
     this.trailBend = this.adventure && !this.reducedMotion
       && this.roadComfortFlags.trailBend
-      ? w * (menu ? .025 : Math.sin(game.timeMs / 6800) * .095) : 0;
+      ? w * (menu ? .025 : Math.sin(game.timeMs / 6800) * .025) : 0;
     const now = performance.now();
     if (game.state !== this.lastDrawState) {
       this.lastDrawState = game.state;
@@ -536,7 +683,7 @@ export class Renderer {
     this.menuLastFrameNow = canAdvanceMenu ? now : null;
     const menuElapsedMs = this.menuElapsedMs;
     if (game.state === 'ready') this.room.draw(c,w,h,Math.min(devicePixelRatio||1,CONFIG.dprCap));
-    else if (this.adventure) this.adventure.draw(this, game, { menu, timeMs: menuElapsedMs });
+    else if (this.adventure) this.drawAdventure(game, { menu, timeMs: menuElapsedMs });
     else this.landscape(game, menu);
     this.comfortMetrics = this.roadComfort.endFrame();
     if (menu) {
@@ -571,7 +718,7 @@ export class Renderer {
       if (obstacle.status && obstacle.status !== 'pending' && !isFatalHole) continue;
       const distance = obstacle.distance - currentDistance;
       if (!isFatalHole && (distance > CONFIG.lookAhead || distance < -.16)) continue;
-      if (!['hole', 'puddle', 'trash'].includes(obstacle.type)) continue;
+      if (!['hole', 'puddle', 'trash', 'litter', 'crow', 'cat'].includes(obstacle.type)) continue;
       objects.push({ type: 'obstacle', entity: obstacle, distance, rank: 1 });
     }
     objects.sort((a, b) => b.distance - a.distance || a.rank - b.rank);
@@ -584,7 +731,8 @@ export class Renderer {
         if (this.debug) this.hitbox(bone.lane, object.distance, CONFIG.boneHalfWidth, CONFIG.boneHalfLength, '#b73d70');
       } else {
         const obstacle = object.entity;
-        if (obstacle.type === 'hole') this.hole(obstacle.lane, object.distance);
+        if (['litter', 'crow', 'cat'].includes(obstacle.type)) drawStreetObstacle(this, obstacle.type, obstacle.lane, object.distance);
+        else if (obstacle.type === 'hole') this.hole(obstacle.lane, object.distance);
         else if (obstacle.type === 'puddle') this.puddle(obstacle.lane, object.distance);
         else this.trashBin(obstacle.lane, object.distance);
         if (this.debug) this.hitbox(obstacle.lane, object.distance,
@@ -595,23 +743,33 @@ export class Renderer {
       ? game.fall.x
       : typeof game.xAt === 'function' ? game.xAt(game.timeMs) : game.x;
     const dog = this.project(dogLane, 0);
-    this.effects = this.effects.filter(e => Number.isFinite(e.activeMs) && game.timeMs - e.activeMs >= 0 && game.timeMs - e.activeMs < 850);
+    this.effects = this.effects.filter(e => Number.isFinite(e.activeMs) && game.timeMs - e.activeMs >= 0 && game.timeMs - e.activeMs < 600);
     this.contactEffects(game, dog);
     if (falling && fatalHole) this.fallingDog(game, dog, fatalHole);
     else this.runner(dog.x, dog.y, w / 390, game);
     if (this.debug) this.hitbox(game.x, 0, CONFIG.dogHalfWidth, CONFIG.dogHalfLength, '#315dc6');
     for (const effect of this.effects) {
       if (effect.type !== 'collect') continue;
-      const age = game.timeMs - effect.activeMs, p = age / 850, point = Number.isFinite(effect.x) ? this.project(effect.x, 0) : dog;
-      c.save(); c.globalAlpha = 1 - p;
+      const age = game.timeMs - effect.activeMs;
+      if (age < 0 || age >= PICKUP_EFFECT_MS) continue;
+      const p = age / PICKUP_EFFECT_MS, point = Number.isFinite(effect.x) ? this.project(effect.x, 0) : dog;
+      const hud = this.pickupHudAnchor();
+      const labelY = hud.labelY - (this.reducedMotion ? 0 : p * 5);
+      const pickupAlpha = this.reducedMotion || age < 400 ? 1 : (PICKUP_EFFECT_MS - age) / 120;
+      c.save(); c.globalAlpha = pickupAlpha;
       const gold = effect.kind === 'gold' || effect.boneKind === 'gold';
-      c.textAlign = 'center'; c.font = `900 ${Math.round(w / 19 * (gold ? 1.35 : 1))}px Georgia,serif`; c.fillStyle = gold ? '#9b6516' : '#513b24';
-      c.fillText(`+${effect.points}`, point.x + 35, h * .68 - (this.reducedMotion ? 0 : p * 28));
-      if (!this.reducedMotion && age < 400) {
-        for (let i = 0; i < 6; i++) {
-          const a = i * Math.PI / 3;
-          const sx = point.x + Math.cos(a) * (14 + p * 24), sy = point.y - 25 + Math.sin(a) * (12 + p * 19);
-          const size = (2.4 - p * .8) * (w / 390);
+      c.textAlign = 'center'; c.font = `800 ${Math.max(12, Math.min(15, Math.round(w / 25)))}px Georgia,serif`;
+      const labelWidth = Math.max(34, 16 + String(effect.points).length * 9);
+      c.fillStyle = '#fff9f0ee'; c.beginPath();
+      if (typeof c.roundRect === 'function') c.roundRect(hud.labelX - labelWidth / 2, labelY - 14, labelWidth, 19, 7);
+      else c.rect(hud.labelX - labelWidth / 2, labelY - 14, labelWidth, 19);
+      c.fill(); c.fillStyle = gold ? '#805313' : '#513b24';
+      c.fillText(`+${effect.points}`, hud.labelX, labelY);
+      if (!this.reducedMotion && age < PICKUP_SPARKLE_MS) {
+        for (let i = 0; i < 4; i++) {
+          const a = i * Math.PI / 2;
+          const sx = point.x + Math.cos(a) * (9 + p * 10), sy = point.y - 22 + Math.sin(a) * (8 + p * 8);
+          const size = (1.9 - p * .35) * (w / 390);
           c.beginPath(); c.moveTo(sx, sy - size * 1.5); c.lineTo(sx + size * .48, sy - size * .48);
           c.lineTo(sx + size * 1.5, sy); c.lineTo(sx + size * .48, sy + size * .48);
           c.lineTo(sx, sy + size * 1.5); c.lineTo(sx - size * .48, sy + size * .48);
@@ -620,23 +778,26 @@ export class Renderer {
           c.strokeStyle = '#7e5834'; c.lineWidth = Math.max(.65, .8 * w / 390); c.fill(); c.stroke();
         }
       }
-      if (!this.reducedMotion && age>=0 && age<550) {
+      if (!this.reducedMotion && age < PICKUP_FLIGHT_MS) {
         // A short curved flight ties the collected bone to the score display.
-        const t=age/550,inv=1-t,s=w/390;
-        const bx=inv*inv*point.x+2*inv*t*(point.x+35*s)+t*t*w*.14;
-        const by=inv*inv*(point.y-45*s)+2*inv*t*h*.22+t*t*48;
+        const t=age/PICKUP_FLIGHT_MS,inv=1-t,s=w/390;
+        const startX=point.x,startY=point.y-38*s,controlX=(startX+hud.targetX)/2;
+        const controlY=Math.min(startY,hud.targetY)-16*s;
+        const bx=inv*inv*startX+2*inv*t*controlX+t*t*hud.targetX;
+        const by=inv*inv*startY+2*inv*t*controlY+t*t*hud.targetY;
         c.globalAlpha=Math.min(1,(1-t)*2);
-        for(let i=1;i<=3;i++) this.ellipse(bx+i*3*s,by+i*7*s,(3-i*.6)*s,(3-i*.6)*s,gold?'#edb044':'#fff3cd');
-        this.bone(bx,by,(gold?.3:.24)*(1-t*.35)*s,0,gold?'gold':'normal');
-        if(age<260){
-          c.globalAlpha=(1-age/260)*.55;c.beginPath();
-          c.ellipse(point.x,point.y-7*s,(25+age/18)*s,8*s,0,0,Math.PI*2);
+        for(let i=1;i<=2;i++) this.ellipse(bx+i*2*s,by+i*4*s,(2.4-i*.5)*s,(2.4-i*.5)*s,gold?'#edb044':'#fff3cd');
+        this.bone(bx,by,(gold?.3:.24)*(1-t*.25)*s,0,gold?'gold':'normal');
+        if(age<170){
+          c.globalAlpha=(1-age/170)*.42;c.beginPath();
+          c.ellipse(point.x,point.y-7*s,25*s,7*s,0,0,Math.PI*2);
           c.strokeStyle=gold?'#eab64c':'#ffefb1';c.lineWidth=2*s;c.stroke();
         }
       }
       if (effect.milestone) {
-        c.globalAlpha = Math.min(1, (1 - p) * 2); c.font = `900 ${Math.round(w / 11)}px Georgia,serif`; c.fillStyle = '#417758';
-        c.fillText(effect.milestone, w * .5, h * .37);
+        c.globalAlpha = this.reducedMotion ? 1 : Math.min(1, (1 - p) * 2);
+        c.font = `800 ${Math.max(11, Math.min(13, Math.round(w / 29)))}px Georgia,serif`;
+        c.fillStyle = '#315844'; c.fillText(effect.milestone, hud.labelX, hud.labelY + 20);
       }
       c.restore();
     }

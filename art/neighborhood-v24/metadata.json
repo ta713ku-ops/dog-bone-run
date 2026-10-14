@@ -1,0 +1,93 @@
+{
+  "generator": "scripts/build-neighborhood-art.py",
+  "assets": {
+    "houses": {
+      "path": "art/neighborhood-v24/houses.webp",
+      "source": "art/neighborhood-v24/source/houses.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 302488,
+      "decodedBytes": 4194304,
+      "sha256": "1711de182a8b5be966a5d8be76a301cde09b8dc51706fc0c773c342475c5740f",
+      "sourceSha256": "af23c34869fc24633bbfd9e9724ac5702704a4faced7efe02ba2cbfc5f326562"
+    },
+    "asphalt": {
+      "path": "art/neighborhood-v24/asphalt.webp",
+      "source": "art/neighborhood-v24/source/asphalt.png",
+      "width": 384,
+      "height": 384,
+      "bytes": 55216,
+      "decodedBytes": 589824,
+      "sha256": "c1136f441c3d243c1d861903994256ee8dca139f28ba0234bb25de89b2844a45",
+      "sourceSha256": "96d1e367e0e604bcd11a090d21fb00a337fc2304a6526680dc942a014c1d8099"
+    }
+  },
+  "houseCells": {
+    "cream-left": {
+      "cell": [
+        0,
+        0
+      ],
+      "crop": [
+        16,
+        37,
+        494,
+        456
+      ],
+      "rootAnchor": [
+        263.0,
+        490
+      ]
+    },
+    "timber-left": {
+      "cell": [
+        1,
+        0
+      ],
+      "crop": [
+        526,
+        28,
+        482,
+        463
+      ],
+      "rootAnchor": [
+        767.0,
+        488
+      ]
+    },
+    "cream-right": {
+      "cell": [
+        0,
+        1
+      ],
+      "crop": [
+        14,
+        517,
+        498,
+        465
+      ],
+      "rootAnchor": [
+        263.0,
+        979
+      ]
+    },
+    "brick-right": {
+      "cell": [
+        1,
+        1
+      ],
+      "crop": [
+        512,
+        519,
+        508,
+        461
+      ],
+      "rootAnchor": [
+        766.0,
+        977
+      ]
+    }
+  },
+  "totalBytes": 357704,
+  "totalDecodedBytes": 4784128
+}

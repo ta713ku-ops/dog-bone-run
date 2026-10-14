@@ -1,0 +1,266 @@
+{
+  "generator": "scripts/build-street-materials.py",
+  "generatorSha256": "e2276db2b9020a50c6a4bc2a00aed8917f8f710fe3aa6a7f3242ac6390b4ce52",
+  "assets": {
+    "materials": {
+      "path": "art/street-v26/materials.webp",
+      "source": "art/street-v26/source/materials.png",
+      "sha256": "b1195a8833f2e583700921564beefbd3d498cee91960a06a4c997860bdbbd6e1",
+      "sourceSha256": "bbefbe0fcf3bd7380a591f3dbc4afd7f3f80e2dcb5873db74bfd06c13c8b7e25",
+      "width": 512,
+      "height": 512,
+      "bytes": 84716,
+      "rgbaDecodedBytes": 1048576
+    },
+    "toys": {
+      "path": "art/street-v26/toys.webp",
+      "source": "art/street-v26/source/toys.png",
+      "sha256": "88c018616fe48776b43fdb1aae94caed68d0be7cabf3e8e46fc069ee1c06d5ee",
+      "sourceSha256": "5300ecaf8dd82657809da9ca15e0b751a1c39e8d403ada36b83eb530bdd9a3f6",
+      "width": 512,
+      "height": 256,
+      "bytes": 16074,
+      "rgbaDecodedBytes": 524288
+    },
+    "facades": {
+      "path": "art/street-v26/facades.webp",
+      "source": "art/street-v26/source/facades.png",
+      "sha256": "d5e36be84b7310d1c5cbeeb93e82f1f5d50a1b55e7a9993f8d85d6efa4a4f267",
+      "sourceSha256": "6f10265aba4e98f3040193f199742f75895177869b22546dd7a8b4169737b5d8",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 207308,
+      "rgbaDecodedBytes": 4194304
+    },
+    "foliage": {
+      "path": "art/street-v26/foliage.webp",
+      "source": "art/street-v26/source/foliage.png",
+      "sha256": "28de474ac00d8cfa252d743ee965c5c2366f0b07f99817ca64cc3321b456b1a6",
+      "sourceSha256": "b5b045a8fbdfe6c72bc38d1e10ef0bf62e886a22a7e9cfdf74a3bcb7ae4ae998",
+      "width": 512,
+      "height": 256,
+      "bytes": 42120,
+      "rgbaDecodedBytes": 524288
+    },
+    "variants": {
+      "path": "art/street-v26/variants.webp",
+      "source": "art/street-v26/source/variants.png",
+      "sha256": "9bd17c1ab890f44d8c5e14e24bc089b3eb785044cfd3c778911a807425540c10",
+      "sourceSha256": "2a9536d4e98a963ff2a21591fe046ca634aba0e93c85d7ec49edaa7b5d52b522",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 227420,
+      "rgbaDecodedBytes": 4194304
+    }
+  },
+  "cells": {
+    "asphalt": [
+      0,
+      0,
+      256,
+      256
+    ],
+    "plaster": [
+      256,
+      0,
+      256,
+      256
+    ],
+    "roof": [
+      0,
+      256,
+      256,
+      256
+    ],
+    "concrete": [
+      256,
+      256,
+      256,
+      256
+    ]
+  },
+  "toyGenerator": "scripts/build-street-toys.py",
+  "toyGeneratorSha256": "ec3a9c06060126afc7a2478e01b7b4a4f8cb9d83960ce61cdc37ad4ace5c1a94",
+  "toyCells": {
+    "normal": {
+      "crop": [
+        8,
+        46,
+        240,
+        164
+      ],
+      "sourceCrop": [
+        74,
+        208,
+        776,
+        529
+      ]
+    },
+    "gold": {
+      "crop": [
+        264,
+        46,
+        240,
+        163
+      ],
+      "sourceCrop": [
+        955,
+        208,
+        775,
+        527
+      ]
+    }
+  },
+  "facadeGenerator": "scripts/build-street-facades.py",
+  "facadeGeneratorSha256": "5f90b2bd9bc5fdbe44bc8a9113c7d6680d960dccf9080061d4c5894564783bf7",
+  "facadeCells": {
+    "house": {
+      "crop": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "sourceCrop": [
+        4,
+        4,
+        623,
+        623
+      ]
+    },
+    "side": {
+      "crop": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "sourceCrop": [
+        631,
+        4,
+        1250,
+        623
+      ]
+    },
+    "store": {
+      "crop": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "sourceCrop": [
+        4,
+        631,
+        623,
+        1250
+      ]
+    },
+    "apartment": {
+      "crop": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "sourceCrop": [
+        631,
+        631,
+        1250,
+        1250
+      ]
+    }
+  },
+  "foliageGenerator": "scripts/build-street-foliage.py",
+  "foliageGeneratorSha256": "178038ec70e1877c06376687b8853a29e998c3f02dee36ec36f381866afaf524",
+  "foliageCells": {
+    "tree": {
+      "crop": [
+        33,
+        8,
+        189,
+        240
+      ],
+      "sourceCrop": [
+        128,
+        49,
+        630,
+        799
+      ]
+    },
+    "hedge": {
+      "crop": [
+        264,
+        87,
+        240,
+        82
+      ],
+      "sourceCrop": [
+        920,
+        343,
+        824,
+        280
+      ]
+    }
+  },
+  "variantGenerator": "scripts/build-street-variants.py",
+  "variantGeneratorSha256": "8e5a1503f98a73db3120cac147d6443add9ab80af40a6a8ea10a98d7a243a20b",
+  "variantCells": {
+    "cedar": {
+      "crop": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "sourceCrop": [
+        4,
+        4,
+        623,
+        623
+      ]
+    },
+    "brick": {
+      "crop": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "sourceCrop": [
+        631,
+        4,
+        1250,
+        623
+      ]
+    },
+    "bakery": {
+      "crop": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "sourceCrop": [
+        4,
+        631,
+        623,
+        1250
+      ]
+    },
+    "blue": {
+      "crop": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "sourceCrop": [
+        631,
+        631,
+        1250,
+        1250
+      ]
+    }
+  }
+}

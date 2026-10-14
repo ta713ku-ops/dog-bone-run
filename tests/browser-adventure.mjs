@@ -49,7 +49,7 @@ for(const engine of [chromium,webkit]){
    // Safe empty fixture lets each scenic stage be viewed without a forced hazard collision.
    await p.evaluate(()=>{const g=window.__dogBoneTest.game;g.bones=[];g.obstacles=[];});
    let prev=0;
-   for(const [at,title] of [[2500,'花咲く小径'],[13500,'木漏れ日の森'],[23500,'小川のほとり']]){
+   for(const [at,title] of [[2500,'家並みの道'],[13500,'庭木のある通り'],[23500,'塀沿いの道']]){
     await p.clock.runFor(at-prev);prev=at;assert.equal(await p.locator('#trail-label').textContent(),title);
     const projection=await p.evaluate(()=>{const r=window.__dogBoneTest.renderer;return {width:r.width,foot:[-1,0,1].map(l=>r.project(l,0).x),far:r.project(0,3.2).x};});
     for(const [index,lane] of [-1,0,1].entries())assert.ok(Math.abs(projection.foot[index]-projection.width*(.5+lane*.235))<.001);

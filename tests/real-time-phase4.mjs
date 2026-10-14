@@ -66,7 +66,7 @@ try {
   assert.equal(evidence.result.collected,evidence.result.placed);assert.ok(evidence.result.score>0);
   assert.equal(evidence.result.timeMs,30000);assert.deepEqual(evidence.contacts,[]);
   assert.deepEqual(evidence.audio,{voices:0,contexts:1,musicRunning:false});
-  assert.deepEqual(evidence.scenicSamples.map(s=>s.title),['花咲く小径','木漏れ日の森','小川のほとり']);
+  assert.deepEqual(evidence.scenicSamples.map(s=>s.title),['家並みの道','庭木のある通り','塀沿いの道']);
   for(const sample of evidence.scenicSamples) {
     for(const [index,lane] of [-1,0,1].entries())assert.ok(Math.abs(sample.foot[index]-sample.width*(.5+lane*.235))<.001);
     assert.ok(Math.abs(sample.far-sample.width*.5)>.01);

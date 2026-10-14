@@ -201,7 +201,7 @@ export class RoadComfortTracker {
     this.referenceY = height * BOTTOM_START;
   }
 
-  record({ objectId, generation = 0, category, bounds, alpha = 1, lineId = null } = {}) {
+  record({ objectId, generation = 0, category, bounds, alpha = 1, lineId = null, worldLaneBounds } = {}) {
     if (!ROAD_CATEGORIES.includes(category) || !Number.isFinite(alpha) || alpha <= 0) return false;
     const clipped = clipRoadBounds(bounds, this.width, this.height);
     if (!clipped || clipped.bottom < this.referenceY || clipped.top > this.height) return false;
@@ -216,6 +216,8 @@ export class RoadComfortTracker {
       lineId: lineId ?? undefined,
       bounds: Object.freeze(clipped),
       alpha: Math.min(1, alpha),
+      ...(worldLaneBounds && Number.isFinite(worldLaneBounds.min) && Number.isFinite(worldLaneBounds.max)
+        ? { worldLaneBounds: Object.freeze({ min: worldLaneBounds.min, max: worldLaneBounds.max }) } : {}),
     }));
     return true;
   }

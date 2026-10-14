@@ -12,6 +12,7 @@ for (const engine of [chromium, webkit]) {
     for (const sound of [true, false]) {
       const context = await browser.newContext({ ...devices['iPhone 13'] });
       const page = await context.newPage(); page.on('pageerror', e => errors.push(e.message));
+      if (engine === webkit) await page.goto('data:text/html,<title>WebKit ready</title>');
       await page.goto(`${base}/?test=1&seed=42`); await page.waitForLoadState('networkidle');
       if (!sound) {
         await page.locator('#ready-settings').tap();
@@ -46,10 +47,12 @@ for (const engine of [chromium, webkit]) {
         assert.equal(await page.locator('#game').getAttribute('data-state'), 'running');
         assert.equal(await page.evaluate(() => scrollY), 0);
       }
-      await page.screenshot({ path: fileURLToPath(new URL(`runner-touch-${engine.name()}-${sound ? 'sound' : 'silent'}.png`, output)) });
       await page.getByRole('button', { name: '一時停止' }).tap();
       assert.equal(await page.locator('#game').getAttribute('data-state'), 'paused');
       assert.equal(await page.evaluate(() => window.__dogBoneTest.log.events.filter(e => e.type === 'pause').at(-1).reason), 'manual');
+      // Capturing a DPR3 live canvas can block RAF past the game's 250ms stall
+      // guard. Capture after manual pause so the test itself cannot create one.
+      await page.screenshot({ path: fileURLToPath(new URL(`runner-touch-${engine.name()}-${sound ? 'sound' : 'silent'}.png`, output)) });
       await page.getByRole('button', { name: '再開する', exact: true }).tap();
       await page.waitForFunction(() => window.__dogBoneTest.game.state === 'running');
       for (const reason of ['blur', 'pagehide']) {

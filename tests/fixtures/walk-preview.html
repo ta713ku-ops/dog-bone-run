@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff9f0">
+  <title>住宅街の散歩画面 v0.26 検証プレビュー</title>
+  <link rel="stylesheet" href="../../styles.css">
+  <script>
+    // Preview-only measurements. The wrapped fetch returns the original
+    // response unchanged; clones are decoded only to estimate RGBA memory.
+    (() => {
+      const capture = window.__walkAssetCapture = { records: [], pending: [] };
+      const assetPath = value => {
+        try {
+          const pathname = new URL(String(value), location.href).pathname;
+          return /(?:^|\/)art\/(?:park-v23|neighborhood-v24|street-v25|street-v26)\//.test(pathname) ? pathname : null;
+        } catch { return null; }
+      };
+      const nativeFetch = window.fetch.bind(window);
+      window.fetch = async (...args) => {
+        const response = await nativeFetch(...args);
+        const requestUrl = args[0] instanceof Request ? args[0].url : String(args[0]);
+        const pathname = assetPath(requestUrl);
+        if (!pathname) return response;
+        const record = { url: pathname, status: response.status, bytes: null, width: null, height: null, rgbaDecodedBytes: 0 };
+        capture.records.push(record);
+        const measuring = (async () => {
+          try {
+            const blob = await response.clone().blob();
+            record.bytes = blob.size;
+            if (response.ok && blob.type.startsWith('image/')) {
+              const bitmap = await createImageBitmap(blob);
+              record.width = bitmap.width; record.height = bitmap.height;
+              record.rgbaDecodedBytes = bitmap.width * bitmap.height * 4;
+              bitmap.close();
+            }
+          } catch (error) { record.measurementError = String(error); }
+          return record;
+        })();
+        capture.pending.push(measuring);
+        return response;
+      };
+      const imageSource = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+      if (imageSource?.set && imageSource?.get) {
+        Object.defineProperty(HTMLImageElement.prototype, 'src', {
+          configurable: imageSource.configurable,
+          enumerable: imageSource.enumerable,
+          get() { return imageSource.get.call(this); },
+          set(value) {
+            const pathname = assetPath(value);
+            let record = null;
+          if (pathname) {
+              record = { url: pathname, status: 'image-element', bytes: null, width: null, height: null, rgbaDecodedBytes: 0 };
+              capture.records.push(record);
+              const finish = () => {
+                record.status = this.naturalWidth > 0 ? 'decoded' : 'decode-failed';
+                record.width = this.naturalWidth || null;
+                record.height = this.naturalHeight || null;
+                record.rgbaDecodedBytes = (this.naturalWidth || 0) * (this.naturalHeight || 0) * 4;
+              };
+              this.addEventListener('load', finish, { once: true });
+              this.addEventListener('error', finish, { once: true });
+            }
+            const result = imageSource.set.call(this, value);
+            // Check only after src is assigned. Checking the previous image's
+            // complete flag can record a zero-sized decode before this URL loads.
+            if (record && this.complete) queueMicrotask(() => {
+              if (record.status === 'image-element') finish();
+            });
+            return result;
+          },
+        });
+      }
+    })();
+  </script>
+  <style>
+    #fixture-controls {
+      width: min(100% - 24px, 760px);
+      margin: 16px auto 28px;
+      padding: 12px 14px;
+      border: 1px solid #b8c5b2;
+      border-radius: 12px;
+      background: #fff9f0;
+      font-size: 13px;
+    }
+    #fixture-controls h1 { margin: 0 0 8px; font-size: 15px; }
+    #fixture-controls p { margin: 5px 0; line-height: 1.5; }
+    #fixture-controls .control-row { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; }
+    #fixture-controls label { display: grid; gap: 4px; font-weight: 700; }
+    #fixture-controls input, #fixture-controls select, #fixture-controls button {
+      min-height: 44px;
+      padding: 7px 10px;
+      border: 1px solid #8fa38b;
+      border-radius: 8px;
+      background: #fffdf8;
+      color: #263c32;
+    }
+    #fixture-controls button { background: #315844; color: #fff9f0; font-weight: 700; }
+    #fixture-status { min-height: 1.5em; color: #405b48; }
+    @media (max-width: 520px) {
+      #fixture-controls { margin-top: 12px; }
+      #fixture-controls .control-row { align-items: stretch; }
+      #fixture-controls label { flex: 1 1 120px; }
+      #fixture-controls input, #fixture-controls select { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="game" id="game" data-state="running" data-fixture-state="paused" data-reduced-motion="false" aria-label="ほねのおさんぽ 検証プレビュー">
+    <canvas id="scene" aria-label="固定時刻の散歩画面"></canvas>
+    <div class="hud" id="hud" data-urgent="false">
+      <div class="score-stack">
+        <div class="score-box"><span class="hud-label">スコア</span><strong id="score">0</strong></div>
+        <div class="combo-box" id="combo-box" data-active="false" aria-hidden="true"><span class="hud-label">コンボ</span><strong id="combo">0</strong></div>
+      </div>
+      <div class="hud-actions">
+        <span class="trail-label" id="trail-label" hidden>家並みの道</span>
+        <div class="clock" id="clock"><span class="hud-label" id="clock-label">のこり</span><strong class="clock-value"><span id="clock-seconds">30</span><span class="clock-unit">秒</span></strong></div>
+        <button class="icon-button" id="pause" type="button" aria-label="一時停止" title="一時停止">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="control-hint" id="control-hint" hidden>左右にスワイプして進もう</p>
+  </main>
+
+  <aside id="fixture-controls" aria-label="検証担当者用">
+    <h1>住宅街の散歩画面 v0.26 · 固定フレーム</h1>
+    <p>実際の Game と Renderer を使い、seed のコースを骨のレーンに沿って指定時刻まで進めます。フレームは一時停止した状態で描画します。</p>
+    <div class="control-row">
+      <label for="fixture-time">経過時間
+        <select id="fixture-time">
+          <option value="0">0秒 · 家並み</option>
+          <option value="5000">5秒 · 家並み</option>
+          <option value="10000">10秒 · 庭木の通り</option>
+          <option value="15000">15秒 · 庭木の通り</option>
+          <option value="20000">20秒 · 塀沿い</option>
+          <option value="25000">25秒 · 塀沿い</option>
+        </select>
+      </label>
+      <label for="fixture-seed">seed
+        <input id="fixture-seed" type="number" min="0" max="4294967295" step="1" value="42">
+      </label>
+      <button id="fixture-apply" type="button">この状態を描画</button>
+    </div>
+    <p id="fixture-status" role="status" aria-live="polite">犬と背景素材を読み込んでいます…</p>
+  </aside>
+
+  <script type="module">
+    import { CONFIG, PHASE4, tier } from '../../src/config.js';
+    import { Game } from '../../src/game.js';
+    import { Renderer } from '../../src/render.js';
+
+    const canvas = document.querySelector('#scene');
+    const status = document.querySelector('#fixture-status');
+    let renderer = null;
+    let game = null;
+    let fixture = null;
+
+    function advanceTo(targetMs) {
+      if (targetMs > game.timeMs) game.advance(targetMs - game.timeMs);
+      if (Math.abs(game.timeMs - targetMs) > 1e-6) {
+        throw new Error(`Fixture stopped at ${game.timeMs}ms instead of ${targetMs}ms (${game.state}).`);
+      }
+    }
+
+    function createGameFixture(timeMs, seed) {
+      if (!renderer?.dogs?.stats?.ready) throw new Error('The production dog renderer is not ready.');
+      renderer.reset();
+      const routeCommands = [];
+      const events = [];
+      const nextGame = new Game({
+        phase: 4,
+        seed,
+        onEvent: event => {
+          events.push(event);
+          if (event.type === 'collect') renderer.collect(event);
+        },
+      });
+      if (!nextGame.start()) throw new Error('Could not start the phase 4 fixture.');
+      game = nextGame;
+
+      for (let index = 0; index < game.bones.length; index++) {
+        const bone = game.bones[index];
+        const previous = game.bones[index - 1];
+        const longitudinalSafetyMs = (CONFIG.dogHalfLength + CONFIG.obstacleHalfLength) * 1000;
+        const scheduledCommandAt = previous
+          ? previous.timeMs + longitudinalSafetyMs
+          : bone.timeMs - (CONFIG.dogHalfLength + CONFIG.boneHalfLength) * 1000 - CONFIG.moveMs;
+        const commandAt = Math.max(0, scheduledCommandAt);
+        if (commandAt > timeMs) break;
+        const intendedLane = game.move?.to ?? game.lane;
+        if (bone.lane === intendedLane) continue;
+
+        if (commandAt < game.timeMs - 1e-6) {
+          throw new Error(`Route command for ${bone.id} at ${commandAt}ms follows fixture time ${game.timeMs}ms.`);
+        }
+        advanceTo(commandAt);
+        const fromLane = game.move?.to ?? game.lane;
+        const direction = Math.sign(bone.lane - fromLane);
+        if (Math.abs(bone.lane - fromLane) !== 1 || !game.command(direction, 'fixture')) {
+          throw new Error(`Could not follow ${bone.id} from lane ${fromLane} to ${bone.lane}.`);
+        }
+        routeCommands.push({ atMs: commandAt, boneId: bone.id, fromLane, toLane: bone.lane });
+      }
+
+      advanceTo(timeMs);
+      if (game.state !== 'running') throw new Error(`Fixture ended early in state ${game.state}.`);
+      if (!game.pause('fixture')) throw new Error('Could not freeze the game fixture.');
+      document.querySelector('#game').dataset.fixtureState = game.state;
+      document.querySelector('#score').textContent = String(game.score);
+      const combo = document.querySelector('#combo');
+      combo.replaceChildren(document.createTextNode(String(game.combo)));
+      const multiplier = tier(game.combo).multiplier;
+      if (multiplier > 1) {
+        const span = document.createElement('span');
+        span.textContent = ` ×${multiplier.toFixed(1)}`;
+        combo.append(span);
+      }
+      document.querySelector('#combo-box').dataset.active = String(game.combo >= 2);
+      document.querySelector('#combo-box').setAttribute('aria-hidden', String(game.combo < 2));
+      document.querySelector('#clock-seconds').textContent = String(Math.ceil(Math.max(0, PHASE4.durationMs - timeMs) / 1000));
+      document.querySelector('#hud').dataset.urgent = String(timeMs >= PHASE4.durationMs - 5000 && timeMs < PHASE4.durationMs);
+      document.querySelector('#control-hint').hidden = timeMs >= 2200;
+
+      // Game state remains paused for deterministic simulation and pixels. The
+      // compositor intentionally leaves the production pause modal out of view.
+      renderer.draw(game);
+      fixture = { timeMs, seed, routeCommands, events };
+      return diagnostics();
+    }
+
+    function gameSnapshot() {
+      const contract = {
+        phase: game.phase,
+        seed: game.seed,
+        durationMs: PHASE4.durationMs,
+        stepMs: CONFIG.stepMs,
+        moveMs: CONFIG.moveMs,
+        cooldownMs: CONFIG.cooldownMs,
+        dogHalfWidth: CONFIG.dogHalfWidth,
+        boneHalfWidth: CONFIG.boneHalfWidth,
+        dogHalfLength: CONFIG.dogHalfLength,
+        boneHalfLength: CONFIG.boneHalfLength,
+        obstacleHalfWidth: CONFIG.obstacleHalfWidth,
+        obstacleHalfLength: CONFIG.obstacleHalfLength,
+        lookAhead: CONFIG.lookAhead,
+        stages: PHASE4.stages,
+      };
+      return {
+        contract,
+        state: game.state,
+        pausedFrom: game.pausedFrom,
+        timeMs: game.timeMs,
+        distance: game.distance,
+        x: game.x,
+        lane: game.lane,
+        move: game.move,
+        queue: game.queue,
+        speed: game.speed,
+        score: game.score,
+        combo: game.combo,
+        maxCombo: game.maxCombo,
+        collected: game.collected,
+        normalCollected: game.normalCollected,
+        goldCollected: game.goldCollected,
+        difficultyLevel: game.difficultyLevel,
+        progress: game.progress,
+        slowUntilMs: game.slowUntilMs,
+        suppressUntilMs: game.suppressUntilMs,
+        endReason: game.endReason,
+        bones: game.bones.map(({ id, lane, timeMs, distance, kind, status }) => ({ id, lane, timeMs, distance, kind, status })),
+        obstacles: game.obstacles.map(({ id, type, lane, distance, status }) => ({ id, type, lane, distance, status })),
+      };
+    }
+
+    function diagnostics() {
+      if (!game || !fixture || !renderer) return null;
+      const currentDistance = renderer.worldDistance(game);
+      const visibleBones = game.bones.filter(item => item.status === 'pending' && item.distance - currentDistance <= CONFIG.lookAhead && item.distance - currentDistance >= -.16);
+      const visibleObstacles = game.obstacles.filter(item => item.status === 'pending' && item.distance - currentDistance <= CONFIG.lookAhead && item.distance - currentDistance >= -.16);
+      const project = item => ({
+        id: item.id,
+        lane: item.lane,
+        distance: Number((item.distance - currentDistance).toFixed(6)),
+        ...renderer.project(item.lane, item.distance - currentDistance),
+      });
+      const dogLane = typeof game.xAt === 'function' ? game.xAt(game.timeMs) : game.x;
+      const dog = renderer.project(dogLane, 0);
+      return {
+        fixture: { ...fixture, phase: game.phase, state: game.state, pausedFrom: game.pausedFrom },
+        game: gameSnapshot(),
+        counts: {
+          bones: game.bones.length,
+          obstacles: game.obstacles.length,
+          collected: game.collected,
+          missedBones: game.bones.filter(item => item.status === 'miss').length,
+          pendingBones: game.bones.filter(item => item.status === 'pending').length,
+          obstacleContacts: fixture.events.filter(event => event.type === 'obstacle_contact').length,
+        },
+        hud: {
+          score: document.querySelector('#score').textContent,
+          combo: game.combo,
+          remainingSeconds: document.querySelector('#clock-seconds').textContent,
+          controlHintVisible: !document.querySelector('#control-hint').hidden,
+          pauseLabel: document.querySelector('#pause').getAttribute('aria-label'),
+        },
+        renderer: {
+          width: renderer.width,
+          height: renderer.height,
+          devicePixelRatio: devicePixelRatio || 1,
+          canvasWidth: canvas.width,
+          canvasHeight: canvas.height,
+          dog: renderer.dogs ? {
+            ready: Boolean(renderer.dogs.stats?.ready),
+            mode: renderer.dogs.stats?.mode ?? null,
+            animationReady: Boolean(renderer.dogs.stats?.animationReady),
+            compressedBytes: renderer.dogs.stats?.compressedBytes ?? null,
+            decodedBytes: renderer.dogs.stats?.decodedBytes ?? null,
+            textureCount: renderer.dogs.stats?.textureCount ?? null,
+            textureSizes: renderer.dogs.stats?.textureSizes ?? null,
+          } : null,
+          sceneryReady: Boolean(renderer.adventure),
+          sceneryStats: renderer.adventure?.stats ?? null,
+          roadComfort: renderer.comfortMetrics,
+          assetCapture: {
+            requestCount: window.__walkAssetCapture?.records?.length ?? 0,
+            pendingMeasurements: window.__walkAssetCapture?.pending?.length ?? 0,
+          },
+        },
+        projection: {
+          dog,
+          visibleBones: visibleBones.map(project),
+          visibleObstacles: visibleObstacles.map(item => ({ type: item.type, ...project(item) })),
+        },
+      };
+    }
+
+    function canvasPixels() {
+      const context = canvas.getContext('2d');
+      const image = context.getImageData(0, 0, canvas.width, canvas.height);
+      let hash = 2166136261, opaquePixels = 0, nonBackgroundPixels = 0;
+      const data = image.data;
+      for (let index = 0; index < data.length; index += 4) {
+        if (data[index + 3] > 0) opaquePixels++;
+        if (data[index] !== 0 || data[index + 1] !== 0 || data[index + 2] !== 0 || data[index + 3] !== 0) nonBackgroundPixels++;
+        for (let channel = 0; channel < 4; channel++) {
+          hash ^= data[index + channel];
+          hash = Math.imul(hash, 16777619);
+        }
+      }
+      return { width: image.width, height: image.height, rgbaFnv1a: (hash >>> 0).toString(16).padStart(8, '0'), opaquePixels, nonBackgroundPixels };
+    }
+
+    async function assetStats() {
+      const capture = window.__walkAssetCapture;
+      if (capture?.pending?.length) await Promise.allSettled(capture.pending);
+      const records = (capture?.records ?? []).map(({ url, status, bytes, width, height, rgbaDecodedBytes, measurementError }) => ({
+        url, status, bytes, width, height, rgbaDecodedBytes, ...(measurementError ? { measurementError } : {}),
+      }));
+      const resources = performance.getEntriesByType('resource')
+        .filter(entry => /(?:^|\/)art\/(?:park-v23|neighborhood-v24|street-v25|street-v26)\//.test(new URL(entry.name).pathname))
+        .map(entry => ({ url: new URL(entry.name).pathname, transferSize: entry.transferSize, encodedBodySize: entry.encodedBodySize, decodedBodySize: entry.decodedBodySize }));
+      return {
+        records,
+        resourceTiming: resources,
+        totalFetchedBytes: records.reduce((sum, record) => sum + (record.bytes ?? 0), 0),
+        totalImageRgbaEstimate: records.reduce((sum, record) => sum + (record.rgbaDecodedBytes ?? 0), 0),
+      };
+    }
+
+    async function setFixture(timeMs, seed = 42) {
+      if (!renderer) throw new Error('Renderer initialization has not finished.');
+      if (!Number.isInteger(timeMs) || timeMs < 0 || timeMs >= PHASE4.durationMs) throw new RangeError('timeMs must be an integer within the 30-second run.');
+      if (!Number.isInteger(seed) || seed < 0 || seed > 0xffffffff) throw new RangeError('seed must be an unsigned 32-bit integer.');
+      const result = createGameFixture(timeMs, seed);
+      document.querySelector('#fixture-time').value = String(timeMs);
+      document.querySelector('#fixture-seed').value = String(seed);
+      status.textContent = `seed ${seed} · ${(timeMs / 1000).toFixed(0)}秒 · ${result.counts.collected}/${result.counts.bones}個取得 · 一時停止した静止フレーム`;
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      renderer.draw(game);
+      return diagnostics();
+    }
+
+    async function runDrawBenchmark(frameCount = 80, stepMs = 1000) {
+      if (frameCount !== 80 || stepMs !== 1000) throw new RangeError('The evidence harness is fixed at 80 samples and 1000ms steps.');
+      const durations = [];
+      for (let index = 0; index < frameCount; index++) {
+        const timeMs = (index % 30) * stepMs;
+        createGameFixture(timeMs, fixture?.seed ?? 42);
+        const start = performance.now();
+        renderer.draw(game, { force: true });
+        durations.push(performance.now() - start);
+      }
+      durations.sort((a, b) => a - b);
+      const percentile = p => durations[Math.min(durations.length - 1, Math.ceil(durations.length * p) - 1)];
+      return {
+        frames: frameCount,
+        simulatedStepMs: stepMs,
+        sampleMode: 'synthetic frozen Game fixtures; renderer.draw duration only; not a physical-device frame-rate claim',
+        drawMs: {
+          min: durations[0],
+          median: percentile(.5),
+          p95: percentile(.95),
+          max: durations.at(-1),
+          mean: durations.reduce((sum, value) => sum + value, 0) / durations.length,
+        },
+      };
+    }
+
+    async function initialize() {
+      renderer = new Renderer(canvas, { useSprites: true });
+      renderer.setReducedMotion(false);
+      const waits = [renderer.ready];
+      if (renderer.adventure?.ready && typeof renderer.adventure.ready.then === 'function') waits.push(renderer.adventure.ready);
+      if (renderer.streetArt?.ready) waits.push(renderer.streetArt.ready);
+      if (renderer.toyArt?.ready) waits.push(renderer.toyArt.ready);
+      await Promise.all(waits);
+      if (initializationTimedOut) throw new Error('Preview initialization exceeded its time limit.');
+      if (renderer.dogs && !renderer.dogs.stats.ready) throw new Error('The production dog renderer finished loading in an unready state.');
+      await setFixture(Number(new URLSearchParams(location.search).get('timeMs') ?? 5000), Number(new URLSearchParams(location.search).get('seed') ?? 42));
+      return { dog: renderer.dogs?.stats ?? null, adventureReady: Boolean(renderer.adventure), fixture: diagnostics() };
+    }
+
+    let initializationTimedOut = false;
+    let initializationTimer = null;
+    window.__walkPreview = {
+      ready: null,
+      initError: null,
+      setFixture,
+      diagnostics,
+      canvasPixels,
+      assetStats,
+      runDrawBenchmark,
+      get game() { return game; },
+      get renderer() { return renderer; },
+    };
+    const initialization = initialize();
+    const readinessTimeout = new Promise((_, reject) => {
+      initializationTimer = setTimeout(() => {
+        initializationTimedOut = true;
+        reject(new Error('Preview initialization timed out after 20 seconds.'));
+      }, 20_000);
+    });
+    window.__walkPreview.ready = Promise.race([initialization, readinessTimeout])
+      .then(result => {
+        clearTimeout(initializationTimer);
+        return { ok: true, ...result };
+      })
+      .catch(error => {
+        clearTimeout(initializationTimer);
+        const message = error instanceof Error ? error.message : String(error);
+        window.__walkPreview.initError = message;
+        status.textContent = `読み込み失敗: ${message}`;
+        status.dataset.status = 'error';
+        document.querySelector('#fixture-controls').dataset.status = 'error';
+        return { ok: false, error: message };
+      });
+
+    document.querySelector('#fixture-apply').addEventListener('click', async () => {
+      try { await setFixture(Number(document.querySelector('#fixture-time').value), Number(document.querySelector('#fixture-seed').value)); }
+      catch (error) { status.textContent = error.message; }
+    });
+  </script>
+</body>
+</html>

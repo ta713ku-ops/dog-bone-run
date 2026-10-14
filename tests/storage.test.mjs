@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { PHASE4 } from '../src/config.js';
 import { RecordStore } from '../src/storage.js';
 
 class MemoryStorage {
@@ -28,6 +29,21 @@ test('read starts at zero and rule versions use separate durable keys', () => {
   assert.equal(phase1.save({ completed: true, score: 50, maxCombo: 8 }).ok, true);
   assert.deepEqual(phase1.read().record, { highScore: 50, maxCombo: 8 });
   assert.deepEqual(phase2.read().record, { highScore: 0, maxCombo: 0 });
+});
+
+test('the new Phase 4 penalty record starts separately and preserves the old best record', () => {
+  const storage = new MemoryStorage();
+  const old = new RecordStore({ storage: () => storage, ruleVersion: 'sprint30-hard-v1' });
+  const current = new RecordStore({ storage: () => storage, ruleVersion: PHASE4.ruleVersion });
+  old.save({ completed: true, score: 245, maxCombo: 17 });
+  const oldRaw = storage.getItem(old.key);
+
+  assert.notEqual(current.key, old.key);
+  assert.deepEqual(current.read(), { ok: true, record: { highScore: 0, maxCombo: 0 } });
+  assert.equal(current.save({ completed: true, score: 70, maxCombo: 9 }).ok, true);
+  assert.deepEqual(current.read().record, { highScore: 70, maxCombo: 9 });
+  assert.deepEqual(old.read().record, { highScore: 245, maxCombo: 17 });
+  assert.equal(storage.getItem(old.key), oldRaw);
 });
 
 test('only completed runs update high score, while max combo can update on any ending', () => {

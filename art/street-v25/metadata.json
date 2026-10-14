@@ -1,0 +1,175 @@
+{
+  "generator": "scripts/build-street-art.py",
+  "assets": {
+    "buildings": {
+      "path": "art/street-v25/buildings.webp",
+      "source": "art/street-v25/source/buildings.png",
+      "width": 640,
+      "height": 960,
+      "bytes": 176572,
+      "decodedBytes": 2457600,
+      "sha256": "256ff25e5d909cdaa2b4b3dcc18b9b69df755a0d3e7708eeabc8a66c6c4e1a83",
+      "sourceSha256": "9cd71a987d6b869e95875d1a7c88e13bcc55a714f0ac3828e0235516e0cd852c"
+    },
+    "obstacles": {
+      "path": "art/street-v25/obstacles.webp",
+      "source": "art/street-v25/source/obstacles.png",
+      "width": 900,
+      "height": 300,
+      "bytes": 54524,
+      "decodedBytes": 1080000,
+      "sha256": "01b3873b118e2a9b11c1cf9b27ade440b29d7e736a35730115169025c50ea159",
+      "sourceSha256": "69237a539b92a83b856841c0d586c30c08275a004a180fe6e2c69a8207d24885"
+    }
+  },
+  "buildingsCells": {
+    "convenience-left": {
+      "cell": [
+        0,
+        0
+      ],
+      "crop": [
+        10,
+        129,
+        300,
+        179
+      ],
+      "rootAnchor": [
+        160.0,
+        306
+      ]
+    },
+    "convenience-right": {
+      "cell": [
+        1,
+        0
+      ],
+      "crop": [
+        330,
+        127,
+        300,
+        181
+      ],
+      "rootAnchor": [
+        480.0,
+        306
+      ]
+    },
+    "shop-left": {
+      "cell": [
+        0,
+        1
+      ],
+      "crop": [
+        10,
+        352,
+        300,
+        276
+      ],
+      "rootAnchor": [
+        160.0,
+        626
+      ]
+    },
+    "shop-right": {
+      "cell": [
+        1,
+        1
+      ],
+      "crop": [
+        330,
+        348,
+        300,
+        280
+      ],
+      "rootAnchor": [
+        480.0,
+        626
+      ]
+    },
+    "apartment-left": {
+      "cell": [
+        0,
+        2
+      ],
+      "crop": [
+        36,
+        648,
+        248,
+        300
+      ],
+      "rootAnchor": [
+        160.0,
+        946
+      ]
+    },
+    "apartment-right": {
+      "cell": [
+        1,
+        2
+      ],
+      "crop": [
+        353,
+        648,
+        253,
+        300
+      ],
+      "rootAnchor": [
+        479.5,
+        946
+      ]
+    }
+  },
+  "obstaclesCells": {
+    "litter": {
+      "cell": [
+        0,
+        0
+      ],
+      "crop": [
+        12,
+        138,
+        271,
+        138
+      ],
+      "rootAnchor": [
+        147.5,
+        274
+      ]
+    },
+    "crow": {
+      "cell": [
+        1,
+        0
+      ],
+      "crop": [
+        361,
+        12,
+        231,
+        273
+      ],
+      "rootAnchor": [
+        476.5,
+        283
+      ]
+    },
+    "cat": {
+      "cell": [
+        2,
+        0
+      ],
+      "crop": [
+        664,
+        9,
+        224,
+        271
+      ],
+      "rootAnchor": [
+        776.0,
+        278
+      ]
+    }
+  },
+  "totalBytes": 231096,
+  "totalDecodedBytes": 3537600
+}

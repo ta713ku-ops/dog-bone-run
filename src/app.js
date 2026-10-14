@@ -33,7 +33,14 @@ const game = new Game({ phase, seed: nextSeed(), onEvent: event => {
     renderer.collect(event); audio.play(event.level, event.kind);
     if (!renderer.reducedMotion) { $('score').classList.remove('score-pop'); void $('score').offsetWidth; $('score').classList.add('score-pop'); }
   }
-  if (type === 'obstacle_contact') renderer.contact(event);
+  if (type === 'obstacle_contact') {
+    renderer.contact(event);
+    if (phase === 4) {
+      const names = { litter: 'ゴミ', crow: 'カラス', cat: '猫' };
+      $('announcement').textContent = `${names[event.obstacleType] ?? '障害物'}に接触。${Math.abs(event.points ?? 0)}点減点。スコア${event.score}点。`;
+      updateHud();
+    }
+  }
   if (type === 'fall') {
     audio.stop(); input?.clear(); lastUpdate = null; lastFrame = null;
     show('falling'); $('announcement').textContent = '穴に落ちました。';
@@ -437,7 +444,9 @@ for(const actionName of ['sit','lie','greet']) action(`home-${actionName}`,()=>{
   log.record('home_gesture',{action:actionName},0);updateHomeControls();
 });
 $('trail-label').hidden = true;
-$('control-hint').textContent = matchMedia('(pointer: coarse)').matches ? '左右にスワイプして移動' : '← → キーで移動';
+$('control-hint').textContent = phase === 4
+  ? (matchMedia('(pointer: coarse)').matches ? '左右スワイプ・接触−10点' : '← → キーで移動・接触−10点')
+  : (matchMedia('(pointer: coarse)').matches ? '左右にスワイプして移動' : '← → キーで移動');
 $('game').dataset.phase = phase;
 $('game').dataset.presentationPhase = presentationPhase;
 $('phase1-bones').hidden = false;
@@ -452,7 +461,7 @@ if (phase >= 2) {
   $('result-note').textContent = 'おさんぽ完走、おつかれさま。';
 }
 $('build-label').textContent = `v${CONFIG.buildVersion}${phase === 4 ? ' · 30秒チャレンジ' : ` · Phase ${phase}`}`;
-$('home-duration').textContent=phase===4?'30秒のおさんぽ':'約60秒のおさんぽ';
+$('home-duration').textContent=phase===4?'30秒のおさんぽ。ゴミ・カラス・猫への接触は10点減点。':'約60秒のおさんぽ';
 if (phase === 4 && document.querySelector('[name=understoodSeconds]')) document.querySelector('[name=understoodSeconds]').max = 30;
 if ($('test-heading')) $('test-heading').textContent = `検証パネル · Phase ${presentationPhase}`;
 applySavedSettings(settingsStore.read().settings); show('ready');

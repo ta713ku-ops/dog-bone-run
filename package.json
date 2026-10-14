@@ -1,6 +1,6 @@
 {
   "name": "dog-bone-run",
-  "version": "0.22.1",
+  "version": "0.26.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,13 +18,20 @@
     "test:animation": "node tests/sprite-animation.browser.mjs",
     "test:animation-realtime": "node tests/sprite-animation-realtime.browser.mjs",
     "test:road": "node tests/road-comfort.browser.mjs",
+    "test:walk-visual": "node tests/walk-visual.browser.mjs",
+    "test:neighborhood-motion": "node tests/neighborhood-motion.browser.mjs",
+    "test:street-visual": "node tests/street-visual.browser.mjs",
+    "test:street-penalty": "node tests/street-penalty.browser.mjs",
+    "test:street-motion": "node tests/street-motion.browser.mjs",
     "test:natural-home": "node tests/natural-home.browser.mjs",
     "test:natural-home-realtime": "node tests/natural-home-realtime.browser.mjs",
     "test:home-motion-realtime": "node tests/home-motion-realtime.browser.mjs",
     "assets:continuity": "python3 scripts/build-home-continuity.py",
     "test:continuity": "node tests/continuity-home.browser.mjs",
     "test:continuity-realtime": "node tests/continuity-realtime.browser.mjs",
-    "test:home-command": "node tests/home-command.browser.mjs"
+    "test:home-command": "node tests/home-command.browser.mjs",
+    "test:street-quality": "node tests/street-quality.browser.mjs",
+    "test:street-quality-motion": "node tests/street-quality-motion.browser.mjs"
   },
   "engines": {
     "node": ">=20"

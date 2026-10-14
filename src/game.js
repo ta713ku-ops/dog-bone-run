@@ -186,7 +186,18 @@ export class Game {
     }
   }
   obstacleContact(obstacle) {
+    if (this.phase === 4 && obstacle.status === 'contacted') return false;
     obstacle.status = 'contacted';
+    if (this.phase === 4) {
+      const scoreBefore = this.score;
+      this.score = Math.max(0, scoreBefore - 10);
+      this.emit('obstacle_contact', {
+        obstacleId: obstacle.id, obstacleType: obstacle.type, lane: obstacle.lane,
+        x: this.x, distance: this.distance, obstacleDistance: obstacle.distance, points: this.score - scoreBefore,
+        nominalPenalty: 10, score: this.score, scoreBefore, status: obstacle.status,
+      });
+      return true;
+    }
     let ignored = false;
     if (obstacle.type === 'trash') {
       if (this.combo) this.emit('combo_end', { reason: 'trash', combo: this.combo });
@@ -250,7 +261,9 @@ export class Game {
         const halfWidth = CONFIG.dogHalfWidth + (obstacle ? CONFIG.obstacleHalfWidth : CONFIG.boneHalfWidth);
         const halfLength = CONFIG.dogHalfLength + (obstacle ? CONFIG.obstacleHalfLength : CONFIG.boneHalfLength);
         const hit = this.worldContactTime(item, startMs, boundary, x0, x1, halfWidth, halfLength);
-        const priority = item.type === 'hole' ? 0 : item.type === 'trash' ? 1 : item.type === 'puddle' ? 2 : 3;
+        const priority = this.phase === 4
+          ? (obstacle ? 0 : 3)
+          : item.type === 'hole' ? 0 : item.type === 'trash' ? 1 : item.type === 'puddle' ? 2 : 3;
         if (hit !== null) contacts.push({ item, timeMs: hit, priority, kind: 'contact' });
         else if (endDistance > item.distance + halfLength + EPS) {
           const passedMs = this.distanceAnchorMs + (item.distance + halfLength - this.distanceAnchor) / this.speed * 1000;
@@ -263,7 +276,7 @@ export class Game {
       this.resolveEffects(); this.expire(endMs);
       const simultaneous = contacts.filter(c => Math.abs(c.timeMs - endMs) <= EPS).sort((a, b) => a.priority - b.priority);
       for (const { item, kind } of simultaneous) {
-        if (kind === 'contact' && item.type === 'hole') { this.startFall(item); break; }
+        if (kind === 'contact' && item.type === 'hole' && this.phase !== 4) { this.startFall(item); break; }
         if (kind === 'passed') {
           item.status = item.type ? 'passed' : 'miss';
           this.emit(item.type ? 'obstacle_pass' : 'miss', { obstacleId: item.type ? item.id : undefined,

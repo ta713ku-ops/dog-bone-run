@@ -3,7 +3,7 @@ export const USE_CONTINUOUS_HOME_DOG = true;
 export const USE_GPU_HOME_DOG = true;
 export const USE_HD_HOME_DOG = true;
 export const CONFIG = Object.freeze({
-  buildVersion: '0.22.1', configVersion: 'continuous-head-path-preview-1', courseVersion: 'sprint-30s-1', logVersion: 5,
+  buildVersion: '0.26.0', configVersion: 'continuous-head-path-preview-1', courseVersion: 'sprint-30s-penalty-1', logVersion: 5,
   durationMs: 60_000, stepMs: 1000 / 60, moveMs: 200, cooldownMs: 100,
   swipePx: 24, swipeRatio: 1.25, comboMs: 1200,
   dogHalfWidth: .22, boneHalfWidth: .12, dogHalfLength: .06, boneHalfLength: .04,
@@ -14,14 +14,14 @@ export const PHASE2 = Object.freeze({ goalDistance: 60, slowMs: 1000, suppressMs
   ruleVersion: 'phase2-walk2-v1' });
 export const PHASE3 = Object.freeze({ fallMs: 650, ruleVersion: 'phase3-walk3-v1' });
 export const PHASE4 = Object.freeze({
-  durationMs: 30_000, ruleVersion: 'sprint30-hard-v1',
+  durationMs: 30_000, ruleVersion: 'sprint30-penalty-v1',
   stages: Object.freeze([
-    { fromMs: 0, level: 1, boneGap: .85, obstacleEvery: 4, pairChance: .15, holeChance: .20 },
-    { fromMs: 5_000, level: 2, boneGap: .78, obstacleEvery: 4, pairChance: .25, holeChance: .35 },
-    { fromMs: 10_000, level: 3, boneGap: .70, obstacleEvery: 3, pairChance: .35, holeChance: .45 },
-    { fromMs: 15_000, level: 4, boneGap: .64, obstacleEvery: 3, pairChance: .45, holeChance: .55 },
-    { fromMs: 20_000, level: 5, boneGap: .58, obstacleEvery: 3, pairChance: .55, holeChance: .65 },
-    { fromMs: 25_000, level: 6, boneGap: .52, obstacleEvery: 3, pairChance: .65, holeChance: .75 },
+    { fromMs: 0, level: 1, boneGap: .85, obstacleEvery: 4, pairChance: .15 },
+    { fromMs: 5_000, level: 2, boneGap: .78, obstacleEvery: 4, pairChance: .25 },
+    { fromMs: 10_000, level: 3, boneGap: .70, obstacleEvery: 3, pairChance: .35 },
+    { fromMs: 15_000, level: 4, boneGap: .64, obstacleEvery: 3, pairChance: .45 },
+    { fromMs: 20_000, level: 5, boneGap: .58, obstacleEvery: 3, pairChance: .55 },
+    { fromMs: 25_000, level: 6, boneGap: .52, obstacleEvery: 3, pairChance: .65 },
   ].map(stage => Object.freeze(stage))),
 });
 export const EPS = 1e-7;

@@ -4,6 +4,9 @@ const FIRST_BONE_DISTANCE = 1.6;
 const LAST_BONE_DISTANCE = 29.5;
 const GOLD_TARGET_DISTANCES = Object.freeze([4, 9.5, 15, 20.5, 27]);
 const LANES = Object.freeze([-1, 0, 1]);
+const OBSTACLE_TYPE_BLOCK = Object.freeze(['litter', 'litter', 'litter', 'litter', 'litter', 'crow', 'crow', 'crow', 'cat', 'cat']);
+const OBSTACLE_LAYOUT_SEED_SALT = 0x4c41594f;
+const OBSTACLE_TYPE_SEED_SALT = 0x54595045;
 
 function normalizeSeed(seed) {
   if (!Number.isFinite(seed)) return 0;
@@ -55,6 +58,21 @@ function pickGoldCandidates(bones) {
   });
 }
 
+function createObstacleTypePicker(seed) {
+  const random = seededRandom((seed ^ OBSTACLE_TYPE_SEED_SALT) >>> 0);
+  let remaining = [];
+  return () => {
+    if (!remaining.length) {
+      remaining = [...OBSTACLE_TYPE_BLOCK];
+      for (let index = remaining.length - 1; index > 0; index--) {
+        const other = Math.floor(random() * (index + 1));
+        [remaining[index], remaining[other]] = [remaining[other], remaining[index]];
+      }
+    }
+    return remaining.pop();
+  };
+}
+
 export function createSprintCourse(seed = 1) {
   const normalizedSeed = normalizeSeed(seed);
   const random = seededRandom(normalizedSeed);
@@ -85,6 +103,8 @@ export function createSprintCourse(seed = 1) {
   for (const bone of bones) if (selectedGold.has(bone.id)) bone.kind = 'gold';
 
   const obstacles = [];
+  const layoutRandom = seededRandom((normalizedSeed ^ OBSTACLE_LAYOUT_SEED_SALT) >>> 0);
+  const nextObstacleType = createObstacleTypePicker(normalizedSeed);
   let lastObstacleBoneIndex = 0;
   for (let index = 0; index < bones.length; index++) {
     const bone = bones[index];
@@ -92,15 +112,14 @@ export function createSprintCourse(seed = 1) {
     const stage = stageAt(bone.distance);
     lastObstacleBoneIndex = index;
 
-    const type = random() < stage.holeChance ? 'hole' : random() < 0.5 ? 'puddle' : 'trash';
     const blockedLanes = LANES.filter(candidate => candidate !== bone.lane);
-    const isPair = random() < stage.pairChance;
-    const lanes = isPair ? blockedLanes : [blockedLanes[Math.floor(random() * blockedLanes.length)]];
+    const isPair = layoutRandom() < stage.pairChance;
+    const lanes = isPair ? blockedLanes : [blockedLanes[Math.floor(layoutRandom() * blockedLanes.length)]];
     for (const obstacleLane of lanes) {
       const obstacleIndex = obstacles.length + 1;
       obstacles.push({
         id: `obstacle-${String(obstacleIndex).padStart(3, '0')}`,
-        type,
+        type: nextObstacleType(),
         lane: obstacleLane,
         distance: bone.distance,
       });
