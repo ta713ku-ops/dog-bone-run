@@ -170,3 +170,29 @@ export class RecordStore {
     return { ok: true, record: copyRecord(record), corrupt: false };
   }
 }
+
+const WALK_PREFERENCES_KEY = 'dog-bone-run:walk-preferences:v1';
+/** Small independent preferences; a denied write still updates this session. */
+export class WalkPreferencesStore {
+  constructor({ storage = () => globalThis.localStorage } = {}) {
+    this.storage = storage; this.current = { walkLevel: 1, parkGuideSeen: false };
+  }
+  read() {
+    try {
+      const raw = this.storage().getItem(WALK_PREFERENCES_KEY);
+      if (raw !== null) {
+        const value = JSON.parse(raw);
+        if (value.version !== 1) throw new Error('invalid_version');
+        this.current = { walkLevel: [2, 3, 4].includes(value.walkLevel) ? value.walkLevel : 1, parkGuideSeen: value.parkGuideSeen === true };
+      }
+      return { ok: true, ...this.current };
+    } catch { return { ok: false, ...this.current }; }
+  }
+  save({ walkLevel = this.current.walkLevel, parkGuideSeen = this.current.parkGuideSeen } = {}) {
+    this.current = { walkLevel: [2, 3, 4].includes(walkLevel) ? walkLevel : 1, parkGuideSeen: parkGuideSeen === true };
+    try {
+      this.storage().setItem(WALK_PREFERENCES_KEY, JSON.stringify({ version: 1, ...this.current }));
+      return { ok: true, ...this.current };
+    } catch { return { ok: false, ...this.current }; }
+  }
+}

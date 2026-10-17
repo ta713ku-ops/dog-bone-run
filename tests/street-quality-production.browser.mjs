@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -26,7 +27,7 @@ for (const engine of [chromium, webkit]) {
     await page.getByRole('button', { name: 'おさんぽへ', exact: true }).waitFor();
     await page.waitForFunction(() => !document.querySelector('#start').disabled);
     assert.equal(await page.evaluate(() => '__dogBoneTest' in window), false, 'Normal distribution must omit its diagnostic API.');
-    await page.getByRole('button', { name: 'おさんぽへ', exact: true }).tap();
+    await page.getByRole('button', { name: 'おさんぽへ', exact: true }).tap();await confirmDeparture(page);
     await page.waitForFunction(() => document.querySelector('#game').dataset.state === 'running');
     await page.waitForFunction(() => Number(document.querySelector('#score').textContent) > 0);
     await page.getByRole('button', { name: '一時停止', exact: true }).tap();

@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 const {chromium,webkit}=await import('/Users/taku/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
@@ -20,7 +21,7 @@ for(const engine of [chromium,webkit]){
     }
    };
   });
-  await page.getByRole('button',{name:'おさんぽへ',exact:true}).tap();
+  await page.getByRole('button',{name:'おさんぽへ',exact:true}).tap();await confirmDeparture(page);
   await page.waitForFunction(()=>window.__dogBoneTest.game.timeMs>=6500,{timeout:15000});
   await page.getByRole('button',{name:'一時停止',exact:true}).tap();
   const result=await page.evaluate(()=>{

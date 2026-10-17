@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff9f0">
-  <meta name="description" content="犬と近所の街を歩く、30秒・3レーンのおさんぽゲーム。骨型おもちゃを集め、ゴミ・カラス・猫を避けよう。接触すると10点減点。">
+  <meta name="description" content="犬と街・公園・山を探検する、30秒・3レーンのおさんぽゲーム。木の根や苔岩、転がる石をよけて森の奥へ進もう。">
   <title>ほねのおさんぽ</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
@@ -38,7 +38,7 @@
         <p class="home-dog-status sr-only" id="home-dog-status" role="status" aria-live="polite" aria-atomic="true"></p>
         <div class="departure-panel">
           <p class="caption" id="ready-record" role="status" aria-live="polite" aria-atomic="true">おさんぽを準備しています…</p>
-          <button class="button primary departure-button" id="start" aria-labelledby="start-label" aria-describedby="home-duration"><span class="departure-copy"><span class="departure-label" id="start-label">おさんぽへ</span><span class="departure-meta sr-only" id="home-duration">30秒のおさんぽ</span></span><svg class="departure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <button class="button primary departure-button" id="start" aria-labelledby="start-label" aria-haspopup="dialog" aria-controls="walk-picker"><span class="departure-copy"><span class="departure-label" id="start-label">おさんぽへ</span></span><svg class="departure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
         </div>
       </div>
     </section>
@@ -46,8 +46,38 @@
       <div class="modal"><p class="eyebrow">ひとやすみ</p><h2 id="pause-title" tabindex="-1">ちょっと、休憩。</h2><p id="pause-reason">続きは、いつでも。</p><button class="button primary" id="resume">再開する</button><button class="button secondary sound-toggle" id="pause-sound" aria-pressed="true">音：オン</button><button class="button secondary" id="pause-settings">設定を開く</button><button class="text-button" id="quit">おさんぽをやめる</button></div>
     </section>
     <section class="screen result-screen" id="result" hidden aria-labelledby="result-title">
-      <div class="result-top"><p class="eyebrow" id="result-note">30秒のおさんぽ、おつかれさま。</p><h2 id="result-title" tabindex="-1">また一緒に歩こう。</h2></div>
-      <div class="result-bottom"><p class="result-score"><span>スコア</span><strong id="result-score">0</strong></p><div class="result-stats"><p id="phase1-bones"><span>集めた骨</span><strong id="result-bones">0個</strong></p><p id="phase2-normal" hidden><span>ふつうの骨</span><strong id="result-normal">0</strong></p><p id="phase2-gold" hidden><span>金の骨</span><strong id="result-gold">0</strong></p><p><span>最大コンボ</span><strong id="result-combo">0</strong></p><p id="phase2-time" hidden><span id="result-time-label">走った時間</span><strong id="result-time">0秒</strong></p></div><p id="record-status" class="record-status" role="status" hidden></p><div class="result-actions"><button class="button primary" id="retry">もう一度</button><button class="button secondary" id="end">タイトルへ</button></div></div>
+      <div class="result-top"><p class="eyebrow result-level" id="result-level"></p><p class="eyebrow" id="result-note">30秒のおさんぽ、おつかれさま。</p><h2 id="result-title" tabindex="-1">また一緒に歩こう。</h2></div>
+      <div class="result-bottom"><p class="result-score"><span>スコア</span><strong id="result-score">0</strong></p><div class="result-stats"><p id="phase1-bones"><span>集めた骨</span><strong id="result-bones">0個</strong></p><p id="phase2-normal" hidden><span>ふつうの骨</span><strong id="result-normal">0</strong></p><p id="phase2-gold" hidden><span>金の骨</span><strong id="result-gold">0</strong></p><p id="result-contacts-row" hidden><span>接触回数</span><strong id="result-contacts">0</strong></p><p><span>最大コンボ</span><strong id="result-combo">0</strong></p><p id="phase2-time" hidden><span id="result-time-label">走った時間</span><strong id="result-time">0秒</strong></p></div><p id="record-status" class="record-status" role="status" hidden></p><div class="result-actions"><button class="button primary" id="retry">もう一度</button><button class="button secondary" id="end">ホームへ</button></div></div>
+    </section>
+    <section class="settings-overlay walk-picker" id="walk-picker" role="dialog" aria-modal="true" hidden aria-labelledby="walk-picker-title">
+      <div class="modal walk-picker-modal">
+        <h2 id="walk-picker-title" tabindex="-1">難易度をえらぶ</h2>
+          <div class="walk-choice" role="group" aria-label="おさんぽの難易度">
+            <button type="button" id="walk-level-1" aria-pressed="true"><span class="walk-number">１</span><span>まち<small>気軽に歩こう</small><small class="walk-selection" id="walk-selected-1">✓ 選択中</small></span></button>
+            <button type="button" id="walk-level-2" aria-pressed="false"><span class="walk-number">２</span><span>こうえん<small>よけて進もう</small><small class="walk-selection" id="walk-selected-2" hidden>✓ 選択中</small></span></button>
+            <button type="button" id="walk-level-3" aria-pressed="false"><span class="walk-number">３</span><span>やま<small>森の奥へ探検</small><small class="walk-selection" id="walk-selected-3" hidden>✓ 選択中</small></span></button>
+            <button type="button" id="walk-level-4" aria-pressed="false"><span class="walk-number">４</span><span>どうくつ<small>地底の奥へ</small><small class="walk-selection" id="walk-selected-4" hidden>✓ 選択中</small></span></button>
+          </div>
+          <div class="walk-information"><strong id="walk-selected-label">選択中：１ まち</strong><div class="walk-details"><span id="walk-summary">30秒・まちのおさんぽ</span><button type="button" class="text-button" id="park-help">あそび方</button></div></div>
+          <p id="walk-status" class="walk-status" role="status" hidden></p>
+          <p id="walk-record" class="caption" role="status" aria-live="polite" hidden></p>
+        <button class="button primary" type="button" id="walk-picker-start">おさんぽをはじめる</button>
+        <button class="text-button" type="button" id="walk-picker-close">ホームへ戻る</button>
+      </div>
+    </section>
+    <section class="settings-overlay park-guide" id="park-guide" role="dialog" aria-modal="true" hidden aria-labelledby="park-guide-title">
+      <div class="modal park-guide-modal">
+        <p class="eyebrow" id="guide-level">難易度２ · こうえん</p><h2 id="park-guide-title" tabindex="-1">道の先を見て、進もう。</h2>
+        <ol class="park-guide-steps">
+          <li><span class="guide-mark guide-bone" aria-hidden="true">✦</span><div><strong>骨をあつめる</strong><p>左右にスワイプして、白い骨と金の骨を集めよう。</p></div></li>
+          <li><span class="guide-mark guide-water" aria-hidden="true">≈</span><div><strong id="guide-obstacle-title">障害物をよける</strong><p id="guide-obstacle-body">接触は10点減点。あわてず空いた道へ。</p></div></li>
+          <li><span class="guide-mark" aria-hidden="true">道</span><div><strong id="guide-movement-title">前方の道を見て進む</strong><p id="guide-movement-body">道にいるカラスと転がるボールを見て、空いたレーンを選ぼう。</p></div></li>
+        </ol>
+        <div id="cave-guide-examples" class="cave-guide-examples" hidden aria-label="洞窟の障害物４種類"></div>
+        <p class="park-guide-footnote">30秒。ぶつかっても最後まで遊べます。</p>
+        <button class="button primary" type="button" id="park-guide-start">はじめる</button>
+        <button class="text-button" type="button" id="park-guide-close">難易度選択へ戻る</button>
+      </div>
     </section>
     <section class="audio-overlay" id="audio-panel" role="dialog" aria-modal="true" hidden aria-labelledby="audio-title">
       <div class="modal"><h2 id="audio-title" tabindex="-1">音を準備しています</h2><p id="audio-message" role="status">もうすぐ、おさんぽ。</p><div id="audio-options" hidden><button class="button primary" id="audio-retry">音を再試行</button><button class="button secondary" id="audio-silent">音なしで開始</button></div></div>
@@ -61,7 +91,7 @@
         <label class="motion-setting"><input id="reduce-motion" type="checkbox">動きを控えめにする</label>
         <p class="settings-note" id="settings-note">端末の「動きを減らす」設定も反映します。</p>
         <button class="button primary" id="settings-close">設定を閉じる</button>
-        <p class="build-label" id="build-label">v0.26.0 · 30秒チャレンジ</p>
+        <p class="build-label" id="build-label">v0.32.0 · 30秒チャレンジ</p>
       </div>
     </section>
     <p class="control-hint" id="control-hint" hidden>左右にスワイプして進もう</p>
@@ -78,6 +108,10 @@
         <label>説明の有無<select name="explained"><option value="">未確認</option><option value="false">説明なし</option><option value="true">説明あり</option></select></label>
         <label>音は聞こえたか<select name="heardSound"><option value="">未確認</option><option value="true">聞こえた</option><option value="false">聞こえなかった</option></select></label>
         <label>取得感（1〜5）<select name="feeling"><option value="">未回答</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+        <label><span id="relative-difficulty-label">難しさ（難易度１を100として）</span><input name="relativeDifficulty" type="number" min="0" max="3000" step="10" placeholder="例：200"></label>
+        <label>公平に避けられるか（1〜5）<select name="fairness"><option value="">未回答</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+        <label><span id="static-understood-label">カラスのいるレーンを説明できるか</span><select name="crowUnderstood"><option value="">未確認</option><option value="true">できる</option><option value="false">できない</option></select></label>
+        <label><span id="moving-understood-label">ボールの通る２レーンを説明できるか</span><select name="ballUnderstood"><option value="">未確認</option><option value="true">できる</option><option value="false">できない</option></select></label>
         <label>自由回答・観察<textarea name="notes" rows="3" maxlength="2000" placeholder="気持ちよかった瞬間／思い通りに動かなかった瞬間／続けた・やめた理由"></textarea></label>
         <button class="button secondary" type="submit">観察を記録</button>
       </form>

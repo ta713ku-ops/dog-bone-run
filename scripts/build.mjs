@@ -1,6 +1,7 @@
 import { cp, mkdir, rm, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve, relative } from 'node:path';
 import { CONFIG, PHASE4 } from '../src/config.js';
+import { WALK_LEVELS } from '../src/walk-levels.js';
 import {createHash} from 'node:crypto';
 const diagnosticBuild=process.argv.includes('--diagnostics');
 const destination=diagnosticBuild?'device-check':'dist';
@@ -19,7 +20,7 @@ for(const source of [hdMetadata.generator,hdMetadata.sourceMetadata,...hdMetadat
   if(!path||!source.sha256||createHash('sha256').update(await readFile(path)).digest('hex')!==source.sha256)
     throw new Error(`HD dog source or output changed: rebuild scripts/build-dog-hd.py (${path})`);
 }
-for (const metadataPath of ['art/park-v23/metadata.json', 'art/neighborhood-v24/metadata.json', 'art/street-v25/metadata.json', 'art/street-v26/metadata.json']) {
+for (const metadataPath of ['art/park-v23/metadata.json', 'art/neighborhood-v24/metadata.json', 'art/street-v25/metadata.json', 'art/street-v26/metadata.json', 'art/park-level2/metadata.json', 'art/mountain-v32/metadata.json', 'art/cave-v33/metadata.json', 'art/cave-v34/metadata.json']) {
   const sceneryMetadata = JSON.parse(await readFile(metadataPath, 'utf8'));
   for (const asset of Object.values(sceneryMetadata.assets)) {
     for (const [path, expected] of [[asset.path, asset.sha256], [asset.source, asset.sourceSha256]]) {
@@ -75,7 +76,7 @@ for (const asset of assets) {
 }
 await writeFile(`${destination}/version.json`, JSON.stringify({ buildVersion: CONFIG.buildVersion,
   configVersion: CONFIG.configVersion, courseVersion: CONFIG.courseVersion,
-  ruleVersion: PHASE4.ruleVersion, durationMs: PHASE4.durationMs, mode: 'runner', renderer: 'canvas-image-with-2d-gpu-home',
+  ruleVersion: PHASE4.ruleVersion, walkLevels: Object.values(WALK_LEVELS), durationMs: PHASE4.durationMs, mode: 'runner', renderer: 'canvas-image-with-2d-gpu-home',
   releaseReady: false, physicalIPhoneVerified: false,
   diagnosticBuild,
   modules: [...modules.keys()].sort(), assets: [...assets].sort() }, null, 2));

@@ -637,3 +637,60 @@ canvas:focus-visible { outline: 3px solid var(--garden); outline-offset: -6px; }
 
 /* Headings receive focus for announcements without looking like controls. */
 h2[tabindex="-1"]:focus { outline: none; }
+
+/* The departure area keeps the dog's room visible while making level choice explicit. */
+.walk-choice { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-bottom: 8px; }
+.walk-choice button { display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; min-height: 58px; padding: 8px; border: 1.5px solid #bda791; border-radius: 12px; color: var(--home-ink); background: #f9f7f5; font: inherit; font-size: 14px; font-weight: 800; text-align: left; cursor: pointer; }
+.walk-choice button > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.walk-choice button[aria-pressed="true"] { border-color: var(--home-primary); background: var(--home-primary); color: #fff9f0; box-shadow: inset 0 0 0 1px var(--home-primary); }
+.walk-choice button[aria-pressed="true"] .walk-number { background: #fff9f0; color: var(--home-primary); }
+.walk-choice .walk-selection { margin-top: 6px; font-size: 12px; font-weight: 800; }
+.walk-information { margin-top: 16px; padding: 12px; border-radius: 12px; background: #e9e3dd; }
+.walk-information > strong { display: block; font-size: 14px; color: var(--home-ink); }
+.walk-choice button:focus-visible { outline: 3px solid var(--home-primary); outline-offset: 2px; }
+.walk-choice button:active { transform: translateY(1px); }
+.walk-choice button:disabled { opacity: .65; cursor: progress; }
+.walk-number { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--home-primary); color: #fffaf2; font-size: 15px; flex: 0 0 28px; }
+.walk-choice small { display: block; margin-top: 2px; font-size: 10px; font-weight: 600; line-height: 1.35; }
+.walk-details { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 36px; margin-bottom: 4px; padding: 0 4px; color: var(--home-ink); font-size: 12px; font-weight: 700; }
+.walk-details .text-button { min-height: 44px; min-width: 68px; margin: 0; padding: 6px 4px; font-size: 12px; }
+.walk-status { color: #784626; font-size: 11px; line-height: 1.45; margin: 0 4px 6px; }
+.game[data-walk-level="2"] .result-stats, .game[data-walk-level="3"] .result-stats, .game[data-walk-level="4"] .result-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.result-level { margin-bottom: 4px !important; color: #5d4432 !important; }
+.ready-screen .caption[data-kind="record"] { position: static; width: auto; height: auto; padding: 0; margin: 0 0 6px; overflow: visible; clip: auto; white-space: normal; }
+.walk-picker, .park-guide { --home-primary: #5d4432; --home-ink: #3e2b1e; --home-paper: #fff9f0; background: #3e2b1ebd; }
+.walk-picker { z-index: 10; }
+.walk-picker-modal { text-align: left; color: var(--home-ink); }
+.walk-picker-modal h2 { margin-bottom: 24px; }
+.walk-picker-modal .walk-choice { margin-bottom: 16px; }
+.walk-picker-modal .walk-choice button { min-height: 72px; }
+.walk-picker-modal .walk-details { flex-wrap: wrap; }
+.walk-picker-modal .button { margin-top: 16px; }
+.walk-picker-modal h2, .park-guide-modal h2, .park-guide-modal .eyebrow { color: var(--home-ink); }
+.walk-picker .button.primary, .park-guide .button.primary { background: var(--home-primary); }
+.walk-picker button:focus-visible, .park-guide button:focus-visible { outline-color: var(--home-primary); }
+.park-guide { z-index: 12; }
+.park-guide-modal { text-align: left; max-width: 380px; }
+.park-guide-modal h2 { font-size: clamp(20px, 5.7vw, 25px); }
+.park-guide-steps { list-style: none; padding: 0; margin: 20px 0 12px; display: grid; gap: 16px; }
+.park-guide-steps li { display: flex; gap: 12px; align-items: flex-start; }
+.guide-mark { display: grid; place-items: center; flex: 0 0 36px; height: 36px; border: 1.5px solid currentColor; border-radius: 10px; font-size: 24px; color: #5d4432; background: #f5ebdd; }
+.guide-water { color: #356473; background: #e3eff0; }
+.guide-arrow { color: #8a4e1b; background: #ffedd4; }
+.park-guide-steps strong { font-size: 14px; line-height: 1.5; }
+.park-guide-steps p { font-size: 12px; line-height: 1.7; margin: 3px 0 0; }
+.park-guide-footnote { font-size: 12px; color: #625044; }
+@media (max-height: 650px) { .walk-choice button { min-height: 48px; padding: 5px 6px; } .walk-details { min-height: 28px; margin-bottom: 0; } .park-guide-steps { gap: 10px; margin-top: 12px; } }
+@media (hover: hover) { .walk-choice button:hover { background: #f1e9de; } }
+
+@media (hover: hover) { .walk-choice button[aria-pressed="true"]:hover { background: var(--home-primary); color: #fff9f0; } }
+
+/* Three compact trail choices keep all destinations visible on narrow phones. */
+.walk-picker-modal .walk-choice button { flex-direction: column; align-items: flex-start; gap: 7px; padding: 12px 10px; }
+.walk-picker-modal .walk-choice small { font-size: 10px; }
+@media (max-height: 650px) { .walk-picker-modal h2 { margin-bottom: 12px; } .walk-picker-modal .walk-choice button { min-height: 64px; padding: 7px; gap: 4px; } .walk-picker-modal .walk-choice { margin-bottom: 8px; } .walk-information { margin-top: 8px; padding: 8px; } }
+
+.cave-guide-examples { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 8px 0; }
+.cave-guide-examples[hidden] { display: none; }
+.cave-guide-examples figure { margin: 0; text-align: center; font-size: 11px; color: #3e2b1e; }
+.cave-guide-examples canvas { position: static; inset: auto; display: block; width: 100%; height: 66px; border-radius: 8px; background: #b7b2a7; margin-bottom: 4px; }

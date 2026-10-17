@@ -113,6 +113,42 @@ test('bark preparation never delays unlock, and pickup/mute/stop share the SFX c
   assert.equal(calls.at(-1), 'stop');
 });
 
+test('contact whine uses the SFX bus, interrupts barks, coalesces hits and yields after it ends', async () => {
+  class RunningContext extends MockAudioContext { constructor(){super();this.state='running';} }
+  const calls=[];
+  const bark={preload(){},prepare(){},play(){calls.push('bark');return true;},stop(){calls.push('bark-stop');}};
+  const whine={playing:false,preload(){},prepare(){},play(ctx,bus){calls.push(['whine',ctx,bus]);this.playing=true;return true;},stop(){this.playing=false;calls.push('whine-stop');}};
+  const audio=new Audio(()=>{},{Context:RunningContext,bark,whine});await audio.unlock();
+  audio.setVolumes({music:.2,sfx:.4});audio.play(1);
+  assert.equal(audio.playContact(),true);
+  const hit=calls.find(c=>Array.isArray(c));assert.equal(hit[1],audio.context);assert.equal(hit[2],audio.sfxGain);
+  assert.equal(audio.sfxGain.gain.value,.4);
+  assert.equal(audio.playContact(),false);
+  audio.play(2);assert.equal(calls.filter(c=>c==='bark').length,1,'whine takes priority over a same-time pickup bark');
+  assert.equal([...audio.voices].at(-1).gain.gain.rampValues[0],.025);
+  whine.playing=false;audio.context.currentTime=.5;assert.equal(audio.playContact(),false);
+  audio.context.currentTime=.9;audio.play(1);assert.equal(calls.filter(c=>c==='bark').length,2);
+  assert.equal(audio.playContact(),true);
+  audio.setEnabled(false);assert.equal(whine.playing,false);assert.equal(audio.playContact(),false);
+  assert.equal(audio.voices.size,0);
+  audio.setEnabled(true);assert.equal(audio.playContact(),true,'stop clears old cooldown');
+  audio.context.state='closed';await audio.unlock();assert.equal(audio.playContact(),true,'replacement context gets a new clock');
+  audio.stop();
+});
+
+test('missing whine gets an immediate quiet fallback and never queues a later cry', async () => {
+  class RunningContext extends MockAudioContext { constructor(){super();this.state='running';} }
+  let prepared=false,played=0,resolvePrepare;
+  const whine={preload(){},prepare(){return new Promise(r=>{resolvePrepare=()=>{prepared=true;r();};});},play(){played++;return prepared;},stop(){}};
+  const audio=new Audio(()=>{},{Context:RunningContext,whine});
+  assert.deepEqual(await audio.unlock(),{ok:true});
+  assert.equal(audio.playContact(),true);assert.equal(played,1);
+  assert.equal([...audio.voices].at(-1).type,'contact');
+  assert.equal([...audio.voices].at(-1).gain.gain.rampValues[0],.07);
+  resolvePrepare();await Promise.resolve();assert.equal(played,1,'late decode never replays an old hit');
+  audio.stop();audio.context.state='suspended';assert.equal(audio.playContact(),false);
+});
+
 test('creates and resumes audio synchronously from unlock, then waits for running', async () => {
   MockAudioContext.created = [];
   const order = [];
@@ -468,4 +504,21 @@ test('the melody rests between phrases and repeats after 12 seconds without a gr
   assert.ok(maximumVoices <= 2, `voice count should remain bounded, saw ${maximumVoices}`);
   assert.ok(audio.musicScheduled.size <= 2, 'music bookkeeping remains limited to the current beat');
   audio.stop();
+});
+
+test('park warnings stay on the shared SFX bus and yield to pickups and mute', async () => {
+  class RunningAudioContext extends MockAudioContext { constructor() { super(); this.state = 'running'; } }
+  const bark = { preload() {}, prepare() {}, play() { return false; }, stop() {} };
+  const audio = new Audio(() => {}, { Context: RunningAudioContext, bark });
+  await audio.unlock();
+  assert.equal(audio.playWarning('crow'),true);
+  assert.equal([...audio.voices].filter(v=>v.type==='warning').length,1);
+  assert.equal(audio.playWarning('ball'),true);
+  assert.equal([...audio.voices].filter(v=>v.type==='warning').length,1);
+  audio.play(1);
+  assert.equal([...audio.voices].filter(v=>v.type==='warning').length,0);
+  assert.equal(audio.playWarning('crow'),false);
+  audio.context.currentTime=.3;assert.equal(audio.playWarning('crow'),true);
+  audio.setEnabled(false);assert.equal(audio.voices.size,0);assert.equal(audio.playWarning('ball'),false);
+  assert.equal(audio.contextCount,1);
 });

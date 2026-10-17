@@ -1,6 +1,6 @@
 {
   "name": "dog-bone-run",
-  "version": "0.26.0",
+  "version": "0.35.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -31,7 +31,22 @@
     "test:continuity-realtime": "node tests/continuity-realtime.browser.mjs",
     "test:home-command": "node tests/home-command.browser.mjs",
     "test:street-quality": "node tests/street-quality.browser.mjs",
-    "test:street-quality-motion": "node tests/street-quality-motion.browser.mjs"
+    "test:street-quality-motion": "node tests/street-quality-motion.browser.mjs",
+    "test:cave": "node tests/cave.browser.mjs",
+    "test:cave-robustness": "node tests/cave-robustness.browser.mjs",
+    "test:cave-course": "node scripts/verify-cave-course.mjs",
+    "test:cave-production": "node tests/cave-production.browser.mjs",
+    "test:mountain": "node tests/mountain.browser.mjs",
+    "test:mountain-motion": "node tests/mountain.browser.mjs --motion-only",
+    "test:mountain-production": "node tests/mountain-production.browser.mjs",
+    "test:mountain-course": "node scripts/verify-mountain-course.mjs",
+    "test:park": "node tests/park.browser.mjs",
+    "test:park-course": "node scripts/verify-park-course.mjs",
+    "test:park-robustness": "node tests/park-robustness.browser.mjs",
+    "test:park-motion": "node tests/park-motion.browser.mjs",
+    "test:park-world-motion": "node tests/park-world-motion.browser.mjs",
+    "test:contact": "node tests/contact-feedback.browser.mjs",
+    "test:contact-production": "node tests/contact-production.browser.mjs"
   },
   "engines": {
     "node": ">=20"

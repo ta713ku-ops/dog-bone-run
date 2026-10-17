@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 // Legacy fallback regression; the new default is covered by continuity-home/realtime.
 import assert from 'node:assert/strict';
 import {mkdir,writeFile,readFile} from 'node:fs/promises';
@@ -68,7 +69,7 @@ for(const engine of [chromium,webkit].filter(e=>!process.env.DOG_ENGINE||e.name(
    await page.locator('#home-greet').click();await page.clock.runFor(500);assert.equal((await sample(page)).home.atlas,'greet');
    await page.clock.runFor(1150);assert.equal((await sample(page)).busy,false);
    // Real game events trigger both a dog reaction and the reward effect while gait continues.
-   await page.locator('#start').click();await page.waitForFunction(()=>window.__dogBoneTest.game.state==='running');
+   await page.locator('#start').click();await confirmDeparture(page);await page.waitForFunction(()=>window.__dogBoneTest.game.state==='running');
    await page.evaluate(()=>{const g=window.__dogBoneTest.game;g.obstacles=[];g.bones=[{id:'reward',lane:0,distance:.35,status:'pending',kind:'gold'}];});
    await page.clock.runFor(350);
    const reward=await page.evaluate(()=>({score:window.__dogBoneTest.game.score,reaction:window.__dogBoneTest.renderer.pickupReaction,effects:window.__dogBoneTest.renderer.effects}));
@@ -89,7 +90,7 @@ for(const engine of [chromium,webkit].filter(e=>!process.env.DOG_ENGINE||e.name(
    assert.equal(still.length,stillAfter.length);
    const reducedPixelDelta=still.reduce((max,value,i)=>Math.max(max,Math.abs(value-stillAfter[i])),0);
    assert.ok(reducedPixelDelta<=1,`reduced motion changed pixels by ${reducedPixelDelta}`);
-   await page.locator('#start').click();await page.waitForFunction(()=>window.__dogBoneTest.game.state==='running');await page.clock.runFor(400);
+   await page.locator('#start').click();await confirmDeparture(page);await page.waitForFunction(()=>window.__dogBoneTest.game.state==='running');await page.clock.runFor(400);
    assert.equal((await sample(page)).walk.index,0);assert.equal((await sample(page)).walk.mix,0);
    checks.push({engine:engine.name(),width,height,autoSitLie:true,frameSets,gestures:true,walkFrames:indices.size,pickupReaction:true,pausePixels:true,reducedMotion:true});
    await context.close();

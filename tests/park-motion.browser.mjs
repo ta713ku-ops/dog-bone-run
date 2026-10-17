@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';
+import {mkdir,writeFile} from 'node:fs/promises';
+const {chromium,webkit}=await import(process.env.DOG_PLAYWRIGHT_MODULE??'/Users/taku/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
+const base=process.env.DOG_TEST_URL??'http://127.0.0.1:4198';
+const out=process.env.DOG_PARK_MOTION_OUTPUT??'test-results/park-level2/motion';await mkdir(out,{recursive:true});
+const report={cases:[],errors:[],scope:'Mac desktop engines, DPR2; real 30-second clock and keyboard, not physical iPhone. Fixed-time motion samples supplement the running UI.'};
+for(const engine of [chromium,webkit]){
+ const b=await engine.launch();const c=await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true});const p=await c.newPage();p.on('pageerror',e=>report.errors.push(e.message));
+ try{
+  await p.goto(`${base}/?test=1&seed=42`,{waitUntil:'networkidle'});await p.waitForFunction(()=>window.__dogBoneTest?.renderer.dogs?.stats.ready);await p.locator('#start').click();await p.locator('#walk-level-2').click();await p.locator('#walk-picker-close').click();await p.locator('#ready-settings').click();if(await p.locator('#ready-sound').getAttribute('aria-pressed')==='true')await p.locator('#ready-sound').click();await p.locator('#settings-close').click();await p.locator('#start').click();await p.locator('#walk-picker-start').click();await p.waitForFunction(()=>window.__dogBoneTest.game.state==='running');
+  await p.evaluate(()=>{window.__parkFrameIntervals=[];window.__parkGroundSamples=[];const t=window.__dogBoneTest,draw=t.renderer.draw.bind(t.renderer);let prior=null,nextSample=5000;t.renderer.draw=function(g){const now=performance.now();if(g.state==='running'&&g.timeMs>=1000){if(prior!==null)window.__parkFrameIntervals.push(now-prior);prior=now;}const result=draw(g);if(g.state==='running'&&g.timeMs>=nextSample){const bg=this.streetBackdrop,canvas=bg?.surface;window.__parkGroundSamples.push({timeMs:g.timeMs,scenery:this.parkLevel2Scene?.stats.sceneryMode,pixel:canvas?[...bg.context.getImageData(Math.floor(canvas.width*.5),Math.floor(canvas.height*.95),1,1).data]:null});nextSample+=5000;}return result;};});
+  const inputs=await p.evaluate(()=>window.__dogBoneTest.game.courseData.safeInputs);
+  for(const i of inputs){await p.waitForFunction(at=>window.__dogBoneTest.game.timeMs>=at,i.timeMs-60,{timeout:6000,polling:10});await p.keyboard.press(i.direction<0?'ArrowLeft':'ArrowRight');}
+  await p.waitForFunction(()=>window.__dogBoneTest.game.state==='result',undefined,{timeout:6000});
+  const e=await p.evaluate(()=>{const a=window.__parkFrameIntervals.sort((x,y)=>x-y),t=window.__dogBoneTest;return{result:t.game.result(),frames:a.length,p95Ms:a[Math.ceil(a.length*.95)-1],maxMs:Math.max(...a),pauses:t.log.events.filter(e=>e.type==='pause'),inputs:t.log.events.filter(e=>e.type==='input'&&e.source==='keyboard').length,inputEvents:t.log.events.filter(e=>e.type==='input'&&e.source==='keyboard'),contacts:t.log.events.filter(e=>e.type==='obstacle_contact'),groundSamples:window.__parkGroundSamples};});
+  await writeFile(`${out}/${engine.name()}-realtime.json`,JSON.stringify({route:inputs,...e},null,2));
+  assert.ok(e.groundSamples.length>=5);assert.ok(e.groundSamples.every(s=>s.scenery==='world-park'));assert.ok(new Set(e.groundSamples.map(s=>JSON.stringify(s.pixel))).size>=3,'the visible foreground sand must move rather than remain a frozen photo');
+  assert.equal(e.inputEvents.length,inputs.length);for(let i=0;i<inputs.length;i++)assert.ok(Math.abs(e.inputEvents[i].activeMs-inputs[i].timeMs)<=60,'actual keyboard arrival must stay inside the unchanged course tolerance');
+  assert.equal(e.result.collected,48);assert.equal(e.result.contactCount,0);assert.equal(e.result.timeMs,30000);assert.equal(e.inputs,inputs.length);assert.ok(e.inputs>=38&&e.inputs<=46);assert.deepEqual(e.pauses,[]);assert.ok(e.frames>700);assert.ok(e.p95Ms<=33.3,JSON.stringify(e));report.cases.push({engine:engine.name(),realTime:e});
+  await p.goto(`${base}/tests/fixtures/park-preview.html`,{waitUntil:'networkidle'});await p.waitForFunction(()=>window.__parkPreview.ready);
+  const events=await p.evaluate(()=>{const os=window.__parkPreview.game.obstacles;return{crow:os.find(o=>o.type==='crow'),ball:os.find(o=>o.type==='ball')};});
+  const samples=[['crow-visible',events.crow.visibleStartMs+10],['crow-grounded',events.crow.arrivalMs-900],['crow-pass',events.crow.arrivalMs+180],['ball-visible',events.ball.visibleStartMs+10],['ball-rolling',events.ball.moveStartMs+700],['ball-mid',events.ball.arrivalMs],['ball-end',events.ball.moveEndMs],['park-entrance',0],['park-avenue',5000],['park-lawn',20000]];
+  for(const [name,time]of samples){await p.evaluate(t=>window.__parkPreview.setFixture(t,42),time);await p.locator('#scene').screenshot({path:`${out}/${engine.name()}-${name}.png`});report.cases.push({engine:engine.name(),sample:name,timeMs:time});}
+  // Force actual rerasterization to measure composite draw work, excluding the pause cache.
+  const timing=await p.evaluate(()=>{const t=window.__parkPreview,r=t.renderer;t.setFixture(12000,42);const times=[];for(let i=0;i<80;i++){const a=performance.now();r.draw(t.game,{force:true});times.push(performance.now()-a);}times.sort((a,b)=>a-b);return{frames:times.length,p95DrawMs:times[Math.ceil(times.length*.95)-1],maxDrawMs:Math.max(...times)};});report.cases.push({engine:engine.name(),syntheticDraw:timing});
+ }finally{await c.close();await b.close();}
+}
+assert.deepEqual(report.errors,[]);await writeFile(`${out}/report.json`,JSON.stringify(report,null,2));console.log(JSON.stringify(report.cases.filter(e=>e.realTime||e.syntheticDraw),null,2));

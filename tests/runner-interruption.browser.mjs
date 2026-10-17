@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import {writeFile} from 'node:fs/promises';
 import {CONFIG} from '../src/config.js';
@@ -79,7 +80,7 @@ async function makePage(browser, { mobile = false, audioFailures = 0 } = {}) {
 }
 
 async function startWalk(page) {
-  await page.locator('#start').click();
+  await page.locator('#start').click();await confirmDeparture(page);
 
 }
 

@@ -1,4 +1,5 @@
 import { CONFIG, PHASE2, PHASE3 } from './config.js';
+import { sampleContactReaction } from './contact-feedback.js';
 import { drawPuddle, drawTrashBin } from './obstacle-art.js';
 import { STREET_OBSTACLE_ART, drawStreetObstacle, drawStreetObstacleAt } from './street-obstacle-art.js';
 import { DogSprites } from './dog-sprites.js';
@@ -12,6 +13,15 @@ import {
   deriveVisualSeed, ROAD_COMFORT_FLAGS, ROAD_DECORATION_MODES,
   RoadComfortTracker, shouldKeepRoadDecoration,
 } from './road-comfort.js';
+import { CaveScene, drawCaveObstacle } from './cave-scene.js';
+import { caveObstacleLaneAt, caveObstacleVisibleAt } from './cave-course.js';
+import { MountainScene, drawMountainObstacle } from './mountain-scene.js';
+import { mountainObstacleLaneAt, mountainObstacleVisibleAt } from './mountain-course.js';
+import { ParkLevel2Scene } from './park-level2-scene.js';
+import {
+  drawParkCrow, drawParkCrowAt, drawParkPuddle, drawParkBall, parkObstacleBodyBounds,
+} from './park-level2-art.js';
+import { parkObstacleLaneAt, parkObstacleVisibleAt } from './park-course.js';
 
 const INK = '#65412a', BROWN = '#bf783e', LIGHT = '#dfaa68', WHITE = '#fff8e9';
 const OBSTACLE_HALF_WIDTH = .28, OBSTACLE_HALF_LENGTH = .10;
@@ -64,6 +74,20 @@ export class Renderer {
     this.roadComfort?.resetTrajectory();
   }
   collect(event) { this.effects.push(event); }
+  prepareWalk(level) {
+    if (level === 4) {
+      this.caveScene ??= new CaveScene();
+      return this.caveScene.ready.then(()=>this.caveScene.prepare(this));
+    }
+    if (level === 3) {
+      this.mountainScene ??= new MountainScene();
+      return this.mountainScene.ready;
+    }
+    if (level !== 2) return Promise.resolve();
+    this.parkLevel2Scene ??= new ParkLevel2Scene();
+    return this.parkLevel2Scene.ready;
+  }
+  depart(event) { this.effects.push({ ...event, type: 'depart', visualType: 'parkCrowDeparture' }); }
   setReducedMotion(enabled) {
     this.userReducedMotion = Boolean(enabled);
     this.reducedMotion = this.systemReducedMotion || this.userReducedMotion;
@@ -252,9 +276,8 @@ export class Renderer {
   }
   contact(event) {
     const obstacleType = event.obstacleType ?? event.kind;
-    if (['litter', 'crow', 'cat'].includes(obstacleType)) {
+    if (!event.ignored && ['litter', 'crow', 'cat', 'ball', 'puddle', 'trash', 'root', 'rock', 'log', 'rollingStone', 'stalagmite', 'stalactite', 'caveRock', 'bat'].includes(obstacleType)) {
       this.effects.push({ ...event, visualType: 'streetContact' });
-      return;
     }
     if (!['puddle', 'trash'].includes(obstacleType)) return;
     this.effects.push({ ...event, visualType: obstacleType === 'puddle' ? 'puddleContact' : 'trashContact' });
@@ -417,6 +440,8 @@ export class Renderer {
       ? Math.max(0, Math.min(1, (game.timeMs - game.move.startMs) / CONFIG.moveMs)) : 0;
     const direction = game.move ? Math.sign(game.move.to - game.move.from) : 0;
     const motionAllowed = !this.reducedMotion && this.roadComfortFlags.dogMotion;
+    const hit = sampleContactReaction(this.effects, game.timeMs, !motionAllowed);
+    this.contactReaction = hit;
     const bobCanAdvance = game.state === 'running'
       || (game.state === 'paused' && game.pausedFrom === 'running');
     const bob = motionAllowed && bobCanAdvance
@@ -430,12 +455,12 @@ export class Renderer {
       let pickup=null;
       for (let i=this.effects.length-1;i>=0;i--) if(this.effects[i].type==='collect'){pickup=this.effects[i];break;}
       const age=pickup?game.timeMs-pickup.activeMs:Infinity;
-      const joy=motionAllowed&&age>=0&&age<320?Math.sin(age/320*Math.PI):0;
+      const joy=motionAllowed&&!hit.active&&age>=0&&age<320?Math.sin(age/320*Math.PI):0;
       this.pickupReaction={age,weight:joy,gold:pickup?.kind==='gold'||pickup?.boneKind==='gold'};
       this.ellipse(x, foot + 2 * scale, 27 * scale * shadowSpread, 7 * scale, CONTACT_SHADOW);
       c.save();
-      c.translate(x, foot + bob - joy*2.8*scale);
-      c.rotate(lean + (joy>0?Math.sin(age/90)*joy*.014:0));
+      c.translate(x, foot + bob - joy*2.8*scale + hit.flinch*4*scale);
+      c.rotate(lean + hit.side*hit.flinch*.07 + (joy>0?Math.sin(age/90)*joy*.014:0));
       const sample={atlas:'walk',...sampleWalk({distance:this.worldDistance(game),strideLength:this.dogs.animation?.strideLength??.78,reducedMotion:!motionAllowed})};
       const painted = this.dogs.draw(c, { view: 'back', x: 0, foot: 0, size: 116 * scale, sample });
       c.restore();
@@ -447,7 +472,7 @@ export class Renderer {
     const age = recent ? game.timeMs - recent.activeMs : Infinity;
     const strength = recent?.visualType === 'puddleContact' ? -.04 : .05;
     const react = !this.reducedMotion && age >= 0 && age < 180 ? Math.sin(age / 180 * Math.PI) * strength : 0;
-    c.save(); c.translate(x, foot); c.scale(scale, scale);
+    c.save(); c.translate(x, foot); c.scale(scale, scale); c.rotate(hit.side*hit.flinch*.07);
     this.ellipse(0, 3, 30, 9, CONTACT_SHADOW);
     for (const dir of [-1, 1]) {
       const step = Math.sin(phase + (dir > 0 ? Math.PI : 0));
@@ -503,13 +528,22 @@ export class Renderer {
   contactEffects(game, dog) {
     const c = this.ctx, scale = this.width / 390;
     for (const effect of this.effects) {
+      if (effect.visualType === 'parkCrowDeparture') {
+        const age = game.timeMs - effect.activeMs;
+        if (this.reducedMotion || age < 0 || age >= 380) continue;
+        const t = age / 380, side = effect.lane < 0 ? -1 : 1;
+        const point = this.project(effect.lane, effect.obstacleDistance - this.worldDistance(game));
+        drawParkCrowAt(this, { x: point.x + side * t * 70 * scale, y: point.y - t * 38 * scale,
+          size: Math.max(22, 42 * point.scale * scale), timeMs: game.timeMs, airborne: true, alpha: 1-t });
+        continue;
+      }
       if (effect.visualType === 'streetContact') {
         const age = game.timeMs - effect.activeMs;
         if (age < 0 || age >= 520) continue;
         const hud = this.pickupHudAnchor(), fade = age < 380 ? 1 : (520 - age) / 140;
         c.save(); c.globalAlpha *= fade;
         c.textAlign = 'center'; c.font = `800 ${Math.max(12, Math.min(15, Math.round(this.width / 25)))}px Georgia,serif`;
-        const label = String(effect.points ?? -10).replace('-', '−');
+        const label = effect.points === 0 ? '接触' : String(effect.points ?? -10).replace('-', '−');
         c.fillStyle = '#fff6efee';
         c.beginPath();
         if (typeof c.roundRect === 'function') c.roundRect(hud.labelX - 18, hud.labelY + 7, 36, 20, 7);
@@ -521,6 +555,11 @@ export class Renderer {
           const distance = (effect.obstacleDistance ?? effect.distance) - this.worldDistance(game);
           const footprint = this.obstacleFootprint(effect.lane, Math.max(-.1, distance));
           const width = footprint.width * .94;
+          if (game.walkLevel === 2 && effect.obstacleType === 'crow') {
+            drawParkCrowAt(this, { x: footprint.p.x + side * t * 88 * scale, y: footprint.p.y - t * 34 * scale,
+              size: Math.max(22, width * .8), timeMs: game.timeMs, airborne: true, alpha: 1 - t * .85 });
+            continue;
+          }
           const aspect = STREET_OBSTACLE_ART.geometry(effect.obstacleType).aspect;
           drawStreetObstacleAt(this, effect.obstacleType, {
             x: footprint.p.x + side * t * 88 * scale,
@@ -554,6 +593,33 @@ export class Renderer {
       }
       c.restore();
     }
+  }
+  contactImpact(game, dog) {
+    const hit = sampleContactReaction(this.effects, game.timeMs, this.reducedMotion);
+    if (!hit.active) return;
+    const c = this.ctx, scale = this.width / 390;
+    const point = { x: dog.x + 42*scale*hit.side, y: dog.y - 57*scale };
+    const spread = this.reducedMotion ? 0 : Math.min(1, hit.age/180)*6*scale;
+    c.save(); c.globalAlpha *= hit.alpha; c.lineCap = 'round';
+    // A local, white-edged impact mark stays readable in forest and cave.
+    for (const [angle, length] of [[-.95, 10], [0, 14], [.95, 10]]) {
+      const dx = Math.cos(angle)*hit.side, dy = Math.sin(angle);
+      const start = 8*scale + spread;
+      c.beginPath();c.moveTo(point.x + dx*start, point.y + dy*start);
+      c.lineTo(point.x + dx*(start + length*scale), point.y + dy*(start + length*scale));
+      c.strokeStyle = '#fff6e8';c.lineWidth = 6*scale;c.stroke();
+      c.strokeStyle = '#b64f38';c.lineWidth = 3*scale;c.stroke();
+    }
+    const labelX = Math.min(this.width - 48*scale, Math.max(48*scale, dog.x));
+    const labelY = dog.y - 136*scale;
+    c.fillStyle = '#fff2df'; c.strokeStyle = '#b64f38'; c.lineWidth = 1.5*scale;
+    c.beginPath();
+    if (typeof c.roundRect === 'function') c.roundRect(labelX-42*scale,labelY-13*scale,84*scale,25*scale,9*scale);
+    else c.rect(labelX-42*scale,labelY-13*scale,84*scale,25*scale);
+    c.fill();c.stroke();
+    c.font = `700 ${Math.max(12,12*scale)}px system-ui,sans-serif`;c.textAlign = 'center';c.textBaseline = 'middle';
+    c.fillStyle = '#8c3e2d'; c.fillText('ぶつかった',labelX,labelY);
+    c.restore();
   }
   landscape(game, menu) {
     const c = this.ctx, w = this.width, h = this.height, horizon = h * (menu ? .43 : .24);
@@ -600,7 +666,20 @@ export class Renderer {
     c.strokeStyle = color; c.lineWidth = 2; c.stroke();
   }
   drawAdventure(game, options) {
-    if (options.menu) return this.adventure.draw(this, game, options);
+    let scene = this.adventure;
+    if (game.walkLevel === 2) {
+      this.parkLevel2Scene ??= new ParkLevel2Scene();
+      scene = this.parkLevel2Scene;
+    }
+    if (game.walkLevel === 3) {
+      this.mountainScene ??= new MountainScene();
+      scene = this.mountainScene;
+    }
+    if (game.walkLevel === 4) {
+      this.caveScene ??= new CaveScene();
+      scene = this.caveScene;
+    }
+    if (options.menu && game.walkLevel < 2) return scene.draw(this, game, options);
     // Keep the gameplay sprites crisp while bounding background raster work
     // on high-density screens. The camera still uses the same CSS coordinates.
     if (!this.streetBackdrop) {
@@ -608,9 +687,9 @@ export class Renderer {
       const context = surface?.getContext?.('2d');
       if (surface && context) this.streetBackdrop = { surface, context };
     }
-    if (!this.streetBackdrop) return this.adventure.draw(this, game, options);
+    if (!this.streetBackdrop) return scene.draw(this, game, options);
     const {surface, context} = this.streetBackdrop;
-    const density = Math.min(1, devicePixelRatio || 1);
+    const density = Math.min(game.walkLevel === 4 ? 1.25 : game.walkLevel >= 2 ? 1.5 : 1, devicePixelRatio || 1);
     const width = Math.max(1, Math.round(this.width * density));
     const height = Math.max(1, Math.round(this.height * density));
     if (surface.width !== width || surface.height !== height) {
@@ -620,7 +699,7 @@ export class Renderer {
     const foreground = this.ctx;
     try {
       this.ctx = context;
-      this.adventure.draw(this, game, options);
+      scene.draw(this, game, options);
     } finally { this.ctx = foreground; }
     foreground.drawImage(surface, 0, 0, width, height, 0, 0, this.width, this.height);
   }
@@ -630,10 +709,15 @@ export class Renderer {
     const paused = game.state === 'paused';
     const signature = paused ? JSON.stringify([
       this.width, this.height, this.canvas.width, this.canvas.height,
-      game.phase, game.seed, game.timeMs, game.distance, game.x, game.lane, game.move, game.score,
+      game.phase, game.walkLevel, game.seed, game.timeMs, game.distance, game.x, game.lane, game.move, game.score,
       this.effects, this.debug, this.reducedMotion, this.roadDecoration, this.roadComfortFlags,
       this.dogs?.stats.ready, this.dogs?.stats.hd?.pending,
       this.dogs?.stats.hd?.decodeCount, this.adventure?.stats, this.streetArt?.stats, this.toyArt?.stats,
+      this.parkLevel2Scene?.stats,
+      // Landmarks are draw outputs derived from the game clock. Including
+      // them invalidates the first paused frame and rerasterizes textures
+      // after a readback; only loading state can change a paused mountain.
+      this.mountainScene?.art?.stats, this.caveScene?.art?.stats,
     ]) : null;
     if (!force && paused && this.frozenGame === game && this.frozenSignature === signature) return;
     this.drawFrame(game);
@@ -641,11 +725,12 @@ export class Renderer {
     this.frozenSignature = signature;
   }
   drawFrame(game) {
+    this.parkObjects = []; this.mountainObjects = []; this.caveObjects = [];
     const c = this.ctx, w = this.width, h = this.height;
     if (!w || !h) return;
     c.clearRect(0, 0, w, h);
     const menu = ['ready', 'result'].includes(game.state);
-    this.streetPerspective = Boolean(this.adventure) && !menu;
+    this.streetPerspective = game.walkLevel >= 2 || (Boolean(this.adventure) && !menu);
     const runSeed = Number.isFinite(game.seed) ? game.seed >>> 0 : 1;
     const runKey = `${game.phase ?? 1}:${runSeed}`;
     const runOpen = ['running', 'falling', 'paused'].includes(game.state);
@@ -665,7 +750,7 @@ export class Renderer {
         && this.roadDecoration !== 'minimal'
         && this.shouldDrawRoadDecoration(lineId),
     });
-    this.trailBend = this.adventure && !this.reducedMotion
+    this.trailBend = game.walkLevel < 2 && this.adventure && !this.reducedMotion
       && this.roadComfortFlags.trailBend
       ? w * (menu ? .025 : Math.sin(game.timeMs / 6800) * .025) : 0;
     const now = performance.now();
@@ -683,7 +768,7 @@ export class Renderer {
     this.menuLastFrameNow = canAdvanceMenu ? now : null;
     const menuElapsedMs = this.menuElapsedMs;
     if (game.state === 'ready') this.room.draw(c,w,h,Math.min(devicePixelRatio||1,CONFIG.dprCap));
-    else if (this.adventure) this.drawAdventure(game, { menu, timeMs: menuElapsedMs });
+    else if (game.walkLevel >= 2 || this.adventure) this.drawAdventure(game, { menu, timeMs: menuElapsedMs });
     else this.landscape(game, menu);
     this.comfortMetrics = this.roadComfort.endFrame();
     if (menu) {
@@ -715,10 +800,14 @@ export class Renderer {
     }
     for (const obstacle of game.obstacles ?? []) {
       const isFatalHole = obstacle === fatalHole;
-      if (obstacle.status && obstacle.status !== 'pending' && !isFatalHole) continue;
+      const parkBall = (game.walkLevel === 2 && obstacle.type === 'ball') || (game.walkLevel === 3 && obstacle.type === 'rollingStone') || game.walkLevel === 4;
+      if (obstacle.status && obstacle.status !== 'pending' && !isFatalHole && !parkBall) continue;
+      if (game.walkLevel === 2 && !parkObstacleVisibleAt(obstacle, game.timeMs)) continue;
+      if (game.walkLevel === 3 && !mountainObstacleVisibleAt(obstacle, game.timeMs)) continue;
+      if (game.walkLevel === 4 && !caveObstacleVisibleAt(obstacle, game.timeMs)) continue;
       const distance = obstacle.distance - currentDistance;
-      if (!isFatalHole && (distance > CONFIG.lookAhead || distance < -.16)) continue;
-      if (!['hole', 'puddle', 'trash', 'litter', 'crow', 'cat'].includes(obstacle.type)) continue;
+      if (!isFatalHole && (distance > CONFIG.lookAhead || distance < (game.walkLevel === 4 ? -.82 : parkBall ? -.60 : -.16))) continue;
+      if (!['hole', 'puddle', 'trash', 'litter', 'crow', 'cat', 'ball', 'root', 'rock', 'log', 'rollingStone', 'stalagmite', 'stalactite', 'caveRock', 'bat'].includes(obstacle.type)) continue;
       objects.push({ type: 'obstacle', entity: obstacle, distance, rank: 1 });
     }
     objects.sort((a, b) => b.distance - a.distance || a.rank - b.rank);
@@ -731,11 +820,37 @@ export class Renderer {
         if (this.debug) this.hitbox(bone.lane, object.distance, CONFIG.boneHalfWidth, CONFIG.boneHalfLength, '#b73d70');
       } else {
         const obstacle = object.entity;
-        if (['litter', 'crow', 'cat'].includes(obstacle.type)) drawStreetObstacle(this, obstacle.type, obstacle.lane, object.distance);
+        const obstacleLane = game.walkLevel === 4 ? caveObstacleLaneAt(obstacle, game.timeMs) : game.walkLevel === 3 ? mountainObstacleLaneAt(obstacle, game.timeMs)
+          : game.walkLevel === 2 ? parkObstacleLaneAt(obstacle, game.timeMs) : obstacle.lane;
+        let parkBodyDrawn = false;
+        if (game.walkLevel === 4) {
+          const p = this.project(obstacleLane, object.distance);
+          drawCaveObstacle(this, obstacle, p.x, p.y, p.scale, game.timeMs);
+          this.caveObjects.push({obstacleId:obstacle.id,eventId:obstacle.eventId,type:obstacle.type,
+            lane:obstacleLane,distance:object.distance,x:p.x,y:p.y,scale:p.scale,
+            renderedAtMs:game.timeMs,visibleStartMs:obstacle.visibleStartMs});
+        }
+        else if (game.walkLevel === 3) {
+          const p = this.project(obstacleLane, object.distance);
+          drawMountainObstacle(this, obstacle, p.x, p.y, p.scale, game.timeMs);
+          this.mountainObjects.push({obstacleId:obstacle.id,eventId:obstacle.eventId,type:obstacle.type,
+            lane:obstacleLane,distance:object.distance,x:p.x,y:p.y,scale:p.scale,
+            renderedAtMs:game.timeMs,visibleStartMs:obstacle.visibleStartMs});
+        }
+        else if (game.walkLevel === 2 && obstacle.type === 'crow') parkBodyDrawn = drawParkCrow(this, obstacleLane, object.distance, game.timeMs, obstacle);
+        else if (game.walkLevel === 2 && obstacle.type === 'ball') parkBodyDrawn = drawParkBall(this, obstacleLane, object.distance, game.timeMs, obstacle);
+        else if (game.walkLevel === 2 && obstacle.type === 'puddle') parkBodyDrawn = drawParkPuddle(this, obstacleLane, object.distance);
+        else if (['litter', 'crow', 'cat'].includes(obstacle.type)) drawStreetObstacle(this, obstacle.type, obstacleLane, object.distance);
         else if (obstacle.type === 'hole') this.hole(obstacle.lane, object.distance);
         else if (obstacle.type === 'puddle') this.puddle(obstacle.lane, object.distance);
         else this.trashBin(obstacle.lane, object.distance);
-        if (this.debug) this.hitbox(obstacle.lane, object.distance,
+        if (game.walkLevel === 2 && parkBodyDrawn) {
+          const bounds = parkObstacleBodyBounds(this, obstacle.type, obstacleLane, object.distance, obstacle, game.timeMs);
+          if (bounds) this.parkObjects.push({ ...bounds, obstacleId: obstacle.id, eventId: obstacle.eventId,
+            type: obstacle.type, lane: obstacleLane, renderedAtMs: game.timeMs, visibleStartMs: obstacle.visibleStartMs,
+            firstContactMs: obstacle.arrivalMs - (CONFIG.dogHalfLength + CONFIG.obstacleHalfLength) * 1000 / game.speed });
+        }
+        if (this.debug) this.hitbox(obstacleLane, object.distance,
           CONFIG.obstacleHalfWidth ?? OBSTACLE_HALF_WIDTH, CONFIG.obstacleHalfLength ?? OBSTACLE_HALF_LENGTH, '#315dc6');
       }
     }
@@ -747,6 +862,7 @@ export class Renderer {
     this.contactEffects(game, dog);
     if (falling && fatalHole) this.fallingDog(game, dog, fatalHole);
     else this.runner(dog.x, dog.y, w / 390, game);
+    this.contactImpact(game, dog);
     if (this.debug) this.hitbox(game.x, 0, CONFIG.dogHalfWidth, CONFIG.dogHalfLength, '#315dc6');
     for (const effect of this.effects) {
       if (effect.type !== 'collect') continue;

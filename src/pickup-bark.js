@@ -22,11 +22,15 @@ export class PickupBark {
     url = DEFAULT_PICKUP_BARK_URL,
     timeoutMs = DEFAULT_FETCH_TIMEOUT_MS,
     now = wallTimeMs,
+    gain = BARK_GAIN,
+    cooldownMs = PICKUP_COOLDOWN_MS,
   } = {}) {
     this.fetcher = fetcher;
     this.url = url;
     this.timeoutMs = timeoutMs;
     this.now = now;
+    this.gain = gain;
+    this.cooldownMs = cooldownMs;
 
     this._bytesPromise = null;
     this._contextStates = new WeakMap();
@@ -168,7 +172,7 @@ export class PickupBark {
     if (this._voice) return false;
 
     const now = this.now();
-    if (this._lastPlayAt !== null && now - this._lastPlayAt < PICKUP_COOLDOWN_MS) return false;
+    if (this._lastPlayAt !== null && now - this._lastPlayAt < this.cooldownMs) return false;
 
     let source;
     let gain;
@@ -178,8 +182,8 @@ export class PickupBark {
       gain = context.createGain();
       source.buffer = this._buffer;
       const gainParam = gain.gain;
-      if (typeof gainParam?.setValueAtTime === 'function') gainParam.setValueAtTime(BARK_GAIN, context.currentTime ?? 0);
-      else if (gainParam) gainParam.value = BARK_GAIN;
+      if (typeof gainParam?.setValueAtTime === 'function') gainParam.setValueAtTime(this.gain, context.currentTime ?? 0);
+      else if (gainParam) gainParam.value = this.gain;
       source.connect(gain);
       gain.connect(destination ?? context.destination);
 
@@ -206,6 +210,8 @@ export class PickupBark {
     try { voice.source.stop(); } catch {}
     this._disconnectVoice(voice);
   }
+
+  get playing() { return Boolean(this._voice); }
 
   _disconnectVoice(voice) {
     if (voice.cleaned) return;

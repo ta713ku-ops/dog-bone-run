@@ -3,38 +3,54 @@ import { createCourse } from './course.js';
 import { createPhase2Course } from './phase2-course.js';
 import { createPhase3Course } from './phase3-course.js';
 import { createSprintCourse } from './sprint-course.js';
+import { createParkCourse, parkObstacleLaneAt } from './park-course.js';
+import { createMountainCourse, mountainObstacleLaneAt } from './mountain-course.js';
+import { createCaveCourse, caveObstacleLaneAt } from './cave-course.js';
+import { getWalkLevel } from './walk-levels.js';
+
+const obstacleLaneAt = (level, obstacle, timeMs) => level === 4 ? caveObstacleLaneAt(obstacle, timeMs) : level === 3
+  ? mountainObstacleLaneAt(obstacle, timeMs) : parkObstacleLaneAt(obstacle, timeMs);
 
 // Pure simulation. Neither browser APIs nor rendering influence its coordinates.
 export class Game {
-  constructor({ course, obstacles, phase = 1, seed = 1, onEvent = () => {} } = {}) {
+  constructor({ course, obstacles, phase = 1, seed = 1, walkLevel = 1, onEvent = () => {} } = {}) {
     this.phase = [2, 3, 4].includes(phase) ? phase : 1; this.fixedCourse = course; this.fixedObstacles = obstacles; this.seed = seed >>> 0;
+    this.walkLevel = [2, 3, 4].includes(walkLevel) ? walkLevel : 1;
     this.onEvent = onEvent;
-    this.reset();
+    this.reset({ seed: this.seed, walkLevel: this.walkLevel });
   }
-  reset({ seed = this.seed } = {}) {
+  reset({ seed = this.seed, walkLevel = this.walkLevel } = {}) {
     this.seed = seed >>> 0;
-    const data = this.phase === 4 ? createSprintCourse(this.seed) : this.phase === 3 ? createPhase3Course(this.seed) : this.phase === 2 ? createPhase2Course(this.seed) : null;
+    this.walkLevel = [2, 3, 4].includes(walkLevel) ? walkLevel : 1;
+    const level = getWalkLevel(this.walkLevel);
+    const data = this.phase === 4
+      ? (this.walkLevel === 4 ? createCaveCourse(this.seed) : this.walkLevel === 3 ? createMountainCourse(this.seed) : this.walkLevel === 2 ? createParkCourse(this.seed) : createSprintCourse(this.seed))
+      : this.phase === 3 ? createPhase3Course(this.seed) : this.phase === 2 ? createPhase2Course(this.seed) : null;
     this.course = this.fixedCourse ?? data?.bones ?? createCourse();
+    this.courseData = this.phase === 4 && this.walkLevel >= 2 && !this.fixedCourse ? data : null;
+    this.durationMs = this.phase === 4 ? level.durationMs : CONFIG.durationMs;
+    this.speed = this.phase === 4 ? level.speed : 1;
     this.goldCandidates = data?.goldCandidates ?? [];
     this.goldIds = this.course.filter(b => b.kind === 'gold').map(b => b.id);
     this.state = 'ready'; this.timeMs = 0; this.x = 0; this.lane = 0;
     this.move = null; this.queue = null; this.lastAcceptedMs = -Infinity;
     this.score = 0; this.combo = 0; this.maxCombo = 0; this.collected = 0; this.lastCollectMs = -Infinity;
     this.comboDeadlineMs = Infinity; this.normalCollected = 0; this.goldCollected = 0;
-    this.distance = 0; this.speed = 1; this.distanceAnchor = 0; this.distanceAnchorMs = 0;
+    this.distance = 0; this.distanceAnchor = 0; this.distanceAnchorMs = 0;
     this.slowUntilMs = 0; this.suppressUntilMs = 0;
     this.fall = null; this.fallElapsedMs = 0; this.endReason = null; this.pausedFrom = null;
+    this.contactCount = 0; this.contactEventCount = 0; this.contactEventKeys = new Set(); this.visibleEventIds = new Set();
     this.bones = this.course.map(b => ({ ...b, distance: b.distance ?? b.timeMs / 1000, kind: b.kind ?? 'normal', status: 'pending' }));
     const obstacles = this.fixedObstacles ?? (this.fixedCourse ? [] : data?.obstacles ?? []);
     this.obstacles = obstacles.map(o => ({ ...o, status: 'pending' }));
   }
   get goalDistance() {
     if (this.phase !== 4) return PHASE2.goalDistance;
-    const remainingMs = Math.max(0, PHASE4.durationMs - this.timeMs);
+    const remainingMs = Math.max(0, this.durationMs - this.timeMs);
     return this.distance + remainingMs * this.speed / 1000;
   }
   get progress() {
-    if (this.phase === 4) return Math.min(1, this.timeMs / PHASE4.durationMs);
+    if (this.phase === 4) return Math.min(1, this.timeMs / this.durationMs);
     return Math.min(1, this.distance / PHASE2.goalDistance);
   }
   get difficultyLevel() {
@@ -49,7 +65,9 @@ export class Game {
   emit(type, data = {}, timeMs = this.timeMs) { this.onEvent({ type, activeMs: timeMs, ...data }); }
   start() {
     if (this.state !== 'ready') return false;
-    this.state = 'running'; this.emit('start', this.phase >= 2 ? { phase: this.phase, seed: this.seed, goldIds: [...this.goldIds] } : {}); return true;
+    this.state = 'running'; this.emit('start', this.phase >= 2
+      ? { phase: this.phase, seed: this.seed, goldIds: [...this.goldIds], ...(this.phase === 4 && this.walkLevel >= 2 ? { walkLevel: this.walkLevel } : {}) }
+      : {}); return true;
   }
   command(direction, source = 'keyboard', movement = null) {
     const base = this.move ? this.move.to : this.lane;
@@ -189,12 +207,19 @@ export class Game {
     if (this.phase === 4 && obstacle.status === 'contacted') return false;
     obstacle.status = 'contacted';
     if (this.phase === 4) {
+      this.contactCount++;
+      const eventKey = obstacle.eventId ?? `distance:${obstacle.distance}`;
+      if (!this.contactEventKeys.has(eventKey)) {
+        this.contactEventKeys.add(eventKey);
+        this.contactEventCount++;
+      }
       const scoreBefore = this.score;
       this.score = Math.max(0, scoreBefore - 10);
       this.emit('obstacle_contact', {
-        obstacleId: obstacle.id, obstacleType: obstacle.type, lane: obstacle.lane,
+        obstacleId: obstacle.id, obstacleType: obstacle.type, lane: this.walkLevel >= 2 ? obstacleLaneAt(this.walkLevel, obstacle, this.timeMs) : obstacle.lane,
         x: this.x, distance: this.distance, obstacleDistance: obstacle.distance, points: this.score - scoreBefore,
         nominalPenalty: 10, score: this.score, scoreBefore, status: obstacle.status,
+        ...(this.walkLevel >= 2 ? { eventId: obstacle.eventId, contactCount: this.contactCount, contactEventCount: this.contactEventCount } : {}),
       });
       return true;
     }
@@ -229,6 +254,28 @@ export class Game {
     }
   }
   worldContactTime(item, startMs, endMs, x0, x1, halfWidth, halfLength) {
+    if (this.walkLevel >= 2 && item.type) {
+      const speed = this.speed / 1000;
+      let enter = Math.max(startMs, this.distanceAnchorMs + (item.distance - halfLength - this.distanceAnchor) / speed);
+      let exit = Math.min(endMs, this.distanceAnchorMs + (item.distance + halfLength - this.distanceAnchor) / speed);
+      if (item.type === 'crow') {
+        const groundedStartMs = item.groundedStartMs ?? item.visibleStartMs ?? item.warningStartMs ?? -Infinity;
+        enter = Math.max(enter, groundedStartMs);
+        exit = Math.min(exit, item.departureMs);
+      }
+      if (enter > exit + EPS) return null;
+      const duration = endMs - startMs;
+      const dogAt = timeMs => duration <= EPS ? x0 : x0 + (x1 - x0) * ((timeMs - startMs) / duration);
+      const relativeStart = dogAt(enter) - obstacleLaneAt(this.walkLevel, item, enter);
+      const relativeEnd = dogAt(exit) - obstacleLaneAt(this.walkLevel, item, exit);
+      const relativeSpeed = exit - enter <= EPS ? 0 : (relativeEnd - relativeStart) / (exit - enter);
+      if (Math.abs(relativeSpeed) <= EPS) return Math.abs(relativeStart) <= halfWidth + EPS ? enter : null;
+      const a = enter + (-halfWidth - relativeStart) / relativeSpeed;
+      const b = enter + (halfWidth - relativeStart) / relativeSpeed;
+      enter = Math.max(enter, Math.min(a, b));
+      exit = Math.min(exit, Math.max(a, b));
+      return enter <= exit + EPS ? Math.max(startMs, Math.min(endMs, enter)) : null;
+    }
     const speed = this.speed / 1000;
     let enter = Math.max(startMs, this.distanceAnchorMs + (item.distance - halfLength - this.distanceAnchor) / speed);
     let exit = Math.min(endMs, this.distanceAnchorMs + (item.distance + halfLength - this.distanceAnchor) / speed);
@@ -243,16 +290,45 @@ export class Game {
     }
     return enter <= exit + EPS ? Math.max(startMs, Math.min(endMs, enter)) : null;
   }
+  emitObstacleVisibility(timeMs = this.timeMs) {
+    if (this.walkLevel < 2) return;
+    for (const obstacle of this.obstacles) {
+      const visibleStartMs = obstacle.visibleStartMs ?? obstacle.warningStartMs ?? -Infinity;
+      if (!obstacle.eventId || this.visibleEventIds.has(obstacle.eventId) || visibleStartMs > timeMs + EPS) continue;
+      this.visibleEventIds.add(obstacle.eventId);
+      this.emit('obstacle_visible', {
+        obstacleType: obstacle.type,
+        eventId: obstacle.eventId,
+        obstacleId: obstacle.id,
+        visibleStartMs,
+        lane: obstacleLaneAt(this.walkLevel, obstacle, visibleStartMs),
+        targetLanes: ['ball', 'rollingStone', 'bat'].includes(obstacle.type) ? [obstacle.fromLane, obstacle.toLane]
+          : this.obstacles.filter(item => item.eventId === obstacle.eventId).map(item => item.lane),
+      }, visibleStartMs);
+    }
+  }
+  nextParkBoundaryAfter(timeMs) {
+    if (this.walkLevel < 2) return Infinity;
+    let next = Infinity;
+    for (const obstacle of this.obstacles) {
+      for (const boundary of [obstacle.visibleStartMs ?? obstacle.warningStartMs, obstacle.groundedStartMs, obstacle.departureMs, obstacle.moveStartMs, obstacle.moveEndMs]) {
+        if (Number.isFinite(boundary) && boundary > timeMs + EPS) next = Math.min(next, boundary);
+      }
+    }
+    return next;
+  }
   advancePhase2(deltaMs) {
     const target = this.phase === 4
-      ? Math.min(PHASE4.durationMs, this.timeMs + deltaMs)
+      ? Math.min(this.durationMs, this.timeMs + deltaMs)
       : this.timeMs + deltaMs;
     while (this.state === 'running' && this.timeMs < target) {
+      this.emitObstacleVisibility(this.timeMs);
       this.resolveEffects();
       const startMs = this.timeMs;
       const tick = (Math.floor((startMs + EPS) / CONFIG.stepMs) + 1) * CONFIG.stepMs;
       const goalMs = this.phase === 4 ? Infinity : this.distanceAnchorMs + (PHASE2.goalDistance - this.distanceAnchor) / this.speed * 1000;
-      const boundary = Math.min(target, tick, this.move?.endMs ?? Infinity, this.slowUntilMs || Infinity, this.suppressUntilMs || Infinity, goalMs);
+      const boundary = Math.min(target, tick, this.move?.endMs ?? Infinity, this.slowUntilMs || Infinity,
+        this.suppressUntilMs || Infinity, this.nextParkBoundaryAfter(startMs), goalMs);
       const x0 = this.x, x1 = this.xAt(boundary), endDistance = this.distanceAt(boundary);
       const contacts = [];
       for (const item of [...this.obstacles, ...this.bones]) {
@@ -261,18 +337,21 @@ export class Game {
         const halfWidth = CONFIG.dogHalfWidth + (obstacle ? CONFIG.obstacleHalfWidth : CONFIG.boneHalfWidth);
         const halfLength = CONFIG.dogHalfLength + (obstacle ? CONFIG.obstacleHalfLength : CONFIG.boneHalfLength);
         const hit = this.worldContactTime(item, startMs, boundary, x0, x1, halfWidth, halfLength);
+        // Level 2 logs the strict pass after the inclusive contact endpoint.
+        const passOffset = this.phase === 4 && this.walkLevel >= 2 ? this.speed * .001 / 1000 : 0;
         const priority = this.phase === 4
           ? (obstacle ? 0 : 3)
           : item.type === 'hole' ? 0 : item.type === 'trash' ? 1 : item.type === 'puddle' ? 2 : 3;
         if (hit !== null) contacts.push({ item, timeMs: hit, priority, kind: 'contact' });
-        else if (endDistance > item.distance + halfLength + EPS) {
-          const passedMs = this.distanceAnchorMs + (item.distance + halfLength - this.distanceAnchor) / this.speed * 1000;
+        else if (endDistance > item.distance + halfLength + passOffset + EPS) {
+          const passedMs = this.distanceAnchorMs + (item.distance + halfLength + passOffset - this.distanceAnchor) / this.speed * 1000;
           contacts.push({ item, timeMs: Math.max(startMs, passedMs), priority: 4, kind: 'passed' });
         }
       }
       contacts.sort((a, b) => a.timeMs - b.timeMs || a.priority - b.priority);
       const endMs = contacts.length ? Math.min(boundary, contacts[0].timeMs) : boundary;
       this.distance = this.distanceAt(endMs); this.x = this.xAt(endMs); this.timeMs = endMs;
+      this.emitObstacleVisibility(endMs);
       this.resolveEffects(); this.expire(endMs);
       const simultaneous = contacts.filter(c => Math.abs(c.timeMs - endMs) <= EPS).sort((a, b) => a.priority - b.priority);
       for (const { item, kind } of simultaneous) {
@@ -280,7 +359,8 @@ export class Game {
         if (kind === 'passed') {
           item.status = item.type ? 'passed' : 'miss';
           this.emit(item.type ? 'obstacle_pass' : 'miss', { obstacleId: item.type ? item.id : undefined,
-            boneId: item.type ? undefined : item.id, lane: item.lane, x: this.x, distance: this.distance });
+            boneId: item.type ? undefined : item.id, lane: item.lane, x: this.x, distance: this.distance,
+            ...(this.walkLevel >= 2 && item.type ? { obstacleType: item.type, eventId: item.eventId, obstacleDistance: item.distance } : {}) });
         } else if (item.type) this.obstacleContact(item);
         else this.collect(item, this.timeMs, this.x);
       }
@@ -291,13 +371,13 @@ export class Game {
         if (this.queue !== null) { const next = this.queue; this.queue = null; this.beginMove(next); }
       }
       const finished = this.phase === 4
-        ? this.timeMs >= PHASE4.durationMs - EPS
+        ? this.timeMs >= this.durationMs - EPS
         : this.timeMs >= goalMs;
       if (finished) {
         if (this.phase !== 4) {
           this.timeMs = Math.round(goalMs * 1e6) / 1e6;
           this.distance = PHASE2.goalDistance;
-        } else this.timeMs = PHASE4.durationMs;
+        } else this.timeMs = this.durationMs;
         this.clearQueue('finish');
         if (this.combo) this.emit('combo_end', { reason: 'finish', combo: this.combo });
         this.endReason = 'finish'; this.state = 'result'; this.emit('end', { reason: 'finish', ...this.result() });
@@ -306,7 +386,12 @@ export class Game {
   }
   result() {
     const result = { score: this.score, collected: this.collected, placed: this.bones.length, maxCombo: this.maxCombo, timeMs: this.timeMs };
-    return this.phase === 1 ? result : { ...result, phase: this.phase, normalCollected: this.normalCollected, goldCollected: this.goldCollected,
+    if (this.phase === 1) return result;
+    const phaseResult = { ...result, phase: this.phase, normalCollected: this.normalCollected, goldCollected: this.goldCollected,
       distance: this.distance, progress: this.progress, completed: this.state === 'result' && this.endReason === 'finish', seed: this.seed, goldIds: [...this.goldIds], ...(this.phase >= 3 ? { endReason: this.endReason } : {}) };
+    return this.phase === 4 && this.walkLevel >= 2
+      ? { ...phaseResult, walkLevel: this.walkLevel, durationMs: this.durationMs, speed: this.speed,
+        contactCount: this.contactCount, contactEventCount: this.contactEventCount }
+      : phaseResult;
   }
 }

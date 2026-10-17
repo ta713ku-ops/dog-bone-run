@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {CONFIG} from '../src/config.js';
@@ -14,7 +15,7 @@ for(const engine of [chromium,webkit]){
   });
   console.log(`${engine.name()}: 12s real home + 30s walk`);await page.waitForTimeout(12000);
   const bones=await page.evaluate(()=>__dogBoneTest.game.bones.map(b=>({at:b.timeMs-340,lane:b.lane})));
-  await page.locator('#start').click();await page.waitForFunction(()=>__dogBoneTest.game.state==='running');
+  await page.locator('#start').click();await confirmDeparture(page);await page.waitForFunction(()=>__dogBoneTest.game.state==='running');
   for(const bone of bones){await page.waitForFunction(at=>__dogBoneTest.game.timeMs>=at,bone.at,{timeout:5000,polling:16});const lane=await page.evaluate(()=>__dogBoneTest.game.lane);if(lane!==bone.lane)await page.keyboard.press(bone.lane>lane?'ArrowRight':'ArrowLeft');}
   await page.waitForFunction(()=>__dogBoneTest.game.state==='result',undefined,{timeout:8000});
   const data=await page.evaluate(()=>{

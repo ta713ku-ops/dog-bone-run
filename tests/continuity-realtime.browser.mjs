@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile,copyFile} from 'node:fs/promises';
 import {CONFIG} from '../src/config.js';
@@ -35,7 +36,7 @@ for(const engine of process.env.DOG_DIAGNOSTIC ? [chromium] : [chromium,webkit])
    }
   }
   console.log(`${engine.name()}: recording real 30s walk`);
-  const bones=await page.evaluate(()=>__dogBoneTest.game.bones.map(b=>({at:b.timeMs-340,lane:b.lane})));await page.locator('#start').click();await page.waitForFunction(()=>__dogBoneTest.game.state==='running');
+  const bones=await page.evaluate(()=>__dogBoneTest.game.bones.map(b=>({at:b.timeMs-340,lane:b.lane})));await page.locator('#start').click();await confirmDeparture(page);await page.waitForFunction(()=>__dogBoneTest.game.state==='running');
   for(const bone of bones){await page.waitForFunction(at=>__dogBoneTest.game.timeMs>=at,bone.at,{timeout:5000,polling:16});const lane=await page.evaluate(()=>__dogBoneTest.game.lane);if(lane!==bone.lane)await page.keyboard.press(bone.lane>lane?'ArrowRight':'ArrowLeft');}
   await page.waitForFunction(()=>__dogBoneTest.game.state==='result',undefined,{timeout:8000});const run=await page.evaluate(()=>({result:__dogBoneTest.game.result(),frames:__dogBoneTest.metrics.summary(),pauses:__dogBoneTest.log.events.filter(e=>e.type==='pause')}));assert.equal(run.result.completed,true);assert.equal(run.result.timeMs,30000);assert.equal(run.result.collected,run.result.placed);assert.ok(run.frames.p95Ms<=34,JSON.stringify(run));assert.deepEqual(errors,[]);
   await page.screenshot({path:`${out}/${engine.name()}-result.png`});all.push({engine:engine.name(),home,manual,run,errors});console.log(JSON.stringify({engine:engine.name(),home,run},null,2));

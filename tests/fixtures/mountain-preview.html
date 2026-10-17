@@ -1,0 +1,15 @@
+<!doctype html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="../../styles.css"><title>山の探索・画面検証</title></head><body><main id="game" class="game" data-state="running" data-walk-level="3"><canvas id="scene"></canvas></main><script type="module">
+import {Game} from '../../src/game.js';
+import {Renderer} from '../../src/render.js';
+const renderer=new Renderer(document.getElementById('scene'),{useSprites:true});
+let game;
+function setFixture(timeMs=12000,seed=42,reduced=false){
+  renderer.reset();renderer.setReducedMotion(reduced);
+  game=new Game({phase:4,walkLevel:3,seed});game.start();
+  for(const input of game.courseData.safeInputs){if(input.timeMs>timeMs)break;game.advance(input.timeMs-game.timeMs);game.command(input.direction,'fixture');}
+  game.advance(timeMs-game.timeMs);game.pause('fixture');renderer.draw(game,{force:true});
+  window.__mountainPreview.game=game;return game.result();
+}
+window.__mountainPreview={renderer,game:null,setFixture,ready:null};
+try{await renderer.ready;await renderer.prepareWalk(3);setFixture(Number(new URLSearchParams(location.search).get('timeMs')??12000));window.__mountainPreview.ready={ok:true};}catch(error){window.__mountainPreview.ready={ok:false,error:error.stack};}
+</script></body></html>

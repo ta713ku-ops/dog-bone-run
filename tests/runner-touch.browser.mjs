@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -19,7 +20,7 @@ for (const engine of [chromium, webkit]) {
         await page.locator('#ready-sound').tap();
         await page.locator('#settings-close').tap();
       }
-      await page.getByRole('button', { name: 'おさんぽへ' }).tap();
+      await page.getByRole('button', { name: 'おさんぽへ' }).tap();await confirmDeparture(page);
       await page.waitForFunction(() => window.__dogBoneTest.game.state === 'running');
       const rect = await page.locator('#scene').boundingBox();
       const points = [[.5,.8],[.2,.6],[.8,.5],[.5,.4],[.5,.8]];

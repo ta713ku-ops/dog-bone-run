@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 const {chromium,webkit}=await import(process.env.DOG_PLAYWRIGHT_MODULE??'/Users/taku/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
@@ -17,7 +18,7 @@ for(const engine of [chromium,webkit]){
    game.fixedObstacles=['litter','crow','cat'].map((type,i)=>({id:`test-${type}`,type,lane:0,distance:2+i*2}));
    game.reset({seed:42});
   });
-  await page.getByRole('button',{name:'おさんぽへ',exact:true}).tap();
+  await page.getByRole('button',{name:'おさんぽへ',exact:true}).tap();await confirmDeparture(page);
   await page.waitForFunction(()=>window.__dogBoneTest.game.state==='running');
   await page.evaluate(()=>{window.__dogBoneTest.game.score=100;window.__dogBoneTest.game.pause('fixture');});
   const samples=[];

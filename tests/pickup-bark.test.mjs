@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT_PICKUP_BARK_URL, PickupBark } from '../src/pickup-bark.js';
+import { CONTACT_WHINE_URL, ContactWhine } from '../src/contact-whine.js';
 
 function makeContext({ decodeAudioData } = {}) {
   const context = {
@@ -51,6 +52,20 @@ function audioFetcher(counter = { calls: 0 }) {
     },
   };
 }
+
+test('contact whine uses its separate recording, volume and cooldown with the shared lifecycle', async () => {
+  let now=1000;
+  const voice=new ContactWhine({fetcher:audioFetcher().fetcher,now:()=>now});
+  const ctx=makeContext();await voice.prepare(ctx);
+  assert.equal(voice.url,CONTACT_WHINE_URL);
+  assert.equal(voice.play(ctx),true);assert.equal(voice.playing,true);
+  assert.equal(ctx.gains[0].gain.value,.55);
+  ctx.sources[0].onended();assert.equal(voice.playing,false);
+  now=1849;assert.equal(voice.play(ctx),false);
+  now=1850;assert.equal(voice.play(ctx),true);
+  voice.stop();assert.equal(voice.playing,false);
+  assert.equal(ctx.sources[1].stopCalls,1);
+});
 
 test('preloads once and decodes the cached bytes for each current context', async () => {
   const { fetcher, counter } = audioFetcher();

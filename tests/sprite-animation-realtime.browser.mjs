@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 // Legacy fallback regression; the new default is covered by continuity-home/realtime.
 import assert from 'node:assert/strict';
 import {mkdir,writeFile,copyFile} from 'node:fs/promises';
@@ -26,7 +27,7 @@ try{
   await page.waitForFunction(()=>!window.__dogBoneTest.renderer.homeBusy,undefined,{timeout:8500});
  }
  const bones=await page.evaluate(()=>window.__dogBoneTest.game.bones.map(b=>({at:b.timeMs-340,lane:b.lane})));
- await page.locator('#start').click();await page.waitForFunction(()=>window.__dogBoneTest.game.state==='running');
+ await page.locator('#start').click();await confirmDeparture(page);await page.waitForFunction(()=>window.__dogBoneTest.game.state==='running');
  for(const b of bones){
   await page.waitForFunction(at=>window.__dogBoneTest.game.timeMs>=at,b.at,{timeout:5000,polling:16});
   assert.equal(await page.locator('#game').getAttribute('data-state'),'running');

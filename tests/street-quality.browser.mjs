@@ -5,7 +5,7 @@ const current=process.env.DOG_WALK_URL ?? 'http://127.0.0.1:4195';
 const baseline=process.env.DOG_BASELINE_URL ?? 'http://127.0.0.1:4196';
 const output=process.env.DOG_QUALITY_OUTPUT ?? 'test-results/walk-v26/round1';
 await mkdir(output,{recursive:true});
-const report={version:'0.26.0',status:'RUNNING',cases:[],errors:[],limitations:['Screenshots are synthetic frozen course fixtures; draw timing is not physical device FPS.']};
+const report={version:process.env.DOG_COMPARISON_VERSION??'0.26.0',status:'RUNNING',cases:[],errors:[],limitations:['Screenshots are synthetic frozen course fixtures; draw timing is not physical device FPS.']};
 const viewports=process.env.DOG_QUICK ? [[390,844]] : [[320,568],[390,844],[430,932],[1280,900]];
 const times=process.env.DOG_QUICK ? [0,12000,25000] : [0,5000,12000,20000,25000];
 const engines=process.env.DOG_QUICK ? [chromium] : [chromium,webkit];

@@ -1,0 +1,21 @@
+{
+  "generator": "built-in image_gen; unmodified generated PNG, runtime alpha bounds and world projection",
+  "generatedOn": "2026-10-17",
+  "assets": {
+    "stalactite": {
+      "path": "art/cave-v34/stalactite.png",
+      "sha256": "e3bfa0659bce6e95932aa30f45d189e76d51aa99352a425e1792ddec1ebed0ae",
+      "source": "art/cave-v34/stalactite.png",
+      "sourceSha256": "e3bfa0659bce6e95932aa30f45d189e76d51aa99352a425e1792ddec1ebed0ae",
+      "width": 1024,
+      "height": 1536,
+      "alpha": true,
+      "alphaBounds": [
+        337,
+        10,
+        338,
+        1515
+      ]
+    }
+  }
+}

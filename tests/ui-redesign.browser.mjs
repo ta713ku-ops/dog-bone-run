@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import {mkdir, writeFile} from 'node:fs/promises';
 import {CONFIG} from '../src/config.js';
@@ -22,7 +23,7 @@ for(const engine of [chromium,webkit]){
     const normal=await rects(page);
     assert.equal(normal.overflow,false);
     const topCommands=await page.locator('.home-header .home-dog-actions').count()>0;
-    if(topCommands){assert.ok(normal.gesture.y>=normal.canvas.y&&normal.gesture.bottom<=normal.canvas.y+normal.canvas.height*.3+1,'commands are above the dog');assert.equal(await page.locator('#title').getAttribute('class'),'sr-only');assert.equal(await page.locator('#home-duration').getAttribute('class'),'departure-meta sr-only');}
+    if(topCommands){assert.ok(normal.gesture.y>=normal.canvas.y&&normal.gesture.bottom<=normal.canvas.y+normal.canvas.height*.3+1,'commands are above the dog');assert.equal(await page.locator('#title').getAttribute('class'),'sr-only');assert.equal(await page.locator('#home-duration').count(),0);}
     else assert.ok(normal.gesture.y>=normal.canvas.y+normal.canvas.height*.63+13,'gestures must clear dog feet');
     assert.ok(normal.start.bottom<=normal.canvas.bottom+1);
     assert.equal(await page.locator('#ready-record').isVisible(),false);
@@ -46,7 +47,7 @@ for(const engine of [chromium,webkit]){
     const touch=await page.locator('#start').boundingBox();assert.ok(touch.height>=44);
     await page.screenshot({path:`${out}/${engine.name()}-text200-${width}x${height}.png`});
     await page.evaluate(()=>document.querySelectorAll('#ready [style]').forEach(el=>el.removeAttribute('style')));
-    await page.locator('#start').click();await page.waitForFunction(()=>__dogBoneTest.game.state==='running');
+    await page.locator('#start').click();await confirmDeparture(page);await page.waitForFunction(()=>__dogBoneTest.game.state==='running');
     const hud=[];
     for(const [combo,score,time] of [[0,0,0],[2,20,1000],[10,100,21000],[50,99999,25000],[0,99999,29000]]){
      await page.evaluate(({combo,score,time})=>{const g=__dogBoneTest.game;g.bones=[];g.obstacles=[];g.combo=combo;g.score=score;g.timeMs=time;},{combo,score,time});

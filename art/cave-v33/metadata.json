@@ -1,0 +1,25 @@
+{
+  "generator": "built-in image_gen; unmodified generated PNGs, runtime alpha trimming and world projection",
+  "generatedOn": "2026-10-16",
+  "style": "naturalist gray-brown limestone, blue-gray moisture, restrained amber reflections",
+  "assets": {
+    "cave-atlas": {
+      "path": "art/cave-v33/cave-atlas.png",
+      "sha256": "e38b7fa4934607e4ba8ca57cf5a79bdec70127588056c558a145ab484ecf9ede",
+      "source": "art/cave-v33/cave-atlas.png",
+      "sourceSha256": "e38b7fa4934607e4ba8ca57cf5a79bdec70127588056c558a145ab484ecf9ede",
+      "width": 1536,
+      "height": 1024,
+      "alpha": true
+    },
+    "cave-materials-atlas": {
+      "path": "art/cave-v33/cave-materials-atlas.png",
+      "sha256": "8b5d8e155d5dda8b3ec88b66751d40d61f7e3a2af299d138839159b506459d0c",
+      "source": "art/cave-v33/cave-materials-atlas.png",
+      "sourceSha256": "8b5d8e155d5dda8b3ec88b66751d40d61f7e3a2af299d138839159b506459d0c",
+      "width": 1774,
+      "height": 887,
+      "alpha": false
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile,copyFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
@@ -14,7 +15,7 @@ try {
  await p.waitForFunction(()=>window.__dogBoneTest.renderer.dogs?.stats.ready);
  await p.locator('#ready-settings').click();await p.locator('#ready-sound').click();await p.locator('#settings-close').click();
  const bones=await p.evaluate(()=>window.__dogBoneTest.game.bones.map(b=>({at:b.timeMs-340,lane:b.lane})));
- await p.locator('#start').click();await p.waitForFunction(()=>window.__dogBoneTest.game.state==='running');
+ await p.locator('#start').click();await confirmDeparture(p);await p.waitForFunction(()=>window.__dogBoneTest.game.state==='running');
  for (const b of bones) {
    await p.waitForFunction(at=>window.__dogBoneTest.game.timeMs>=at,b.at,{timeout:5000,polling:16});
    assert.equal(await p.locator('#game').getAttribute('data-state'),'running');

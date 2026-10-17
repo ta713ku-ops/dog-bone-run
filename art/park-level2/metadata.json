@@ -1,0 +1,191 @@
+{
+  "generator": "OpenAI image_gen plus unchanged asset reuse from street-v26 and park-v23",
+  "promptDocument": "art/park-level2/PROMPTS.md",
+  "assets": {
+    "pathMaterial": {
+      "path": "art/park-level2/path-material.webp",
+      "source": "art/park-level2/source/path-material.png",
+      "width": 384,
+      "height": 384,
+      "bytes": 58306,
+      "rgbaDecodedBytes": 589824,
+      "sha256": "a2505970837d47db5eb378b647e965536c7164d6820f05f590986cdf1bed3327",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "sourceBytes": 3927408,
+      "sourceRgbaDecodedBytes": 6290064,
+      "sourceSha256": "8d1095fcfc9e5c0861acd5ffbf368caa9a5a8b9e826e2c951156e2b1486d1fb7",
+      "sourceMode": "RGB",
+      "packing": "Pillow RGB resize to 384x384 and WebP quality 85"
+    },
+    "trees": {
+      "path": "art/park-level2/trees.webp",
+      "source": "art/park-level2/source/trees-original.png",
+      "width": 512,
+      "height": 256,
+      "bytes": 42120,
+      "rgbaDecodedBytes": 524288,
+      "sha256": "28de474ac00d8cfa252d743ee965c5c2366f0b07f99817ca64cc3321b456b1a6",
+      "sourceWidth": 1774,
+      "sourceHeight": 887,
+      "sourceBytes": 1474400,
+      "sourceRgbaDecodedBytes": 6294152,
+      "sourceSha256": "b5b045a8fbdfe6c72bc38d1e10ef0bf62e886a22a7e9cfdf74a3bcb7ae4ae998",
+      "sourceMode": "RGBA",
+      "reusedFrom": "art/street-v26/foliage.webp",
+      "packingScript": "scripts/build-street-foliage.py",
+      "packingScriptSha256": "178038ec70e1877c06376687b8853a29e998c3f02dee36ec36f381866afaf524",
+      "treeCrop": [
+        33,
+        8,
+        189,
+        240
+      ],
+      "treeAnchor": [
+        0.51,
+        0.985
+      ]
+    },
+    "grass": {
+      "path": "art/park-level2/grass.webp",
+      "source": "art/park-level2/source/grass-original.png",
+      "width": 384,
+      "height": 384,
+      "decodedBytes": 589824,
+      "bytes": 65944,
+      "sha256": "605e3295ddbd2df4536bf7ff3ae463e7eb73d8d8f6e37aa2f691b9a06298b5ff",
+      "sourceSha256": "d01fa56bfbe143f906aac13f6f1fee998845e52d859175643240b21af7c4d317",
+      "reusedFrom": "art/park-v23/grass.webp",
+      "rgbaDecodedBytes": 589824
+    }
+  },
+  "candidates": {
+    "playground": {
+      "status": "rejected",
+      "source": "art/park-level2/source/playground-v29-original.png",
+      "sourceWidth": 1536,
+      "sourceHeight": 1024,
+      "sourceBytes": 2163200,
+      "sourceRgbaDecodedBytes": 6291456,
+      "sourceSha256": "85a6d2c0b7fe6f083ec7370b9037225c8044935e305136ef7e51f4820c3cfa2f",
+      "sourceMode": "RGBA",
+      "alphaMax": 254,
+      "fullyOpaquePixels": 0,
+      "nonzeroAlphaPixels": 706434,
+      "nonzeroAlphaBBox": [
+        0,
+        19,
+        1521,
+        1024
+      ],
+      "visibleAlphaThreshold": 127,
+      "visibleAlphaBBox": [
+        29,
+        45,
+        1512,
+        970
+      ],
+      "provisionalGroundContactAnchorNormalized": [
+        0.5016,
+        0.9463
+      ],
+      "edgeNonzeroCounts": {
+        "top": 0,
+        "bottom": 23,
+        "left": 22,
+        "right": 0
+      },
+      "reason": "Dark orange glow and edge alpha remain outside the equipment; a targeted transparency edit did not resolve the spill. No runtime WebP is packaged."
+    },
+    "gardenIsland": {
+      "path": "art/park-level2/garden-island-v29.webp",
+      "source": "art/park-level2/source/garden-island-v29-original.png",
+      "width": 512,
+      "height": 512,
+      "bytes": 22794,
+      "rgbaDecodedBytes": 1048576,
+      "sha256": "fb72d3949840d544fcdad94f43d76dd36178a6247480b9c14f38d6bd6fdae058",
+      "sourceWidth": 1254,
+      "sourceHeight": 1254,
+      "sourceBytes": 1682257,
+      "sourceRgbaDecodedBytes": 6290064,
+      "sourceSha256": "2635fd2d43e769e0846449e649bef7175415bba9c6061105f69c3f703ee92144",
+      "sourceMode": "RGB",
+      "packing": "Pillow RGB resize to 512x512 and WebP quality 84 method 6",
+      "requestedBackgroundRgb": [
+        217,
+        200,
+        166
+      ],
+      "sourceCornerSamplesRgb": [
+        [
+          209,
+          192,
+          156
+        ],
+        [
+          210,
+          192,
+          155
+        ],
+        [
+          210,
+          189,
+          158
+        ],
+        [
+          210,
+          191,
+          155
+        ]
+      ],
+      "compositionNote": "The background reads as flat warm sand but is darker than the requested RGB and the island fills about 82% of image width despite a 52% width prompt; draw smaller and feather or blend the margins.",
+      "status": "rejected",
+      "reason": "Opaque sand remains between leaves and above the bench; a whole-plane fade or brightness match does not provide true transparency. Use the existing clean hedge atlas crop for runtime foreground."
+    },
+    "panoramaV29": {
+      "path": "art/park-level2/park-panorama-v29.webp",
+      "source": "art/park-level2/source/park-panorama-v29-original.png",
+      "width": 768,
+      "height": 1152,
+      "bytes": 283464,
+      "rgbaDecodedBytes": 3538944,
+      "sha256": "40cac369a2ea0c1ebfa3074843be1a5e27573b7c4734d7ef4a95bbaf5e1c553f",
+      "sourceWidth": 1024,
+      "sourceHeight": 1536,
+      "sourceBytes": 3497362,
+      "sourceRgbaDecodedBytes": 6291456,
+      "sourceSha256": "c9ee217e0d4c6acc6141fd94b76f9daf0843b6d5f1d08a566b64eec208144e56",
+      "sourceMode": "RGB",
+      "packing": "Pillow RGB resize to 768x1152 and WebP quality 84 method 6",
+      "status": "retired",
+      "reason": "v0.30: a single scenic photo cannot provide coherent world-space approach and passing. Retained as artwork history only; not loaded or bundled."
+    }
+  },
+  "canvasArt": {
+    "source": "src/park-level2-art.js",
+    "drawn": [
+      "hedges",
+      "trees",
+      "flowers",
+      "bench",
+      "playground",
+      "swings",
+      "pergola",
+      "lamp",
+      "puddle",
+      "crow",
+      "ball"
+    ],
+    "fallback": "vector props and code-drawn obstacles; solid path color when path texture cannot decode",
+    "worldSource": "src/park-landscape.js",
+    "camera": "shared projectStreet, fixed camera, world distance for ground and every landmark"
+  },
+  "totalRuntimeBytes": 166370,
+  "totalRgbaDecodedBytes": 1703936,
+  "runtimeComposition": {
+    "foreground": "Unchanged transparent foliage atlas, hedge crop [264,87,240,82], original alpha retained; trees use existing crop.",
+    "ground": "Short world-anchored path and lawn patches; no full-screen pattern scrolling.",
+    "equipment": "World-space faces, timber posts, beams and grain; camera-space bounds derived from all eight world corners."
+  }
+}

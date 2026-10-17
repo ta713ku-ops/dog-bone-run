@@ -1,10 +1,12 @@
+import { drawCaveObstacle } from './cave-scene.js';
 import { CONFIG, PHASE2, PHASE3, PHASE4, tier } from './config.js';
 import { Game } from './game.js';
 import { Input } from './input.js';
 import { Audio } from './audio.js';
 import { Renderer } from './render.js';
 import { SessionLog, FrameMetrics } from './log.js';
-import { RecordStore, RunnerSettingsStore } from './storage.js';
+import { RecordStore, RunnerSettingsStore, WalkPreferencesStore } from './storage.js';
+import { getWalkLevel } from './walk-levels.js';
 import { DEVELOPMENT } from './build-mode.js';
 
 const $ = id => document.getElementById(id);
@@ -15,19 +17,33 @@ const phase = presentationPhase;
 $('game').dataset.mode = 'runner';
 const seedParam = params.get('seed');
 const fixedSeed = testMode && /^\d{1,10}$/.test(seedParam ?? '') && Number(seedParam) <= 0xffffffff ? Number(seedParam) : null;
+let lastParkSeedClass = null;
 function nextSeed() {
   if (fixedSeed !== null) return fixedSeed;
-  try { return crypto.getRandomValues(new Uint32Array(1))[0]; } catch { return (Date.now() ^ Math.floor(performance.now() * 1000)) >>> 0; }
+  const randomSeed = () => { try { return crypto.getRandomValues(new Uint32Array(1))[0]; } catch { return (Date.now() ^ Math.floor(performance.now() * 1000)) >>> 0; } };
+  let seed = randomSeed();
+  if (selectedWalkLevel === 2 && phase === 4) {
+    const classes = getWalkLevel(2).layoutClasses;
+    for (let i = 0; i < 8 && seed % classes === lastParkSeedClass; i++) seed = randomSeed();
+    if (seed % classes === lastParkSeedClass) seed = (seed + 1) >>> 0;
+    lastParkSeedClass = seed % classes;
+  }
+  return seed;
 }
-const ruleVersion = phase === 4 ? PHASE4.ruleVersion : phase === 3 ? PHASE3.ruleVersion : PHASE2.ruleVersion;
-const records = new RecordStore({ ruleVersion });
+const walkPreferences = new WalkPreferencesStore();
+const walkPreferenceRead = walkPreferences.read();
+let selectedWalkLevel = phase === 4 ? walkPreferenceRead.walkLevel : 1;
+let parkGuideSeen = walkPreferenceRead.parkGuideSeen;
+let walkSaveFailed = !walkPreferenceRead.ok;
+let ruleVersion = phase === 4 ? getWalkLevel(selectedWalkLevel).ruleVersion : phase === 3 ? PHASE3.ruleVersion : PHASE2.ruleVersion;
+let records = new RecordStore({ ruleVersion });
 const settingsStore = new RunnerSettingsStore();
 let settingsSaveFailed = false;
 const log = new SessionLog(), metrics = new FrameMetrics(), renderer = new Renderer($('scene'), {useSprites:presentationPhase >= 4});
 let input, lastUpdate = null, lastFrame = null, pending = false, activation = 0, intent = 'start';
 let discoveryPaused = false, resultAt = null, runOpen = false, lastRunId = null;
-let settingsTrigger = null;
-const game = new Game({ phase, seed: nextSeed(), onEvent: event => {
+let settingsTrigger = null, parkGuideTrigger = null;
+const game = new Game({ phase, walkLevel: selectedWalkLevel, seed: nextSeed(), onEvent: event => {
   const { type, activeMs, ...data } = event; log.record(type, data, activeMs);
   if (type === 'collect') {
     renderer.collect(event); audio.play(event.level, event.kind);
@@ -35,12 +51,14 @@ const game = new Game({ phase, seed: nextSeed(), onEvent: event => {
   }
   if (type === 'obstacle_contact') {
     renderer.contact(event);
+    if (phase === 4 && !event.ignored) audio.playContact();
     if (phase === 4) {
-      const names = { litter: 'ゴミ', crow: 'カラス', cat: '猫' };
+      const names = { litter: 'ゴミ', crow: 'カラス', cat: '猫', puddle: '水たまり', ball: 'ボール', root: '木の根', rock: '岩', log: '倒木', rollingStone: '転がる石', stalagmite: '石筍', stalactite: '鍾乳石', caveRock: '岩', bat: 'コウモリ' };
       $('announcement').textContent = `${names[event.obstacleType] ?? '障害物'}に接触。${Math.abs(event.points ?? 0)}点減点。スコア${event.score}点。`;
       updateHud();
     }
   }
+  if (type === 'obstacle_pass' && game.walkLevel === 2 && event.obstacleType === 'crow') renderer.depart(event);
   if (type === 'fall') {
     audio.stop(); input?.clear(); lastUpdate = null; lastFrame = null;
     show('falling'); $('announcement').textContent = '穴に落ちました。';
@@ -56,7 +74,10 @@ const game = new Game({ phase, seed: nextSeed(), onEvent: event => {
       if (phase >= 2) {
         $('record-status').textContent = !saved.ok ? '記録を保存できませんでした。' : failed ? (saved.maxComboUpdated ? '最大コンボの記録を更新！' : 'つぎのおさんぽも、いっしょに。') : saved.highScoreUpdated ? '自己ベスト更新！' : `ベスト ${saved.record.highScore} 点`;
         $('result-normal').textContent = event.normalCollected;
-        $('result-gold').textContent = event.goldCollected;
+        $('result-gold').textContent = game.walkLevel >= 2 ? `${event.goldCollected} / 3` : event.goldCollected;
+        $('result-contacts').textContent = event.contactCount ?? game.contactCount ?? 0;
+        $('result-level').textContent = phase === 4 ? `難易度${game.walkLevel} · ${getWalkLevel(game.walkLevel).name}` : '';
+        updateLevelUI();
         $('result-time-label').textContent = failed ? '到達率' : 'クリア時間';
         $('result-time').textContent = failed ? `${Math.floor(event.progress * 100)}%` : `${(event.timeMs / 1000).toFixed(2)}秒`;
         $('result-title').textContent = failed ? 'もう一歩、先へ。' : 'こんなに、集めた！';
@@ -104,6 +125,8 @@ function refreshRecord() {
   caption.hidden=read.ok&&read.record.highScore===0;
   caption.dataset.kind=read.ok?'record':'error';
   caption.textContent = !read.ok ? '記録を読み込めませんでした。おさんぽは遊べます。' : read.record.highScore>0 ? `自己ベスト ${read.record.highScore.toLocaleString('ja-JP')}点` : '';
+  $('walk-record').hidden = caption.hidden;
+  $('walk-record').textContent = caption.textContent;
 }
 function updateHud() {
   if ($('score').textContent !== String(game.score)) $('score').textContent = game.score;
@@ -116,7 +139,7 @@ function updateHud() {
     const value=tier(game.combo).multiplier;
     if(value>1){const multiplier = document.createElement('span'); multiplier.textContent = ` ×${value.toFixed(1)}`; $('combo').append(multiplier);}
   }
-  const remaining=phase===4?Math.ceil(Math.max(0,PHASE4.durationMs-game.timeMs)/1000):Math.ceil(Math.max(0,CONFIG.durationMs-game.timeMs)/1000);
+  const remaining=phase===4?Math.ceil(Math.max(0,game.durationMs-game.timeMs)/1000):Math.ceil(Math.max(0,CONFIG.durationMs-game.timeMs)/1000);
   const seconds=phase>=2&&phase!==4?(game.timeMs/1000).toFixed(1):String(remaining);
   const label=phase>=2&&phase!==4?'経過':'のこり';
   if($('clock-seconds').textContent!==seconds) $('clock-seconds').textContent=seconds;
@@ -130,7 +153,7 @@ function environment() {
   const rect = $('scene').getBoundingClientRect();
   return { cssSize: { width: rect.width, height: rect.height }, dpr: devicePixelRatio, renderDpr: Math.min(devicePixelRatio || 1, CONFIG.dprCap),
     orientation: innerWidth > innerHeight ? 'landscape' : 'portrait', sound: audio.enabled, reducedMotion: renderer.reducedMotion,
-    presentationPhase, renderer: renderer.dogs?.stats?.mode ?? 'canvas-vector',
+    presentationPhase, walkLevel: game.walkLevel, ruleVersion, courseVersion: getWalkLevel(game.walkLevel).courseVersion, renderer: renderer.dogs?.stats?.mode ?? 'canvas-vector',
     audioMix: { musicEnabled: audio.musicEnabled, music: Number($('music-volume').value) / 100, sfx: Number($('sfx-volume').value) / 100 },
     confirmed: { ...log.confirmed } };
 }
@@ -203,9 +226,14 @@ function closeSettings() {
 }
 async function beginNewRun() {
   audio.stop(); input.clear(); const seed=nextSeed(); renderer.reset(); metrics.reset(); discoveryPaused = false;
-  game.reset({seed});
+  if (selectedWalkLevel >= 2) {
+    $('ready-record').hidden = false; $('ready-record').textContent = selectedWalkLevel === 4 ? '洞窟を準備しています…' : selectedWalkLevel === 3 ? '山を準備しています…' : '公園を準備しています…';
+    $('start').setAttribute('aria-busy', 'true');
+    try { await renderer.prepareWalk(selectedWalkLevel); } finally { $('start').removeAttribute('aria-busy'); }
+  }
+  game.reset({seed, walkLevel: selectedWalkLevel});
   log.run = null;
-  log.beginRun(environment(), phase >= 2 ? { phase, seed: game.seed, goldIds: [...game.goldIds], ruleVersion } : { phase: 1 }); runOpen = true; show('ready'); return true;
+  log.beginRun(environment(), phase >= 2 ? { phase, walkLevel: game.walkLevel, seed: game.seed, goldIds: [...game.goldIds], ruleVersion, courseVersion: getWalkLevel(game.walkLevel).courseVersion, generation: game.courseData?.generation } : { phase: 1 }); runOpen = true; show('ready'); return true;
 }
 function audioPanel(visible) {
   $('audio-panel').hidden = !visible;
@@ -271,9 +299,11 @@ function action(id, handler) {
   });
 }
 $('game').addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !$('park-guide').hidden) { e.preventDefault(); closeParkGuide(); return; }
+  if (e.key === 'Escape' && !$('walk-picker').hidden) { e.preventDefault(); closeWalkPicker(); return; }
   if (e.key === 'Escape' && !$('settings-panel').hidden) { e.preventDefault(); closeSettings(); return; }
   if (e.key !== 'Tab') return;
-  const root = !$('settings-panel').hidden ? $('settings-panel') : !$('audio-panel').hidden ? $('audio-panel') : game.state === 'paused' ? $('paused') : null;
+  const root = !$('settings-panel').hidden ? $('settings-panel') : !$('audio-panel').hidden ? $('audio-panel') : !$('park-guide').hidden ? $('park-guide') : !$('walk-picker').hidden ? $('walk-picker') : game.state === 'paused' ? $('paused') : null;
   if (!root) return;
   const buttons = [...root.querySelectorAll('button, input, select, textarea, a[href], [tabindex]')].filter(b => b.getClientRects().length && !b.disabled && b.tabIndex >= 0);
   if (!buttons.length) { e.preventDefault(); return; }
@@ -282,7 +312,119 @@ $('game').addEventListener('keydown', e => {
   const next=index<0?(e.shiftKey?buttons.length-1:0):(index+(e.shiftKey?-1:1)+buttons.length)%buttons.length;
   buttons[next].focus();
 });
-action('start', () => renderer.assetError ? location.reload() : activate('start'));
+function drawCaveGuide() {
+  const root = $('cave-guide-examples');
+  if (!root.children.length) {
+    for (const [type, label] of [['stalagmite','石筍'], ['stalactite','鍾乳石'], ['caveRock','岩'], ['bat','コウモリ']]) {
+      const figure = document.createElement('figure'), canvas = document.createElement('canvas'), caption = document.createElement('figcaption');
+      canvas.width = 130; canvas.height = 132; canvas.dataset.type = type;
+      caption.textContent = label; figure.append(canvas, caption); root.append(figure);
+    }
+  }
+  renderer.prepareWalk(4).then(() => {
+    for (const canvas of root.querySelectorAll('canvas')) {
+      const ctx = canvas.getContext('2d'); ctx.setTransform(2,0,0,2,0,0); ctx.clearRect(0,0,65,66);
+      const preview = {ctx, width:390, height:844, reducedMotion:true, caveScene:{art:renderer.caveScene.art,ceilingHeight:1.8},
+        ellipse(x,y,rx,ry,color,stroke){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();if(stroke){ctx.strokeStyle=stroke;ctx.stroke();}},
+        path(points,fill,stroke,lineWidth=1){ctx.beginPath();points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lineWidth;ctx.stroke();}}};
+      drawCaveObstacle(preview,{type:canvas.dataset.type,id:'guide-'+canvas.dataset.type},32.5,62,.32,0);
+    }
+  }).catch(() => {});
+}
+function updateLevelUI() {
+  const park = phase === 4 && selectedWalkLevel === 2;
+  const mountain = phase === 4 && selectedWalkLevel === 3;
+  const cave = phase === 4 && selectedWalkLevel === 4;
+  const advanced = park || mountain || cave;
+  $('game').dataset.walkLevel = String(selectedWalkLevel);
+  for (const id of [1, 2, 3, 4]) {
+    $(`walk-level-${id}`).setAttribute('aria-pressed', String(selectedWalkLevel === id));
+    $(`walk-selected-${id}`).hidden = selectedWalkLevel !== id;
+  }
+  $('walk-selected-label').textContent = cave ? '選択中：４ どうくつ' : mountain ? '選択中：３ やま' : park ? '選択中：２ こうえん' : '選択中：１ まち';
+  $('walk-picker-start').textContent = cave ? '難易度４でおさんぽ' : mountain ? '難易度３でおさんぽ' : park ? '難易度２でおさんぽ' : '難易度１でおさんぽ';
+  $('walk-summary').textContent = cave ? '30秒 · どうくつのおさんぽ' : mountain ? '30秒 · やまのおさんぽ' : park ? '30秒 · こうえんのおさんぽ' : '30秒 · まちのおさんぽ';
+  $('park-help').hidden = false;
+  $('guide-level').textContent = cave ? '難易度４ · どうくつ' : mountain ? '難易度３ · やま' : park ? '難易度２ · こうえん' : '難易度１ · まち';
+  $('park-guide-title').textContent = cave ? '地底の奥へ、探検しよう。' : mountain ? '森の奥へ、探検しよう。' : park ? '公園を、探検しよう。' : '骨を集めて、おさんぽ。';
+  $('guide-obstacle-title').textContent = cave ? '石筍・鍾乳石・岩・コウモリをよける' : mountain ? '木の根・岩・倒木をよける' : park ? '水たまりやカラスをよける' : 'ゴミや動物をよける';
+  $('guide-obstacle-body').textContent = '接触は10点減点。空いたレーンへ移動しよう。';
+  $('guide-movement-title').textContent = '前方の道を見て進む';
+  $('guide-movement-body').textContent = cave
+    ? '低い鍾乳石と横切るコウモリを左右によける。次の２場面を見て、空いた道へ。'
+    : mountain
+    ? '斜面から転がる石の動きを見て、２〜３個先の空いた道へ。'
+    : park
+    ? '転がるボールは、本体の動く方向を見てよけよう。'
+    : '左右のスワイプで、骨のあるレーンへ進もう。';
+  $('cave-guide-examples').hidden = !cave;
+  if (cave) drawCaveGuide();
+  if (testMode) {
+    $('relative-difficulty-label').textContent = `難しさ（難易度${cave ? '３' : '１'}を100として）`;
+    $('static-understood-label').textContent = cave ? '低い鍾乳石の危険なレーンを説明できるか' : mountain ? '木の根・岩・倒木の危険なレーンを説明できるか' : 'カラスのいるレーンを説明できるか';
+    $('moving-understood-label').textContent = cave ? 'コウモリの通る２レーンを説明できるか' : mountain ? '転がる石の通る２レーンを説明できるか' : 'ボールの通る２レーンを説明できるか';
+  }
+  $('walk-status').hidden = !walkSaveFailed;
+  $('walk-status').textContent = walkSaveFailed ? '選択を保存できませんでした。この画面では遊べます。' : '';
+  $('phase2-gold').hidden = !advanced;
+  $('result-contacts-row').hidden = !advanced;
+  $('phase2-time').hidden = advanced || phase < 2;
+}
+function saveWalkPreferences() {
+  const saved = walkPreferences.save({ walkLevel: selectedWalkLevel, parkGuideSeen });
+  walkSaveFailed = !saved.ok; updateLevelUI();
+}
+function selectWalkLevel(id) {
+  if (phase !== 4 || game.state !== 'ready' || pending || !$('park-guide').hidden) return;
+  selectedWalkLevel = id; ruleVersion = getWalkLevel(id).ruleVersion;
+  renderer.prepareWalk(id);
+  records = new RecordStore({ ruleVersion });
+  game.reset({ seed: nextSeed(), walkLevel: id }); renderer.reset(); runOpen = false; log.run = null;
+  saveWalkPreferences(); refreshRecord();
+  log.record('walk_level_select', { walkLevel: id, ruleVersion }, 0);
+}
+function openWalkPicker() {
+  if (pending || game.state !== 'ready') return;
+  renderer.prepareWalk(selectedWalkLevel);
+  input.clear(); updateLevelUI(); $('walk-picker').hidden = false;
+  for (const id of ['ready', 'hud', 'scene']) $(id).inert = true;
+  $('walk-picker-title').focus({ preventScroll: true });
+}
+function closeWalkPicker() {
+  $('walk-picker').hidden = true;
+  for (const id of ['ready', 'hud', 'scene']) $(id).inert = false;
+  $('start').focus({ preventScroll: true });
+}
+function startSelectedWalk() {
+  if (pending || game.state !== 'ready') return;
+  closeWalkPicker(); activate('start');
+}
+function openParkGuide(trigger = document.activeElement) {
+  if (pending || game.state !== 'ready' || $('walk-picker').hidden) return;
+  parkGuideTrigger = trigger; input.clear(); $('park-guide').hidden = false;
+  for (const id of ['ready', 'hud', 'scene', 'walk-picker']) $(id).inert = true;
+  $('park-guide-title').focus({ preventScroll: true });
+}
+function closeParkGuide() {
+  $('park-guide').hidden = true;
+  $('walk-picker').inert = false;
+  for (const id of ['ready', 'hud', 'scene']) $(id).inert = !$('walk-picker').hidden;
+  (parkGuideTrigger?.isConnected ? parkGuideTrigger : $('start')).focus({ preventScroll: true }); parkGuideTrigger = null;
+}
+action('walk-level-1', () => selectWalkLevel(1));
+action('walk-level-2', () => selectWalkLevel(2));
+action('walk-level-3', () => selectWalkLevel(3));
+action('walk-level-4', () => selectWalkLevel(4));
+action('park-help', () => openParkGuide($('park-help')));
+action('park-guide-close', closeParkGuide);
+action('park-guide-start', () => { parkGuideSeen = true; saveWalkPreferences(); closeParkGuide(); startSelectedWalk(); });
+action('walk-picker-close', closeWalkPicker);
+action('walk-picker-start', startSelectedWalk);
+action('start', () => {
+  if (renderer.assetError) { location.reload(); return; }
+  if (phase === 4) { openWalkPicker(); return; }
+  activate('start');
+});
 action('resume', () => activate('resume'));
 action('pause', () => { syncTime(); pause('manual'); });
 action('ready-sound', soundToggle); action('pause-sound', soundToggle);
@@ -334,6 +476,11 @@ if (testMode) {
     log.record('observation', { understoodActiveMs: data.understoodSeconds === '' ? null : Number(data.understoodSeconds) * 1000,
       observedRunId: log.run?.id ?? lastRunId,
       explained: data.explained === '' ? null : data.explained === 'true', heardSound: data.heardSound === '' ? null : data.heardSound === 'true',
+      walkLevel: game.walkLevel, relativeReferenceLevel: game.walkLevel === 4 ? 3 : 1, relativeDifficulty: data.relativeDifficulty === '' ? null : Number(data.relativeDifficulty),
+      fairness: data.fairness === '' ? null : Number(data.fairness), crowUnderstood: game.walkLevel >= 3 || data.crowUnderstood === '' ? null : data.crowUnderstood === 'true',
+      staticObstacleUnderstood: data.crowUnderstood === '' ? null : data.crowUnderstood === 'true',
+      ballUnderstood: game.walkLevel >= 3 || data.ballUnderstood === '' ? null : data.ballUnderstood === 'true',
+      movingObstacleUnderstood: data.ballUnderstood === '' ? null : data.ballUnderstood === 'true',
       feeling: data.feeling === '' ? null : Number(data.feeling), notes: data.notes }, game.timeMs);
     $('log-status').textContent = '観察を記録しました。';
   });
@@ -346,7 +493,7 @@ if (testMode) {
     $('log-status').textContent = log.incomplete ? 'ログ不完全：上限に達しました。このセッションは合格判定に使わないでください。' : `${log.sessions.length}セッション・${log.events.length}イベントを書き出しました。`;
   });
   // Explicit testing surface only. No autoplay or simulation controls in normal mode.
-  window.__dogBoneTest = { game, log, audio, renderer, metrics, records, settingsStore, pause, syncTime, get pending() { return pending; } };
+  window.__dogBoneTest = { game, log, audio, renderer, metrics, get records() { return records; }, settingsStore, walkPreferences, selectWalkLevel, pause, syncTime, get pending() { return pending; } };
   // On-device measurement is opt-in and removed from the distribution build.
   const diagnostic = {active:false,rows:[],conditions:null,last:null,start:0,duration:0};
   const summarise = values => {
@@ -414,7 +561,7 @@ function frame(now) {
   if (advancing) { syncTime(now); updateHud(); }
   if (game.state === 'running') audio.updateMusic(game.timeMs);
   lastFrame = advancing && ['running', 'falling'].includes(game.state) ? now : null;
-  renderer.setMenuPaused?.(document.hidden || !$('settings-panel').hidden || !$('audio-panel').hidden);
+  renderer.setMenuPaused?.(document.hidden || !$('settings-panel').hidden || !$('audio-panel').hidden || !$('park-guide').hidden || !$('walk-picker').hidden);
   renderer.draw(game);
   updateHomeControls();
   if (testMode && log.incomplete) $('log-status').textContent = 'ログ不完全：20,000イベントの上限に達しました。';
@@ -461,10 +608,11 @@ if (phase >= 2) {
   $('result-note').textContent = 'おさんぽ完走、おつかれさま。';
 }
 $('build-label').textContent = `v${CONFIG.buildVersion}${phase === 4 ? ' · 30秒チャレンジ' : ` · Phase ${phase}`}`;
-$('home-duration').textContent=phase===4?'30秒のおさんぽ。ゴミ・カラス・猫への接触は10点減点。':'約60秒のおさんぽ';
 if (phase === 4 && document.querySelector('[name=understoodSeconds]')) document.querySelector('[name=understoodSeconds]').max = 30;
 if ($('test-heading')) $('test-heading').textContent = `検証パネル · Phase ${presentationPhase}`;
-applySavedSettings(settingsStore.read().settings); show('ready');
+applySavedSettings(settingsStore.read().settings); updateLevelUI();
+if (phase !== 4) { document.querySelector('.walk-choice').hidden = true; document.querySelector('.walk-details').hidden = true; }
+show('ready');
 if (renderer.dogs) {
   $('start').disabled = true; $('start').setAttribute('aria-busy', 'true');
   $('ready-record').hidden=false; $('ready-record').dataset.kind='loading'; $('ready-record').textContent = 'おさんぽを準備しています…';
@@ -474,7 +622,6 @@ if (renderer.dogs) {
   }).catch(error => {
     log.record('render_asset_error', {reason:error.message}); renderer.assetError = true;
     $('start').disabled = false; $('start').removeAttribute('aria-busy'); $('start-label').textContent = '読み込みを再試行';
-    $('home-duration').textContent='通信を確認してもう一度';
     refreshRecord();
   });
 }

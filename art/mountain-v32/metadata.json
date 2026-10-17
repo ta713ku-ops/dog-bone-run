@@ -1,0 +1,39 @@
+{
+  "generator": "built-in image_gen; unmodified generated PNGs, runtime source-region trimming",
+  "generatedOn": "2026-10-16",
+  "style": "warm naturalist semi-realistic Japanese mountain woodland",
+  "assets": {
+    "nature-atlas": {
+      "path": "art/mountain-v32/nature-atlas.png",
+      "sha256": "1f2a3a2bbaac89df7f587a424826bc3040abd8bfa6b6d0ecda24761ad7081c81",
+      "source": "art/mountain-v32/nature-atlas.png",
+      "sourceSha256": "1f2a3a2bbaac89df7f587a424826bc3040abd8bfa6b6d0ecda24761ad7081c81",
+      "width": 1774,
+      "height": 887
+    },
+    "wildlife-atlas": {
+      "path": "art/mountain-v32/wildlife-atlas.png",
+      "sha256": "a5f31c823dfef7627262588139166432da14afd539acd50e782294b6d2b3a3b1",
+      "source": "art/mountain-v32/wildlife-atlas.png",
+      "sourceSha256": "a5f31c823dfef7627262588139166432da14afd539acd50e782294b6d2b3a3b1",
+      "width": 1774,
+      "height": 887
+    },
+    "ground-atlas": {
+      "path": "art/mountain-v32/ground-atlas.png",
+      "sha256": "f6274e5341fffc36568ea19282298d43822e32d8087c1e43a9cf99e80dde097e",
+      "source": "art/mountain-v32/ground-atlas.png",
+      "sourceSha256": "f6274e5341fffc36568ea19282298d43822e32d8087c1e43a9cf99e80dde097e",
+      "width": 1774,
+      "height": 887
+    },
+    "hazard-atlas": {
+      "path": "art/mountain-v32/hazard-atlas.png",
+      "sha256": "998e466859403d377682f24d556e5a607722b2212250a1178b511eed5ccde594",
+      "source": "art/mountain-v32/hazard-atlas.png",
+      "sourceSha256": "998e466859403d377682f24d556e5a607722b2212250a1178b511eed5ccde594",
+      "width": 1254,
+      "height": 1254
+    }
+  }
+}

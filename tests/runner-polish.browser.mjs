@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import {mkdir, writeFile, readFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
@@ -39,7 +40,7 @@ async function mute(page) {
   await page.getByRole('button', {name: '設定を閉じる', exact: true}).click();
 }
 async function start(page) {
-  await page.getByRole('button', {name: 'おさんぽへ', exact: true}).click();
+  await page.getByRole('button', {name: 'おさんぽへ', exact: true}).click();await confirmDeparture(page);
   await page.waitForFunction(() => window.__dogBoneTest.game.state === 'running');
 }
 async function verifyBounds(page, root) {
@@ -160,7 +161,7 @@ for (const engine of [chromium, webkit]) {
     const {context,page,requests} = await open(browser,engine.name(),390,844,{prod:true});
     assert.equal(await page.evaluate(()=>typeof window.__dogBoneTest),'undefined');
     assert.equal(await page.locator('#test-panel, .raising-home, #dog-pet').count(),0);
-    await mute(page); await page.getByRole('button',{name:'おさんぽへ',exact:true}).click();
+    await mute(page); await page.getByRole('button',{name:'おさんぽへ',exact:true}).click();await confirmDeparture(page);
     await page.waitForFunction(()=>document.querySelector('#game').dataset.state==='running');
     await page.getByRole('button',{name:'一時停止',exact:true}).click();
     await page.getByRole('button',{name:'おさんぽをやめる',exact:true}).click();

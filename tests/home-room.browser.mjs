@@ -1,3 +1,4 @@
+import {confirmDeparture} from './browser-departure.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {CONFIG} from '../src/config.js';
@@ -37,7 +38,7 @@ for(const engine of [chromium,webkit]){
     const count=await page.evaluate(()=>__dogBoneTest.renderer.room.buildCount);resized.push({width,height,count});await page.screenshot({path:`${out}/${engine.name()}-room-${width}x${height}.png`});
    }
    assert.ok(resized.at(-1).count>before,'resize rebuilds cached background');
-   await page.locator('#start').click();await page.waitForFunction(()=>__dogBoneTest.game.state==='running');
+   await page.locator('#start').click();await confirmDeparture(page);await page.waitForFunction(()=>__dogBoneTest.game.state==='running');
    await page.evaluate(()=>{__roomCalls.room=0;__roomCalls.outdoor=0;__dogBoneTest.game.bones=[];__dogBoneTest.game.obstacles=[];});await page.clock.runFor(100);
    const runCalls=await page.evaluate(()=>({...__roomCalls}));assert.equal(runCalls.room,0);assert.ok(runCalls.outdoor>0,'walk retains outdoor scene');
    await page.locator('#pause').click();await page.locator('#quit').click();await page.clock.runFor(100);assert.equal(await page.locator('#game').getAttribute('data-state'),'ready');assert.equal(await page.locator('#title').textContent(),'おうちで、ひとやすみ。');
@@ -55,7 +56,7 @@ for(const engine of [chromium,webkit]){
     assert.ok(!state.key.startsWith('image:'),'failed art uses cached procedural room');
     await fallbackPage.screenshot({path:`${out}/${engine.name()}-room-image-fallback.png`});
     await fallbackPage.locator('#ready-settings').click();await fallbackPage.locator('#ready-sound').click();await fallbackPage.locator('#settings-close').click();
-    await fallbackPage.locator('#start').click();await fallbackPage.waitForFunction(()=>__dogBoneTest.game.state==='running');
+    await fallbackPage.locator('#start').click();await confirmDeparture(fallbackPage);await fallbackPage.waitForFunction(()=>__dogBoneTest.game.state==='running');
     await fallbackPage.locator('#pause').click();await fallbackPage.locator('#quit').click();
     assert.equal(await fallbackPage.locator('#game').getAttribute('data-state'),'ready');assert.deepEqual(fallbackErrors,[]);
     results.push({engine:engine.name(),imageFallback:true,...state,errors:fallbackErrors});

@@ -22,7 +22,7 @@ export class SessionLog {
       this.sessions.push(this.session);
     }
     this.run = { id: uuid(), attempt: this.session.runs.length + 1, startedAt: new Date().toISOString(), environment,
-      ...context, versions: { build: CONFIG.buildVersion, config: context.phase === 1 ? 'phase1-v2.1' : context.phase === 2 ? 'phase2-v2.2' : context.phase === 3 ? 'phase3-v3.1' : CONFIG.configVersion, course: context.phase === 1 ? 'walk-1' : context.phase === 2 ? 'walk-2' : context.phase === 3 ? 'walk-3' : CONFIG.courseVersion, log: CONFIG.logVersion } };
+      ...context, versions: { build: CONFIG.buildVersion, config: context.phase === 1 ? 'phase1-v2.1' : context.phase === 2 ? 'phase2-v2.2' : context.phase === 3 ? 'phase3-v3.1' : CONFIG.configVersion, course: context.phase === 1 ? 'walk-1' : context.phase === 2 ? 'walk-2' : context.phase === 3 ? 'walk-3' : (context.courseVersion ?? CONFIG.courseVersion), log: CONFIG.logVersion } };
     this.session.runs.push(this.run); this.record('run_metadata', { ...this.run, confirmed: { ...this.confirmed } });
   }
   confirm(data, activeMs = 0) {

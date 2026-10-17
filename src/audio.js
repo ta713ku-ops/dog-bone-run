@@ -1,4 +1,5 @@
 import { PickupBark } from './pickup-bark.js';
+import { ContactWhine } from './contact-whine.js';
 
 const MUSIC_LOOKAHEAD_MS = 120;
 const MUSIC_DISCONTINUITY_MS = 500;
@@ -47,7 +48,7 @@ const MUSIC_EVENTS = [
 ];
 
 export class Audio {
-  constructor(onState = () => {}, { Context = globalThis.AudioContext ?? globalThis.webkitAudioContext, timeoutMs = 2000, bark = new PickupBark() } = {}) {
+  constructor(onState = () => {}, { Context = globalThis.AudioContext ?? globalThis.webkitAudioContext, timeoutMs = 2000, bark = new PickupBark(), whine = new ContactWhine() } = {}) {
     this.Context = Context; this.timeoutMs = timeoutMs; this.onState = onState;
     this.context = null; this.enabled = true; this.musicEnabled = true;
     this.volumes = { music: 0.35, sfx: 1 };
@@ -56,9 +57,11 @@ export class Audio {
     this.musicRunning = false; this.musicAnchorActiveMs = 0; this.musicAnchorAudioTime = 0;
     this.musicLastActiveMs = null; this.musicScheduled = new Map();
     this.bark = bark;
+    this.whine = whine;
+    this.lastContactAudioTime = -Infinity;
   }
 
-  preload() { return this.bark.preload(); }
+  preload() { void this.whine.preload(); return this.bark.preload(); }
 
   // Called synchronously from the click handler so Safari keeps user activation.
   async unlock() {
@@ -67,7 +70,9 @@ export class Audio {
     try {
       if (!this.Context) throw new Error('unsupported');
       if (!this.context || this.context.state === 'closed') {
+        if (this.context) this.stop();
         this.context = new this.Context(); this.contextCount++;
+        this.lastContactAudioTime = -Infinity;
         const created = this.context;
         created.onstatechange = () => { if (this.context === created) this.onState(created.state); };
         this._createMix(created);
@@ -79,6 +84,7 @@ export class Audio {
       const resume = context.resume();
       // Never delay the user-activation resume or the start of the game for an SFX file.
       void this.bark.prepare(context);
+      void this.whine.prepare(context);
       await Promise.race([
         Promise.resolve(resume).then(() => new Promise(resolve => {
           if (completed) { resolve(); return; }
@@ -175,21 +181,61 @@ export class Audio {
   play(level, kind = 'normal') {
     const ctx = this.context;
     if (!this.enabled || ctx?.state !== 'running') return;
-    const barkPlayed = this.bark.play(ctx, this.sfxGain ?? ctx.destination);
+    this.lastCollectAudioTime = ctx.currentTime;
+    this._stopVoices(voice => voice.type === 'warning');
+    const contactPriority = this.whine.playing || ctx.currentTime - this.lastContactAudioTime < .85;
+    const barkPlayed = !contactPriority && this.bark.play(ctx, this.sfxGain ?? ctx.destination);
     const frequencies = [523.25, 659.25, 783.99, 1046.5, 1318.51];
     const oscillator = ctx.createOscillator(), gain = ctx.createGain(), now = ctx.currentTime;
     const frequency = frequencies[level - 1] * (kind === 'gold' ? 1.5 : 1);
     oscillator.type = kind === 'gold' ? 'triangle' : 'sine'; oscillator.frequency.setValueAtTime(frequency, now);
     oscillator.frequency.exponentialRampToValueAtTime(frequency * (kind === 'gold' ? 2 : 1.3), now + .08);
-    gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(barkPlayed ? .05 : .14, now + .008);
+    gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(contactPriority ? .025 : barkPlayed ? .05 : .14, now + .008);
     gain.gain.exponentialRampToValueAtTime(.0001, now + .16);
     oscillator.connect(gain); gain.connect(this.sfxGain ?? ctx.destination);
     const voice = { oscillator, gain, type: 'sfx' }; this._trackVoice(voice);
     oscillator.start(now); oscillator.stop(now + .18);
   }
 
+  playContact() {
+    const ctx = this.context;
+    if (!this.enabled || ctx?.state !== 'running' || this.whine.playing
+      || ctx.currentTime - this.lastContactAudioTime < .85) return false;
+    this.lastContactAudioTime = ctx.currentTime;
+    this.bark.stop();
+    this._stopVoices(voice => voice.type !== 'music');
+    if (this.whine.play(ctx, this.sfxGain ?? ctx.destination)) return true;
+    // An unavailable recording gets a quiet descending cue, never a bark.
+    const now = ctx.currentTime, oscillator = ctx.createOscillator(), gain = ctx.createGain();
+    oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(420, now);
+    oscillator.frequency.exponentialRampToValueAtTime(240, now + .22);
+    gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(.07, now + .025);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + .25);
+    oscillator.connect(gain); gain.connect(this.sfxGain ?? ctx.destination);
+    this._trackVoice({ oscillator, gain, type: 'contact' });
+    oscillator.start(now); oscillator.stop(now + .27); return true;
+  }
+
+  playWarning(kind) {
+    const ctx = this.context;
+    if (!this.enabled || ctx?.state !== 'running' || !['crow', 'ball'].includes(kind)) return false;
+    if (Number.isFinite(this.lastCollectAudioTime) && ctx.currentTime - this.lastCollectAudioTime < .20) return false;
+    this._stopVoices(voice => voice.type === 'warning');
+    const now = ctx.currentTime, oscillator = ctx.createOscillator(), gain = ctx.createGain();
+    const hz = kind === 'crow' ? 260 : 410;
+    oscillator.type = 'triangle'; oscillator.frequency.setValueAtTime(hz, now);
+    oscillator.frequency.exponentialRampToValueAtTime(hz * .7, now + .10);
+    gain.gain.setValueAtTime(.0001, now); gain.gain.exponentialRampToValueAtTime(.025, now + .015);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + .12);
+    oscillator.connect(gain); gain.connect(this.sfxGain ?? ctx.destination);
+    this._trackVoice({ oscillator, gain, type: 'warning' });
+    oscillator.start(now); oscillator.stop(now + .14); return true;
+  }
+
   stop() {
     this.bark.stop();
+    this.whine.stop();
+    this.lastContactAudioTime = -Infinity;
     this._stopVoices(() => true);
     this._resetMusicScheduler();
   }
