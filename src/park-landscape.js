@@ -90,7 +90,7 @@ function sky(r) {
   c.fillStyle = lawn; c.fillRect(0,h*.28,w,h*.72);
 }
 
-function ground(r, art, travel) {
+export function drawParkGround(r, art, travel) {
   // Each short patch has a fixed world ID. Its texture and all four corners
   // advance with exactly the same projection as the surrounding equipment.
   const step = .45, first = Math.floor((travel + NEAR) / step), last = Math.ceil((travel + FAR) / step);
@@ -99,13 +99,14 @@ function ground(r, art, travel) {
   poly(r,[[-EDGE,NEAR,0],[EDGE,NEAR,0],[EDGE,FAR,0],[-EDGE,FAR,0]],pathGradient);
   for(const side of [-1,1]) poly(r,[[side*EDGE,NEAR,0],[side*(EDGE+.11),NEAR,0],
     [side*(EDGE+.11),FAR,0],[side*EDGE,FAR,0]],'#c8bea0');
+  const gpuGround = art.drawGroundGPU?.(r, travel) === true;
   for (let i = last; i >= first; i--) {
     const a = Math.max(NEAR, i * step - travel), b = Math.min(FAR, (i+1) * step - travel);
     if (b <= a) continue;
     if(a>16)continue; // subpixel distant grain stays quiet instead of aliasing
-    art.drawProjectedGround?.(r, -EDGE, EDGE, a, b, travel, 'path', .30);
+    if (!gpuGround) art.drawProjectedGround?.(r, -EDGE, EDGE, a, b, travel, 'path', .30);
     for (const side of [-1,1]) {
-      if(a<10)art.drawProjectedGround?.(r, side < 0 ? -14 : EDGE+.1, side < 0 ? -EDGE-.1 : 14,
+      if(!gpuGround && a<10)art.drawProjectedGround?.(r, side < 0 ? -14 : EDGE+.1, side < 0 ? -EDGE-.1 : 14,
         a,b,travel,'grass',.22);
       const inner = side * EDGE, outer = side * (EDGE + .11);
       const tone = i % 3 ? '#c8bea0' : '#d0c5a7';
@@ -290,7 +291,7 @@ function drawObject(r, art, o, travel) {
 
 export function drawParkLandscape(renderer, art, travel) {
   sky(renderer);
-  ground(renderer,art,travel);
+  drawParkGround(renderer,art,travel);
   branchPaths(renderer,travel);
   leafShadows(renderer,travel);
   const visible=PARK_WORLD.filter(o=>o.at-travel+o.depth/2>=NEAR&&o.at-travel<FAR)

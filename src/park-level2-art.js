@@ -1,3 +1,5 @@
+import { ParkGroundGPU } from './park-ground-gpu.js';
+
 const SPRITES = Object.freeze({
   gardenBorder: Object.freeze({ crop: [264, 87, 240, 82], anchor: [.5, .98] }),
   treeOak: Object.freeze({ crop: [33, 8, 189, 240], anchor: [.51, .985] }),
@@ -7,9 +9,9 @@ const SPRITES = Object.freeze({
 });
 
 const SOURCES = Object.freeze({
-  props: new URL('../art/park-level2/trees.webp', import.meta.url).href,
-  path: new URL('../art/park-level2/path-material.webp', import.meta.url).href,
-  grass: new URL('../art/park-level2/grass.webp', import.meta.url).href,
+  props: new URL('../art/resolution-v36/foliage.webp', import.meta.url).href,
+  path: new URL('../art/resolution-v36/park-path.webp', import.meta.url).href,
+  grass: new URL('../art/resolution-v36/park-grass.webp', import.meta.url).href,
 });
 const PATH_PATTERNS = new WeakMap();
 const GRASS_PATTERNS = new WeakMap();
@@ -284,17 +286,29 @@ function spriteFallback(renderer, kind, x, baseline, width, height, variant) {
 }
 
 export class ParkLevel2Art {
-  constructor({ ImageCtor = globalThis.Image, timeoutMs = 2_400 } = {}) {
+  constructor({ ImageCtor = globalThis.Image, timeoutMs = 2_400, documentRef = globalThis.document } = {}) {
+    this.groundGPU = new ParkGroundGPU({ documentRef });
     this.images = Object.fromEntries(Object.keys(SOURCES).map(name => [name, null]));
     this.status = Object.fromEntries(Object.keys(SOURCES).map(name => [name, 'pending']));
     this.ready = Promise.all(Object.entries(SOURCES).map(async ([name, url]) => {
       const image = await loadImage(url, ImageCtor, timeoutMs);
       this.images[name] = image;
       this.status[name] = image ? 'ready' : 'fallback';
-    })).then(() => this);
+    })).then(() => {
+      // Upload decoded ground materials before the course starts so a GPU
+      // allocation or mipmap build cannot stall its first running frame.
+      this.groundGPU.prepareMaterials(this.images.path, this.images.grass);
+      return this;
+    });
   }
 
   get stats() { return Object.freeze({ ...this.status }); }
+
+  get groundGPUStats() { return this.groundGPU.stats; }
+
+  drawGroundGPU(renderer, travel) {
+    return this.groundGPU.draw(renderer, travel, this.images.path, this.images.grass);
+  }
 
   drawProjectedGround(renderer, left, right, near, far, travel, material = 'path', opacity = .25) {
     const image = this.images[material], ctx = renderer.ctx;
@@ -325,7 +339,9 @@ export class ParkLevel2Art {
   drawSprite(ctx, kind, x, baseline, width, height, variant = 0) {
     const image = this.images.props, sprite = SPRITES[kind];
     if (!validImage(image) || !sprite || typeof ctx?.drawImage !== 'function') return false;
-    const [sx, sy, sw, sh] = sprite.crop;
+    const [rx, ry, rw, rh] = sprite.crop;
+    const scaleX=image.naturalWidth/512,scaleY=image.naturalHeight/256;
+    const [sx,sy,sw,sh]=[rx*scaleX,ry*scaleY,rw*scaleX,rh*scaleY];
     ctx.save();
     if (Math.trunc(variant) % 2) {
       ctx.translate(x, 0); ctx.scale(-1, 1);

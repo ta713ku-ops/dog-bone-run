@@ -1,4 +1,4 @@
-const TOY_ATLAS_URL = new URL('../art/street-v26/toys.webp', import.meta.url).href;
+const TOY_ATLAS_URL = new URL('../art/resolution-v36/toys.webp', import.meta.url).href;
 const SOURCE_SIZE = Object.freeze({ width: 512, height: 256 });
 const DEFAULT_CELLS = Object.freeze({
   normal: Object.freeze([8, 46, 240, 164]),

@@ -1,3 +1,4 @@
+import {SpriteMipCache,selectSpriteMip} from './sprite-mips.js';
 const ATLAS_URL = new URL('../art/cave-v33/cave-atlas.png', import.meta.url).href;
 const MATERIALS_URL = new URL('../art/cave-v33/cave-materials-atlas.png', import.meta.url).href;
 const HANGING_URL = new URL('../art/cave-v34/stalactite.png', import.meta.url).href;
@@ -97,6 +98,7 @@ export class CaveArt {
     this.materialSheet = { status: 'loading', reason: null, image: null };
     this.hangingSheet = { status: 'loading', reason: null, image: null };
     this.documentRef = documentRef;
+    this.spriteMips = new SpriteMipCache({documentRef});
     this.patterns = new WeakMap();
     const load = (sheet, url, onReady = () => {}) => new Promise(resolve => {
       let settled = false;
@@ -136,9 +138,16 @@ export class CaveArt {
       catch { finish('fallback', 'image_failed'); }
     });
     this.ready = Promise.all([
-      load(this.sheet, ATLAS_URL, image => { this.sheet.frames = trimCells(image, documentRef); }),
+      load(this.sheet, ATLAS_URL, image => {
+        this.sheet.frames = trimCells(image, documentRef);
+        this.sheet.mips = this.sheet.frames.map(frame=>this.spriteMips.prepare(image,frame));
+      }),
       load(this.materialSheet, MATERIALS_URL),
-      load(this.hangingSheet, HANGING_URL),
+      load(this.hangingSheet, HANGING_URL, image=>{
+        const frame={x:image.naturalWidth*337/1024,y:image.naturalHeight*10/1536,width:image.naturalWidth*338/1024,height:image.naturalHeight*1515/1536};
+        this.hangingSheet.frame=frame;
+        this.hangingSheet.mips=this.spriteMips.prepare(image,frame);
+      }),
     ]).then(() => this);
   }
 
@@ -152,6 +161,7 @@ export class CaveArt {
       decodedBytes: (this.sheet.image?.naturalWidth ?? 0) * (this.sheet.image?.naturalHeight ?? 0) * 4,
       materialBytes: (this.materialSheet.image?.naturalWidth ?? 0) * (this.materialSheet.image?.naturalHeight ?? 0) * 4,
       hangingBytes: (this.hangingSheet.image?.naturalWidth ?? 0) * (this.hangingSheet.image?.naturalHeight ?? 0) * 4,
+      spriteMipBytes:this.spriteMips.bytes,spriteMipBudget:this.spriteMips.budgetBytes,
       fallbackReasons: Object.freeze({
         ...(this.sheet.reason ? { atlas: this.sheet.reason } : {}),
         ...(this.materialSheet.reason ? { materials: this.materialSheet.reason } : {}),
@@ -169,7 +179,7 @@ export class CaveArt {
     let byKind = this.patterns.get(ctx);
     if (!byKind) { byKind = new Map(); this.patterns.set(ctx, byKind); }
     if (byKind.has(kind)) return byKind.get(kind);
-    const tileSize = 384;
+    const tileSize = 512;
     const tile = this.documentRef.createElement('canvas');
     tile.width = tileSize * 2;
     tile.height = tileSize * 2;
@@ -208,8 +218,9 @@ export class CaveArt {
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = 'high';
     ctx.globalAlpha *= clamp(alpha, 0, 1);
-    ctx.drawImage(this.sheet.image, frame.x, frame.y, frame.width, frame.height,
-      left, top, drawWidth, drawHeight);
+    const mip=selectSpriteMip(this.sheet.mips?.[index],ctx,drawWidth,drawHeight);
+    if(mip)ctx.drawImage(mip,0,0,mip.width,mip.height,left,top,drawWidth,drawHeight);
+    else ctx.drawImage(this.sheet.image, frame.x, frame.y, frame.width, frame.height,left,top,drawWidth,drawHeight);
     ctx.restore();
     return true;
   }
@@ -220,7 +231,9 @@ export class CaveArt {
     const c=renderer.ctx;
     c.save();c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
     // Authored alpha bounds, preserving the original irregular mineral edges.
-    c.drawImage(image,image.naturalWidth*337/1024,image.naturalHeight*10/1536,
+    const mip=selectSpriteMip(this.hangingSheet.mips,c,width,height);
+    if(mip)c.drawImage(mip,0,0,mip.width,mip.height,x-width/2,y,width,height);
+    else c.drawImage(image,image.naturalWidth*337/1024,image.naturalHeight*10/1536,
       image.naturalWidth*338/1024,image.naturalHeight*1515/1536,
       x-width/2,y,width,height);
     c.restore();return true;

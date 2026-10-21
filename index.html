@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff9f0">
-  <meta name="description" content="犬と街・公園・山を探検する、30秒・3レーンのおさんぽゲーム。木の根や苔岩、転がる石をよけて森の奥へ進もう。">
+  <meta name="description" content="愛犬と過ごすおうちとお庭。おさんぽでコインを集め、部屋やおもちゃを選んで模様替えできる、30秒のおさんぽゲーム。">
   <title>ほねのおさんぽ</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
@@ -27,15 +27,17 @@
     <section class="screen ready-screen" id="ready" aria-labelledby="title">
       <h1 id="title" class="sr-only">おうちで、ひとやすみ。</h1>
       <header class="home-header">
+        <button class="icon-button settings-button" id="ready-settings" aria-label="設定を開く"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg></button></header>
+      <button class="home-dog-touch" id="home-touch" type="button" aria-label="犬に声をかける" aria-describedby="home-touch-note" disabled></button>
+      <p class="home-touch-note" id="home-touch-note">タップして、声をかけてみて</p>
+      <p id="intro-note" hidden>スワイプで左右に移動</p>
+      <div class="start-actions">
+        <p class="home-dog-status sr-only" id="home-dog-status" role="status" aria-live="polite" aria-atomic="true"></p>
         <div class="home-dog-actions" role="group" aria-label="犬のしぐさ">
           <button class="home-dog-gesture" id="home-sit" type="button" data-dog-gesture="sit">おすわり</button>
           <button class="home-dog-gesture" id="home-lie" type="button" data-dog-gesture="lie">ふせ</button>
           <button class="home-dog-gesture" id="home-greet" type="button" data-dog-gesture="greet">こっちを見て</button>
         </div>
-        <button class="icon-button settings-button" id="ready-settings" aria-label="設定を開く"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg></button></header>
-      <p id="intro-note" hidden>スワイプで左右に移動</p>
-      <div class="start-actions">
-        <p class="home-dog-status sr-only" id="home-dog-status" role="status" aria-live="polite" aria-atomic="true"></p>
         <div class="departure-panel">
           <p class="caption" id="ready-record" role="status" aria-live="polite" aria-atomic="true">おさんぽを準備しています…</p>
           <button class="button primary departure-button" id="start" aria-labelledby="start-label" aria-haspopup="dialog" aria-controls="walk-picker"><span class="departure-copy"><span class="departure-label" id="start-label">おさんぽへ</span></span><svg class="departure-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>

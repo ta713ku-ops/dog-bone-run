@@ -1,9 +1,12 @@
+import {MountainGroundGPU} from './mountain-ground-gpu.js';
+import {SpriteMipCache,selectSpriteMip} from './sprite-mips.js';
 const PROP_NAMES = Object.freeze(['treeBeech','treeCedar','treeWoodland','treePine','mossBoulder','fernClump','fallenLog','shrub']);
 const ANIMAL_FRAMES = Object.freeze({deer:0,fox:2,rabbit:4,squirrel:6});
 const PROP_URL = new URL('../art/mountain-v32/nature-atlas.png', import.meta.url).href;
 const ANIMAL_URL = new URL('../art/mountain-v32/wildlife-atlas.png', import.meta.url).href;
 const HAZARD_URL = new URL('../art/mountain-v32/hazard-atlas.png', import.meta.url).href;
 const GROUND_URL = new URL('../art/mountain-v32/ground-atlas.png', import.meta.url).href;
+const SPRITE_MIP_BUDGET = 8_000_000;
 
 // The generated source is an atlas, with taller tree cells and shallower
 // ground-cover cells. Explicit regions keep the tree roots out of row two.
@@ -42,7 +45,8 @@ function cells(image, documentRef, key) {
 export class MountainNatureArt {
   constructor({ImageCtor=globalThis.Image,documentRef=globalThis.document,timeoutMs=4500}={}) {
     this.sheets={props:{status:'loading'},animals:{status:'loading'},ground:{status:'loading'},hazards:{status:'loading'}};
-    this.documentRef=documentRef;this.patterns=new WeakMap();
+    this.documentRef=documentRef;this.patterns=new WeakMap();this.spriteMips=new SpriteMipCache({documentRef,budgetBytes:SPRITE_MIP_BUDGET});
+    this.groundGPU=new MountainGroundGPU({documentRef});
     const load=(key,url)=>new Promise(resolve=>{
       const sheet=this.sheets[key];let settled=false;
       const finish=(status,reason=null)=>{
@@ -58,7 +62,10 @@ export class MountainNatureArt {
           if(settled)return;
           if(!(image.naturalWidth>0&&image.naturalHeight>0))throw Error('invalid_dimensions');
           sheet.image=image;
-          if(key!=='ground')sheet.frames=cells(image,documentRef,key);
+          if(key!=='ground'){
+            sheet.frames=cells(image,documentRef,key);
+            sheet.mips=sheet.frames.map(frame=>this.prepareSpriteMips(image,frame));
+          }
           finish('ready');
         }catch(error){finish('fallback',error.message??'decode_failed');}
       };
@@ -72,8 +79,10 @@ export class MountainNatureArt {
     const reasons=Object.fromEntries(entries.filter(([,s])=>s.reason).map(([key,s])=>[key,s.reason]));
     return Object.freeze({props:this.sheets.props.status,animals:this.sheets.animals.status,ground:this.sheets.ground.status,hazards:this.sheets.hazards.status,
       decodedBytes:entries.reduce((sum,[,s])=>sum+(s.image?.naturalWidth??0)*(s.image?.naturalHeight??0)*4,0),
+      spriteMipBytes:this.spriteMips.bytes,spriteMipBudget:SPRITE_MIP_BUDGET,
       fallbackReasons:Object.freeze(reasons)});
   }
+  prepareSpriteMips(image,frame){return this.spriteMips.prepare(image,frame);}
   draw(renderer,sheetName,index,{x,y,width,height,alpha=1,reference=null}){
     const sheet=this.sheets[sheetName],frame=sheet?.frames?.[index];
     if(sheet?.status!=='ready'||!frame||![x,y,width,height].every(Number.isFinite)||width<=0||height<=0)return false;
@@ -81,7 +90,10 @@ export class MountainNatureArt {
     const scale=Math.min(width/Math.max(...frames.map(f=>f.width)),height/Math.max(...frames.map(f=>f.height)));
     const w=frame.width*scale,h=frame.height*scale;
     const ctx=renderer.ctx;ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.globalAlpha*=Math.max(0,Math.min(1,alpha));
-    ctx.drawImage(sheet.image,frame.x,frame.y,frame.width,frame.height,x-w/2,y-h,w,h);ctx.restore();return true;
+    const mip=selectSpriteMip(sheet.mips?.[index],ctx,w,h);
+    if(mip)ctx.drawImage(mip,0,0,mip.width,mip.height,x-w/2,y-h,w,h);
+    else ctx.drawImage(sheet.image,frame.x,frame.y,frame.width,frame.height,x-w/2,y-h,w,h);
+    ctx.restore();return true;
   }
   drawProp(renderer,key,object,distance){
     const index=PROP_NAMES.indexOf(key);if(index<0||this.sheets.props.status!=='ready')return false;
@@ -111,7 +123,7 @@ export class MountainNatureArt {
     if(materials[kind])return materials[kind];
     // Mirrored repeats join continuously even if the generated source's outer
     // edges are not perfectly seamless. Downsample once, never each frame.
-    const tile=this.documentRef.createElement('canvas'),image=sheet.image,side=384;
+    const tile=this.documentRef.createElement('canvas'),image=sheet.image,side=512;
     tile.width=side*2;tile.height=side*2;
     const crop=tile.getContext('2d');if(!crop)return null;
     for(let y=0;y<2;y++)for(let x=0;x<2;x++){
@@ -126,9 +138,12 @@ export class MountainNatureArt {
     const ctx=renderer.ctx,w=renderer.width,h=renderer.height;
     const floor=this.material(ctx,'floor'),path=this.material(ctx,'path');
     if(!floor||!path)return false;
+    if(this.groundGPU.draw(renderer,travel,path.tile,floor.tile))return true;
     // Invert the shared street camera for each thin screen row. One world
     // coordinate determines the texture phase; no large affine-strip seams,
     // sliding relative to trees, or arbitrary screen-time scrolling.
+    // Each band still samples the texture at native device density. Two CSS
+    // pixels bound the perspective approximation without hundreds of extra fills.
     const horizon=h*.28,groundHeight=h*.52,step=2;
     const top=Math.ceil(renderer.project(0,52).y);
     ctx.save();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';

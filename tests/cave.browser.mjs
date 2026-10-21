@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile, readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { projectStreet } from '../src/street-camera.js';
+import {renderingLaunchOptions} from './browser-rendering.mjs';
 const {chromium,webkit}=await import(process.env.DOG_PLAYWRIGHT_MODULE??'/Users/taku/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
 const origin=process.env.DOG_TEST_URL??'http://127.0.0.1:4198';
 const out=process.env.DOG_CAVE_OUTPUT??'test-results/cave-v34';
@@ -11,7 +12,7 @@ const report={checkedAt:new Date().toISOString(),sourceHashes,cases:[],errors:[]
 const captureErrors=(page,engine)=>page.on('pageerror',error=>report.errors.push({engine,message:error.stack}));
 
 for(const engine of [chromium,webkit]){
-  const browser=await engine.launch({headless:true});
+  const browser=await engine.launch(renderingLaunchOptions(engine));
   try{
     if(!process.argv.includes('--motion-only')) for(const [width,height] of [[320,568],[390,844],[430,932],[1280,900]]){
       const context=await browser.newContext({viewport:{width,height},deviceScaleFactor:2,isMobile:width<500,hasTouch:width<500});
@@ -125,9 +126,10 @@ for(const engine of [chromium,webkit]){
         for(const key of ['x','y','scale'])assert.ok(Math.abs(item[key]-expected[key])<1e-7,`surface ${item.id} ${key}`);
         assert.ok(Math.abs(item.rasterSample.x-item.x)<=frame.width/frame.buffer.width);
         assert.ok(Math.abs(item.rasterSample.y-item.y)<=frame.height/frame.buffer.height);
-        assert.equal(item.rasterSample.surface,'rock','wall and roof anchors hit the rendered rock buffer');
+        assert.equal(item.rasterSample.surface,'rock','wall and roof anchors meet the shared surface geometry');
+        assert.ok(['analytic-ray','cpu-raster'].includes(item.rasterSample.source));
         assert.ok(Math.abs(item.rasterSample.at-item.at)/(item.distance+1/.65)<.1,
-          'the visible surface pixel samples the same world depth within raster footprint');
+          'the shared surface ray samples the same world depth within pixel footprint');
         const prior=surfaceTracks.get(item.id);
         if(prior){assert.equal(item.u,prior.u,'fixed rock U stays in world space');assert.equal(item.v,prior.v,'fixed rock V stays in world space');surfaceComparisons++;}
         surfaceTracks.set(item.id,item);

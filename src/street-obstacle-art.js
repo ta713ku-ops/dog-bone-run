@@ -1,4 +1,4 @@
-const ATLAS_URL = new URL('../art/street-v25/obstacles.webp', import.meta.url).href;
+const ATLAS_URL = new URL('../art/resolution-v36/street-obstacles.webp', import.meta.url).href;
 
 // Crops and roots are measured in art/street-v25/metadata.json. Keep these
 // measurements together so the generated atlas can be revised without

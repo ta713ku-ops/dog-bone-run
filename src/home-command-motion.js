@@ -104,7 +104,7 @@ function targetFrameFor(action, anchor, frameCounts, targetPose, distance) {
   if (action === 'greet' && distance <= NO_MOTION_DISTANCE) {
     return { ...anchor, layers: frameLayers(anchor) };
   }
-  if (!['sit', 'lie', 'greet'].includes(action)) return { ...anchor, layers: frameLayers(anchor) };
+  if (!['stand', 'sit', 'lie', 'greet'].includes(action)) return { ...anchor, layers: frameLayers(anchor) };
   return canonicalFrameAtPose(targetPose, frameCounts);
 }
 
@@ -134,6 +134,9 @@ function routeSegments(action, sourcePose, targetPose, durationMs) {
 function chooseDuration(action, sourcePose, distance) {
   if (action === 'greet') return GREET_DURATION_MS;
   if (distance <= NO_MOTION_DISTANCE) return 0;
+  if (action === 'stand') {
+    return Math.max(MIN_PARTIAL_MOTION_MS, Math.round((sourcePose > 1 ? 2_600 : 1_450) * Math.sqrt(clamp(distance / (sourcePose > 1 ? 2 : 1), 0, 1))));
+  }
   if (action === 'sit') {
     const base = sourcePose > 1 ? LYING_RISE_DURATION_MS : SIT_DURATION_MS;
     return Math.max(MIN_PARTIAL_MOTION_MS, Math.round(base * Math.sqrt(clamp(distance, 0, 1))));
@@ -151,7 +154,7 @@ function chooseDuration(action, sourcePose, distance) {
 function easingProfile(action, sourcePose, targetPose) {
   if (action === 'greet' && targetPose === sourcePose) return { attackPower: 1, settlePower: 1 };
   if (action === 'greet') action = targetPose < sourcePose ? 'sit' : 'lie';
-  if (action === 'sit' && sourcePose > targetPose) return { attackPower: 1.22, settlePower: 1.7 };
+  if ((action === 'stand' || action === 'sit') && sourcePose > targetPose) return { attackPower: 1.22, settlePower: 1.7 };
   if (action === 'lie' && sourcePose < targetPose) {
     return sourcePose < 1
       ? { attackPower: 1.45, settlePower: 1.62 }
@@ -272,20 +275,28 @@ function captureAnchorLocalMotion(anchor, startedAt, frameCounts) {
     headLift: clamp(finiteOr(anchor.headLift, base.headLift ?? 0), 0, 4),
     earLeft: clamp(finiteOr(anchor.earLeft, base.earLeft ?? 0), -1, 1),
     earRight: clamp(finiteOr(anchor.earRight, base.earRight ?? 0), -1, 1),
+    headRest: clamp(finiteOr(anchor.headRest,0),0,1),
+    eyeRest: clamp(finiteOr(anchor.eyeRest,0),0,1),
+    bodyShift: clamp(finiteOr(anchor.bodyShift,0),-1,1),
+    pawAdjust: clamp(finiteOr(anchor.pawAdjust,0),0,1),
+    gazeX: clamp(finiteOr(anchor.gazeX,0),-1,1),
+    blink: clamp(finiteOr(anchor.blink,base.blink??0),0,1),
+    headYaw: clamp(finiteOr(anchor.headYaw,base.headYaw??0),-1,1),
   };
-  const hasLocalMotion = ['headAngle', 'headLift', 'earLeft', 'earRight'].some(field =>
+  const hasHeadYaw = Math.abs(motion.headYaw) > NO_MOTION_DISTANCE;
+  const hasLocalMotion = hasHeadYaw || Object.keys(motion).some(field =>
     Math.abs(motion[field] - finiteOr(base[field], 0)) > NO_MOTION_DISTANCE);
-  return { motion, hasLocalMotion };
+  return { motion, hasLocalMotion, hasHeadYaw };
 }
 
 /** Build a one-shot posture or local attention command from the exact current layers. */
 export function createHomeCommand(action, startedAt, anchor, frameCounts = null) {
   const time = Math.max(0, finiteOr(startedAt, 0));
-  const resolvedAction = ['sit', 'lie', 'greet'].includes(action) ? action : String(action ?? 'idle');
+  const resolvedAction = ['stand', 'sit', 'lie', 'greet'].includes(action) ? action : String(action ?? 'idle');
   const start = copyAnchor(anchor, time, frameCounts);
   const anchorLayers = frameLayers(start);
   const sourcePose = weightedPose(anchorLayers, frameCounts);
-  const targetPose = resolvedAction === 'sit'
+  const targetPose = resolvedAction === 'stand' ? 0 : resolvedAction === 'sit'
     ? 1
     : resolvedAction === 'lie'
       ? 2
@@ -296,7 +307,7 @@ export function createHomeCommand(action, startedAt, anchor, frameCounts = null)
   const anchorMotion = captureAnchorLocalMotion(start, time, frameCounts);
   const noPoseMotion = resolvedAction !== 'greet' && distance <= NO_MOTION_DISTANCE;
   const durationMs = noPoseMotion && anchorMotion.hasLocalMotion
-    ? Math.max(LOCAL_MOTION_HANDOFF_MS, chooseDuration(resolvedAction, sourcePose, distance))
+    ? Math.max(LOCAL_MOTION_HANDOFF_MS, anchorMotion.hasHeadYaw ? 700 : 0, chooseDuration(resolvedAction, sourcePose, distance))
     : chooseDuration(resolvedAction, sourcePose, distance);
   const targetFrame = noPoseMotion
     ? canonicalFrameAtPose(targetPose, frameCounts)
@@ -345,7 +356,7 @@ export function sampleHomeCommand(timeMs, command, options = {}) {
 
   if (reducedMotion) {
     frame = command.targetFrame;
-  } else if (action === 'sit' || action === 'lie') {
+  } else if (action === 'stand' || action === 'sit' || action === 'lie') {
     if (elapsed <= 0) {
       frame = command.anchor;
     } else if (command.durationMs <= 0 || elapsed >= command.durationMs) {
@@ -370,14 +381,18 @@ export function sampleHomeCommand(timeMs, command, options = {}) {
   }
 
   const result = decorate(frame, time, frameCounts, seed, reducedMotion);
+  const resting = (command.anchorLocalMotion?.headRest??0)>0;
   const handoff = reducedMotion
     ? 0
-    : localHandoffWeight(elapsed, command.durationMs);
+    : resting ? 1-smoothstep(Math.max(0,elapsed)/Math.min(1000,command.durationMs||1000))
+      : localHandoffWeight(elapsed, command.durationMs);
   const targetWeight = 1 - handoff;
   const response = !reducedMotion && action === 'greet' && elapsed >= 0 && elapsed < command.durationMs
     ? greetResponse(elapsed)
     : { earLeft: 0, earRight: 0, headAngle: 0, headLift: 0 };
   const anchorLocal = command.anchorLocalMotion ?? { earLeft: 0, earRight: 0, headAngle: 0, headLift: 0 };
+  const anchorYaw = finiteOr(anchorLocal.headYaw, 0);
+  const yaw = reducedMotion ? anchorYaw : anchorYaw * (1 - smoothstep(Math.max(0, elapsed) / 700));
   return {
     ...result,
     ...(elapsed <= 0 && !reducedMotion && Array.isArray(command.anchor.layers)
@@ -385,7 +400,14 @@ export function sampleHomeCommand(timeMs, command, options = {}) {
       : {}),
     headAngle: anchorLocal.headAngle * handoff + response.headAngle * targetWeight,
     headLift: anchorLocal.headLift * handoff + response.headLift * targetWeight,
+    headRest:(anchorLocal.headRest??0)*handoff,
+    eyeRest:(anchorLocal.eyeRest??0)*handoff,
+    bodyShift:(anchorLocal.bodyShift??0)*handoff,
+    pawAdjust:(anchorLocal.pawAdjust??0)*handoff,
+    gazeX:(anchorLocal.gazeX??0)*handoff,
+    blink:(anchorLocal.blink??result.blink??0)*handoff+(result.blink??0)*targetWeight,
     earLeft: clamp(anchorLocal.earLeft * handoff + ((result.earLeft ?? 0) + response.earLeft) * targetWeight, -1, 1),
     earRight: clamp(anchorLocal.earRight * handoff + ((result.earRight ?? 0) + response.earRight) * targetWeight, -1, 1),
+    headYaw: Math.abs(yaw) < 1e-12 ? 0 : yaw,
   };
 }

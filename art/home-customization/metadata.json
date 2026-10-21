@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "generator": "scripts/pack-home-customization.mjs",
+  "generatorSha256": "df849317b218843ad600b09aa9d8a88ab533be1c7e13e6ee0d088063cfd779f2",
+  "promptsSha256": "b2be84690cccb0d1bbe3b96df8f1e7983529165ad323c848b60b2291f293a585",
+  "assets": {
+    "white-portrait": {
+      "path": "art/home-customization/white-portrait.webp",
+      "source": "art/home-customization/source/white-portrait.png",
+      "sha256": "e7a83f8cee4f00b2570022e6db26135e0632e3c54b6a1a2cb73e6fd84ca3ec12",
+      "sourceSha256": "ce277ef39da1c30e038710929cdaaee686355357b24ebf37d2df2c060703ef35",
+      "width": 851,
+      "height": 1848,
+      "alpha": false
+    },
+    "white-landscape": {
+      "path": "art/home-customization/white-landscape.webp",
+      "source": "art/home-customization/source/white-landscape.png",
+      "sha256": "86ed00ebc2b966698f40b6020976cb6e295008798c84de8e6247c28def0d4f61",
+      "sourceSha256": "4c3080c250dc1c05a89f66448e2a0258be11ac267c777e2d5c676bba1045b006",
+      "width": 1536,
+      "height": 1024,
+      "alpha": false
+    },
+    "playroom-portrait": {
+      "path": "art/home-customization/playroom-portrait.webp",
+      "source": "art/home-customization/source/playroom-portrait.png",
+      "sha256": "5a8151f8ca012d3ffe937fd57a442f6498e6ea281f093569384194687261b746",
+      "sourceSha256": "cebd8ec8448dbb4235f464ff6344a6886b1cf157c05cf1a3757555f2233daaf1",
+      "width": 852,
+      "height": 1846,
+      "alpha": false
+    },
+    "playroom-landscape": {
+      "path": "art/home-customization/playroom-landscape.webp",
+      "source": "art/home-customization/source/playroom-landscape.png",
+      "sha256": "e045a44d1c66863cd763df29d5bb5a2ba20243eccd39e14bef104ce4403c0122",
+      "sourceSha256": "8de44e76063a3294027892f8a7ae0df02d5926e9aeb77f1b123b12f02743cb11",
+      "width": 1536,
+      "height": 1024,
+      "alpha": false
+    },
+    "garden-portrait": {
+      "path": "art/home-customization/garden-portrait.webp",
+      "source": "art/home-customization/source/garden-portrait.png",
+      "sha256": "a225d4e1e35fedac5f48eaf0fe668ea018c7ce2bfb9522477c19a9bcbdcd4007",
+      "sourceSha256": "d0b24a1e3b3198a43b53483ccb38c7c1e934535899ba4e3c77e795600ff3adde",
+      "width": 851,
+      "height": 1847,
+      "alpha": false
+    },
+    "garden-landscape": {
+      "path": "art/home-customization/garden-landscape.webp",
+      "source": "art/home-customization/source/garden-landscape.png",
+      "sha256": "8151762e9e754067a62b6a990adac75f6f57c3732e516d597472ad82113bff25",
+      "sourceSha256": "5a4f894b1e4f477c32c3823e20b4bc6135c7e130612515407cc81800e723dab4",
+      "width": 1536,
+      "height": 1024,
+      "alpha": false
+    },
+    "plant": {
+      "path": "art/home-customization/plant.webp",
+      "source": "art/home-customization/source/plant.png",
+      "sha256": "54620a9de7ac21412eca8fa03d56539c13ed81e1d44a2ce31f715f3db7925160",
+      "sourceSha256": "c74c97a232126a550c6c9bb2d7ab310534c643b53aad3f6158e927bcde38807e",
+      "width": 461,
+      "height": 600,
+      "alpha": true
+    },
+    "lantern": {
+      "path": "art/home-customization/lantern.webp",
+      "source": "art/home-customization/source/lantern.png",
+      "sha256": "de9d2ebf5b691ae6040c0f54e83b3da48b8c9796cc483cc0b26cf29d29103501",
+      "sourceSha256": "0dd1813acf6ecd0bfcb01441f7e2194ad388e1ee35d0318e926a5edfe55b4921",
+      "width": 339,
+      "height": 600,
+      "alpha": true
+    }
+  }
+}

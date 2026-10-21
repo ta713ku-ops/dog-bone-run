@@ -1,6 +1,6 @@
 import { StreetToyArt } from './street-toy-art.js';
 
-const ATLAS_URL = new URL('../art/street-v26/foliage.webp', import.meta.url).href;
+const ATLAS_URL = new URL('../art/resolution-v36/foliage.webp', import.meta.url).href;
 const CELLS = Object.freeze({
   tree: Object.freeze([33, 8, 189, 240]),
   hedge: Object.freeze([264, 87, 240, 82]),

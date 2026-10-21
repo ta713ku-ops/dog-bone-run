@@ -6,9 +6,12 @@ import { DogSprites } from './dog-sprites.js';
 import { AdventureScene } from './adventure-scene.js';
 import { projectStreet } from './street-camera.js';
 import { STREET_TOY_ART, drawToy } from './street-toy-art.js';
-import { ImageRoomBackdrop } from './image-room-backdrop.js';
+import { HomeInteriorBackdrop } from './home-interior.js';
 import {sampleWalk, sampleHome, homeInteractionDuration} from './sprite-animation.js';
 import {createHomeCommand, sampleHomeCommand} from './home-command-motion.js';
+import {homeDogLayout, HOME_ATTENTION_MS, HOME_IDLE_GESTURE_MS, HOME_DIRECTION_GESTURE_MS, sampleHomeAttention, sampleHomeIdleGesture, homeGestureRestTarget} from './home-presence.js';
+import {HomeAutonomy} from './home-autonomy.js';
+import {HomeFurnitureArt, drawHomeFurniture} from './home-furnishings.js';
 import {
   deriveVisualSeed, ROAD_COMFORT_FLAGS, ROAD_DECORATION_MODES,
   RoadComfortTracker, shouldKeepRoadDecoration,
@@ -50,11 +53,17 @@ export class Renderer {
     this.adventure = useSprites ? new AdventureScene() : null;
     this.streetArt = useSprites ? STREET_OBSTACLE_ART : null;
     this.toyArt = useSprites ? STREET_TOY_ART : null;
-    this.room = new ImageRoomBackdrop();
+    this.room = new HomeInteriorBackdrop();
+    this.homeInterior = 'room-white';
+    this.furnitureArt = new HomeFurnitureArt();
+    this.homeFurniture = null;
     this.petStartedAt = null;
     this.menuElapsedMs = 0; this.menuLastFrameNow = null; this.menuPaused = false;
     this.homeClockOffset = 0; this.homeInteraction = null; this.homeSample = null; this.homeStillPose = null;
     this.homeHeldFrame = null;
+    this.homeAttention = null;
+    this.homeAutonomy = new HomeAutonomy(Math.floor(Math.random() * 0x100000000));
+    this.resetHomeAutonomy();
     this.ready = this.dogs?.ready ?? Promise.resolve();
     this.lastDrawState = null;
     this.systemReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -83,14 +92,37 @@ export class Renderer {
       this.mountainScene ??= new MountainScene();
       return this.mountainScene.ready;
     }
-    if (level !== 2) return Promise.resolve();
+    if (level !== 2) return this.adventure?.ready ?? Promise.resolve();
     this.parkLevel2Scene ??= new ParkLevel2Scene();
     return this.parkLevel2Scene.ready;
   }
   depart(event) { this.effects.push({ ...event, type: 'depart', visualType: 'parkCrowDeparture' }); }
   setReducedMotion(enabled) {
+    const wasReduced = this.reducedMotion;
+    const settlingManualCommand = this.homeInteraction?.durationMs !== undefined;
+    const nextReduced = this.systemReducedMotion || Boolean(enabled);
+    if (this.homeAutonomy && !wasReduced && nextReduced) {
+      const sample=this.homeSample ?? {};
+      this.homeFrozenLocal=Object.fromEntries(['headAngle','headLift','headRest','eyeRest','bodyShift','pawAdjust','gazeX','blink','earLeft','earRight','headYaw'].map(key=>[key,sample[key]??0]));
+      const attentionAge=this.homeAttention ? Math.min(HOME_ATTENTION_MS,Math.max(0,this.menuElapsedMs-this.homeAttention.startedAt)) : 0;
+      this.homeSuspendedAutoGesture=this.homeAutoGesture ? {...this.homeAutoGesture,age:Math.max(0,this.homeClockAt(this.menuElapsedMs)-attentionAge-this.homeAutoGesture.startedAt)} : null;
+    }
+    if (this.homeAutonomy && !wasReduced && nextReduced) this.homeSuspendedAutoAction=this.homeAutoCommand?.action ?? null;
+    const frozenManual = this.homeAutonomy && !wasReduced && nextReduced && settlingManualCommand
+      ? {sample:this.updateHomeSample(this.menuElapsedMs),action:this.homeInteraction?.action} : null;
     this.userReducedMotion = Boolean(enabled);
     this.reducedMotion = this.systemReducedMotion || this.userReducedMotion;
+    if (this.homeAutonomy) {
+      if(this.reducedMotion && this.homeReducedStartedAt==null) this.homeReducedStartedAt=this.menuElapsedMs;
+      if(wasReduced && !this.reducedMotion && this.homeReducedStartedAt!=null){
+        this.homeClockOffset-=Math.max(0,this.menuElapsedMs-this.homeReducedStartedAt);
+        this.homeReducedStartedAt=null;
+      }
+    }
+    if (this.reducedMotion && this.homeAttention) {
+      this.homeClockOffset -= Math.min(HOME_ATTENTION_MS, Math.max(0, this.menuElapsedMs - this.homeAttention.startedAt));
+      this.homeAttention = null;
+    }
     if (this.reducedMotion && this.homeInteraction?.durationMs!==undefined) {
       this.homeHeldFrame=this.homeInteraction.targetFrame;
       this.homeInteraction=null;
@@ -104,6 +136,37 @@ export class Renderer {
         ?{...this.homeSample,blink:0,breath:0,earLeft:0,earRight:0,attention:0,headAngle:0,headLift:0}
         :{atlas,index,nextIndex:index,mix:0,action:action==='lie'?'lie-head-up':'fully-sitting'};
       this.homeInteraction=null;
+    }
+    if (this.homeAutonomy && wasReduced !== this.reducedMotion) {
+      if (frozenManual?.action) {
+        this.homeHeldFrame = frozenManual.sample;
+        this.homeSuspendedManualAction = frozenManual.action;
+      } else if (this.reducedMotion && this.homeSample && !settlingManualCommand) {
+        this.homeHeldFrame = { ...this.homeSample, layers: this.homeSample.layers?.map(layer => ({ ...layer })) };
+      }
+      this.homeAutoCommand = null; this.homeAutoGesture = null;
+      if (this.homeAutonomyReady) {
+        const clock = this.homeClockAt(this.menuElapsedMs);
+        if (!this.reducedMotion && this.homeSuspendedManualAction) {
+          this.homeInteraction = createHomeCommand(this.homeSuspendedManualAction,clock,this.homeHeldFrame,this.dogs.stats.homeFrameCounts);
+          this.homeSuspendedManualAction = null;
+        } else if (!this.reducedMotion && this.homeSuspendedAutoAction) {
+          this.homeAutoCommand = createHomeCommand(this.homeSuspendedAutoAction,clock,this.homeHeldFrame,this.dogs.stats.homeFrameCounts);
+        } else if (!this.reducedMotion && this.homeSuspendedAutoGesture) {
+          this.homeAutoGesture={...this.homeSuspendedAutoGesture,startedAt:clock-this.homeSuspendedAutoGesture.age};
+        }
+        if (!this.reducedMotion) {
+          if (!this.homeInteraction && !this.homeAutoCommand && this.homeFrozenLocal) {
+            if(!this.homeAutoGesture)this.homeIdleRest={headRest:this.homeFrozenLocal.headRest,eyeRest:this.homeFrozenLocal.eyeRest};
+            this.homeLocalRelease={startedAt:clock,source:{...this.homeFrozenLocal}};
+          }
+          if (this.homeHeldFrame) {
+            this.homeHeldFrame={...this.homeHeldFrame};
+            for(const field of ['headAngle','headLift','headRest','eyeRest','bodyShift','pawAdjust','gazeX','blink','earLeft','earRight','headYaw']) delete this.homeHeldFrame[field];
+          }
+          this.homeSuspendedAutoAction=null;this.homeSuspendedAutoGesture=null;this.homeFrozenLocal=null;
+        }
+      }
     }
     this.canvas.closest('.game').dataset.reducedMotion = String(this.reducedMotion);
   }
@@ -139,6 +202,8 @@ export class Renderer {
     this.menuElapsedMs = 0; this.menuLastFrameNow = null; this.menuPaused = false;
     this.homeClockOffset = 0; this.homeInteraction = null; this.homeSample = null; this.homeStillPose = null;
     this.homeHeldFrame = null;
+    this.homeAttention = null;
+    this.resetHomeAutonomy();
     this.roadRunOpen = false;
     this.roadComfort.resetTrajectory();
   }
@@ -153,7 +218,38 @@ export class Renderer {
     this.menuPaused = next;
     return this.menuPaused;
   }
-  get homeBusy() { return Boolean(this.homeInteraction); }
+  get homeBusy() { return Boolean(this.homeInteraction || this.homeAttention); }
+  homeClockAt(timeMs) {
+    const stopped=this.homeAutonomy && this.reducedMotion && this.homeReducedStartedAt!=null
+      ? Math.max(0,timeMs-this.homeReducedStartedAt) : 0;
+    return timeMs+this.homeClockOffset-stopped;
+  }
+  resetHomeAutonomy() {
+    this.homeAutonomyReady = false;
+    this.homeSuspendedManualAction = null;
+    this.homeSuspendedAutoAction = null;
+    this.homeSuspendedAutoGesture = null;this.homeFrozenLocal=null;
+    this.homeLocalRelease=null;
+    this.homeReducedStartedAt=this.reducedMotion ? this.menuElapsedMs : null;
+    this.homeAutoCommand = null; this.homeAutoGesture = null; this.homePosture = 'stand';
+    this.homeIdleRest = {headRest:0,eyeRest:0};
+  }
+  homePostureFor(frame) {
+    const counts = this.dogs?.stats.homeFrameCounts;
+    const pose = createHomeCommand('greet', 0, frame, counts).sourcePose;
+    return pose < .5 ? 'stand' : pose < 1.5 ? 'sit' : 'lie';
+  }
+  homeRespond() {
+    if (this.homeBusy || !this.dogs?.stats.animationReady) return false;
+    if (!this.dogs.stats.continuityReady) return this.homeGesture('greet');
+    if (this.lastDrawState !== 'ready') {
+      this.lastDrawState = 'ready'; this.menuElapsedMs = 0; this.menuLastFrameNow = null;
+      this.homeClockOffset = 0; this.homeHeldFrame = null; this.homeStillPose = null;
+      this.resetHomeAutonomy();
+    }
+    if (!this.reducedMotion) this.homeAttention = { startedAt: this.menuElapsedMs };
+    return true;
+  }
   homeGesture(action) {
     if (!['sit','lie','greet'].includes(action) || this.homeBusy || !this.dogs?.stats.animationReady) return false;
     // A command immediately after returning to the title may precede its
@@ -162,13 +258,24 @@ export class Renderer {
       this.lastDrawState='ready';this.menuElapsedMs=0;this.menuLastFrameNow=null;
       this.homeClockOffset=0;this.homeInteraction=null;this.homeStillPose=null;
       this.homeHeldFrame=null;
+      this.resetHomeAutonomy();
     }
     if (this.dogs.stats.continuityReady) {
-      const clock=this.menuElapsedMs+this.homeClockOffset;
+      const clock=this.homeClockAt(this.menuElapsedMs);
       const anchor=this.updateHomeSample(this.menuElapsedMs);
       const command=createHomeCommand(action,clock,anchor,this.dogs.stats.homeFrameCounts);
+      this.homeAutoCommand=null; this.homeAutoGesture=null;
+      this.homeIdleRest={headRest:0,eyeRest:0};
+      this.homeSuspendedManualAction=null;
+      this.homeSuspendedAutoAction=null;
+      this.homeSuspendedAutoGesture=null;this.homeFrozenLocal=null;
+      this.homeLocalRelease=null;
       this.homeStillPose=null;
-      if (this.reducedMotion) this.homeHeldFrame=command.targetFrame;
+      if (this.reducedMotion) {
+        this.homeHeldFrame={...command.targetFrame,headYaw:anchor.headYaw??0};
+        this.homePosture=this.homePostureFor(command.targetFrame);
+        this.homeAutonomy?.settle(clock,this.homePosture,{manual:true});
+      }
       else this.homeInteraction=command;
       return true;
     }
@@ -184,21 +291,84 @@ export class Renderer {
     return true;
   }
   updateHomeSample(timeMs, result = false) {
-    let clock=timeMs+this.homeClockOffset;
+    if (this.homeAttention && timeMs - this.homeAttention.startedAt >= HOME_ATTENTION_MS) {
+      this.homeClockOffset -= HOME_ATTENTION_MS;
+      this.homeAttention = null;
+    }
+    let clock=this.homeClockAt(timeMs);
+    const attentionAge = this.homeAttention ? Math.max(0, timeMs - this.homeAttention.startedAt) : null;
+    if (attentionAge !== null) clock -= attentionAge;
     const command=this.homeInteraction;
     if (command?.durationMs !== undefined && clock-command.startedAt>=command.durationMs) {
       this.homeHeldFrame=command.targetFrame;
       this.homeInteraction=null;
+      this.homePosture=this.homePostureFor(command.targetFrame);
+      this.homeAutonomy?.settle(clock,this.homePosture,{manual:true});
     } else if (command && command.durationMs===undefined && clock-command.startedAt>=homeInteractionDuration(command.action)) {
       this.homeClockOffset-=homeInteractionDuration(this.homeInteraction.action);
       clock=timeMs+this.homeClockOffset;this.homeInteraction=null;
     }
-    this.homeSample=result?{atlas:'expressions',index:7,nextIndex:7,mix:0,action:'delighted'}
+    if (!result && this.lastDrawState === 'ready' && this.homeAutonomy && this.dogs?.stats.continuityReady) {
+      this.homeSample = this.sampleAutonomousHome(clock, attentionAge !== null);
+    } else this.homeSample=result?{atlas:'expressions',index:7,nextIndex:7,mix:0,action:'delighted'}
       :this.homeStillPose?this.homeStillPose
       :this.homeInteraction?.durationMs!==undefined
         ?sampleHomeCommand(clock,this.homeInteraction,{reducedMotion:this.reducedMotion,continuousMotion:true,frameCounts:this.dogs.stats.homeFrameCounts,seed:42})
         :sampleHome(clock,{reducedMotion:this.reducedMotion,interaction:this.homeInteraction,heldFrame:this.homeHeldFrame,detailedMotion:Boolean(this.dogs?.stats.homeMotionReady),continuousMotion:Boolean(this.dogs?.stats.continuityReady),frameCounts:this.dogs?.stats.homeFrameCounts,seed:42});
+    if (attentionAge !== null && !result) this.homeSample = sampleHomeAttention(this.homeSample, attentionAge, this.reducedMotion);
     return this.homeSample;
+  }
+  sampleAutonomousHome(clock, attending) {
+    const options = {continuousMotion:true, frameCounts:this.dogs.stats.homeFrameCounts,
+      seed:42, reducedMotion:this.reducedMotion};
+    if (!this.homeAutonomyReady) {
+      this.homeHeldFrame ??= sampleHome(0,options);
+      this.homePosture = this.homePostureFor(this.homeHeldFrame);
+      this.homeAutonomy.reset(clock,this.homePosture);
+      this.homeAutonomyReady = true;
+    }
+    if (this.homeInteraction) return sampleHomeCommand(clock,this.homeInteraction,options);
+    if (this.homeAutoCommand && clock-this.homeAutoCommand.startedAt >= this.homeAutoCommand.durationMs) {
+      this.homeHeldFrame = this.homeAutoCommand.targetFrame;
+      this.homePosture = this.homeAutoCommand.action;
+      this.homeAutoCommand = null;
+      this.homeAutonomy.settle(clock,this.homePosture);
+    }
+    const gestureDuration = this.homeAutoGesture?.durationMs
+      ?? (['look-left','look-right'].includes(this.homeAutoGesture?.action) ? HOME_DIRECTION_GESTURE_MS : HOME_IDLE_GESTURE_MS);
+    if (this.homeAutoGesture && clock-this.homeAutoGesture.startedAt >= gestureDuration) {
+      this.homeIdleRest=homeGestureRestTarget(this.homeAutoGesture.action,this.homeAutoGesture.rest);
+      this.homeAutoGesture = null;
+    }
+    let base = this.homeAutoCommand ? sampleHomeCommand(clock,this.homeAutoCommand,options)
+      : sampleHome(clock,{...options,heldFrame:this.homeHeldFrame});
+    if (this.reducedMotion && this.homeFrozenLocal) base={...base,...this.homeFrozenLocal,breath:0};
+    if (!this.homeAutoCommand && !this.reducedMotion) {
+      const rest=this.homeIdleRest ?? {headRest:0,eyeRest:0};
+      base={...base,...rest,homeAmbientBlink:base.blink??0,blink:Math.max(base.blink??0,rest.eyeRest),breath:(base.breath??0)*(1-.35*rest.eyeRest)};
+    }
+    if (!this.reducedMotion && !attending && !this.homeAutoCommand && !this.homeAutoGesture) {
+      const event = this.homeAutonomy.next(clock,this.homePosture);
+      if (event?.kind === 'posture') {
+        this.homeAutoCommand = createHomeCommand(event.action,clock,base,options.frameCounts);
+        this.homeIdleRest={headRest:0,eyeRest:0};
+        base = sampleHomeCommand(clock,this.homeAutoCommand,options);
+      } else if (event?.kind === 'gesture') this.homeAutoGesture = {...event,startedAt:clock,rest:{...this.homeIdleRest}};
+    }
+    let sample=this.homeAutoGesture
+      ? sampleHomeIdleGesture(base,this.homeAutoGesture.action,clock-this.homeAutoGesture.startedAt,this.reducedMotion,this.homeAutoGesture)
+      : base;
+    if (!this.reducedMotion && this.homeLocalRelease) {
+      const elapsed=Math.max(0,clock-this.homeLocalRelease.startedAt);
+      const yawReleaseMs=Math.abs(this.homeLocalRelease.source.headYaw??0)>1e-8?700:600;
+      for(const [field,value] of Object.entries(this.homeLocalRelease.source)) {
+        const phase=Math.min(1,elapsed/(field==='headYaw'?yawReleaseMs:600));
+        const weight=1-phase*phase*(3-2*phase);
+        sample={...sample,[field]:value*weight+(sample[field]??0)*(1-weight)};
+      }
+      if(elapsed>=yawReleaseMs)this.homeLocalRelease=null;
+    }
+    return sample;
   }
   ellipse(x, y, rx, ry, fill, stroke = null, angle = 0) {
     const c = this.ctx; c.beginPath(); c.ellipse(x, y, rx, ry, angle, 0, Math.PI * 2); c.fillStyle = fill; c.fill();
@@ -393,7 +563,17 @@ export class Renderer {
       // contact shadow anchored rather than lifting it with the dog's head.
       const poseLayers=this.homeSample?.layers??[];
       const lieAmount=poseLayers.reduce((sum,l)=>sum+(l.atlas==='liedown'?l.weight*l.index/Math.max(1,(this.dogs.stats.homeFrameCounts?.liedown??16)-1):0),0);
-      this.ellipse(x, foot + 2, (64+13*lieAmount) * scale * (1 - Math.abs(bob) * .012), (9+3*lieAmount) * scale, this.lastDrawState === 'ready' ? '#66513d2b' : '#5a78412b');
+      if (this.lastDrawState === 'ready') {
+        // A soft penumbra and a narrower contact core sit on the same rug
+        // baseline. Neither follows the head or the breathing deformation.
+        c.save();
+        c.translate(x, foot + 3 * scale); c.scale(1, .15);
+        const shadow = c.createRadialGradient(0, 0, 0, 0, 0, (78 + 15 * lieAmount) * scale);
+        shadow.addColorStop(0, '#49342532'); shadow.addColorStop(.48, '#49342518'); shadow.addColorStop(1, '#49342500');
+        this.ellipse(0, 0, (78 + 15 * lieAmount) * scale, (78 + 15 * lieAmount) * scale, shadow);
+        c.restore();
+        this.ellipse(x, foot + scale, (43 + 24 * lieAmount) * scale, (3 + 2 * lieAmount) * scale, '#49342526');
+      } else this.ellipse(x, foot + 2, (64+13*lieAmount) * scale * (1 - Math.abs(bob) * .012), (9+3*lieAmount) * scale, '#5a78412b');
       c.save();
       c.translate(x, foot + bob);
       c.rotate(idleLean + tapLean);
@@ -679,30 +859,11 @@ export class Renderer {
       this.caveScene ??= new CaveScene();
       scene = this.caveScene;
     }
-    if (options.menu && game.walkLevel < 2) return scene.draw(this, game, options);
-    // Keep the gameplay sprites crisp while bounding background raster work
-    // on high-density screens. The camera still uses the same CSS coordinates.
-    if (!this.streetBackdrop) {
-      const surface = this.canvas.ownerDocument?.createElement?.('canvas');
-      const context = surface?.getContext?.('2d');
-      if (surface && context) this.streetBackdrop = { surface, context };
-    }
-    if (!this.streetBackdrop) return scene.draw(this, game, options);
-    const {surface, context} = this.streetBackdrop;
-    const density = Math.min(game.walkLevel === 4 ? 1.25 : game.walkLevel >= 2 ? 1.5 : 1, devicePixelRatio || 1);
-    const width = Math.max(1, Math.round(this.width * density));
-    const height = Math.max(1, Math.round(this.height * density));
-    if (surface.width !== width || surface.height !== height) {
-      surface.width = width; surface.height = height;
-    }
-    context.setTransform(width / this.width, 0, 0, height / this.height, 0, 0);
-    const foreground = this.ctx;
-    try {
-      this.ctx = context;
-      scene.draw(this, game, options);
-    } finally { this.ctx = foreground; }
-    foreground.drawImage(surface, 0, 0, width, height, 0, 0, this.width, this.height);
+    // The foreground already has a native-density transform. Drawing scenery
+    // here avoids an expensive full-canvas copy and keeps every layer equally sharp.
+    return scene.draw(this, game, options);
   }
+
   draw(game, { force = false } = {}) {
     // A stopped course is one stable frame. Reusing it avoids needless work
     // and subpixel rerasterization differences between WebKit's GPU/CPU paths.
@@ -711,13 +872,17 @@ export class Renderer {
       this.width, this.height, this.canvas.width, this.canvas.height,
       game.phase, game.walkLevel, game.seed, game.timeMs, game.distance, game.x, game.lane, game.move, game.score,
       this.effects, this.debug, this.reducedMotion, this.roadDecoration, this.roadComfortFlags,
-      this.dogs?.stats.ready, this.dogs?.stats.hd?.pending,
+      this.dogs?.stats.ready, this.dogs?.stats.walkHdReady, this.dogs?.stats.hd?.pending,
       this.dogs?.stats.hd?.decodeCount, this.adventure?.stats, this.streetArt?.stats, this.toyArt?.stats,
       this.parkLevel2Scene?.stats,
+      this.parkLevel2Scene?.art?.groundGPU?.contextLost,
+      this.mountainScene?.art?.groundGPU?.contextLost,
       // Landmarks are draw outputs derived from the game clock. Including
       // them invalidates the first paused frame and rerasterizes textures
       // after a readback; only loading state can change a paused mountain.
       this.mountainScene?.art?.stats, this.caveScene?.art?.stats,
+      this.caveScene?.tunnel?.gpu?.contextLost,
+      this.caveScene?.tunnel?.gpu?.restorationPending,
     ]) : null;
     if (!force && paused && this.frozenGame === game && this.frozenSignature === signature) return;
     this.drawFrame(game);
@@ -759,6 +924,8 @@ export class Renderer {
       this.menuElapsedMs = 0; this.menuLastFrameNow = null;
       this.homeClockOffset=0;this.homeInteraction=null;this.homeStillPose=null;
       this.homeHeldFrame=null;
+      this.homeAttention=null;
+      this.resetHomeAutonomy();
     }
     const canAdvanceMenu = menu && !this.menuPaused && (typeof document === 'undefined' || !document.hidden);
     if (canAdvanceMenu && this.menuLastFrameNow !== null) {
@@ -767,7 +934,10 @@ export class Renderer {
     }
     this.menuLastFrameNow = canAdvanceMenu ? now : null;
     const menuElapsedMs = this.menuElapsedMs;
-    if (game.state === 'ready') this.room.draw(c,w,h,Math.min(devicePixelRatio||1,CONFIG.dprCap));
+    if (game.state === 'ready') {
+      this.room.draw(c,w,h,Math.min(devicePixelRatio||1,CONFIG.dprCap),this.homeInterior);
+      this.homeFurnitureBounds=drawHomeFurniture(c,w,h,this.homeFurniture,{images:this.furnitureArt.images,environment:this.homeInterior==='room-garden'?'garden':'indoor'});
+    }
     else if (game.walkLevel >= 2 || this.adventure) this.drawAdventure(game, { menu, timeMs: menuElapsedMs });
     else this.landscape(game, menu);
     this.comfortMetrics = this.roadComfort.endFrame();
@@ -779,7 +949,8 @@ export class Renderer {
       const baseline = phaseResult ? h * .55 : game.state === 'result' ? h * .53 : h * .63;
       const y = baseline - 102 * scale;
       const reactionMs = this.petStartedAt === null ? null : menuElapsedMs - this.petStartedAt;
-      this.frontDog(w * .5, y, scale, menuElapsedMs / 1000, phaseResult && game.endReason === 'finish' ? 'finish' : 'idle', reactionMs);
+      const home = game.state === 'ready' ? homeDogLayout(w, h) : null;
+      this.frontDog(home?.x ?? w * .5, home ? home.foot - 102 * home.scale : y, home?.scale ?? scale, menuElapsedMs / 1000, phaseResult && game.endReason === 'finish' ? 'finish' : 'idle', reactionMs);
       return;
     }
     const falling = game.state === 'falling' || (game.state === 'paused' && game.pausedFrom === 'falling');

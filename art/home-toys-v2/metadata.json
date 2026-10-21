@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "generator": "scripts/pack-home-toys.mjs",
+  "generatorSha256": "0d1c3118b26f0e88e42476259daf8fbd60d155ca887d124020241092721d0fb2",
+  "promptsSha256": "88c4796dabf74a6df84df5687f8af793f8c3dde4eec31a13269f771c1f48fb68",
+  "assets": {
+    "ball": {
+      "source": "art/home-toys-v2/source/ball.png",
+      "path": "art/home-toys-v2/ball.webp",
+      "sourceSha256": "2e7740cc8e566189fd4fb9e079bdf3550053282870fe0a34abe51a21fd25567a",
+      "sha256": "9facb89d763325cd735e15cc6fe7446c37968048bd37ed2c0d5f31e92edd04fb",
+      "width": 512,
+      "height": 506,
+      "alpha": true
+    },
+    "rope": {
+      "source": "art/home-toys-v2/source/rope.png",
+      "path": "art/home-toys-v2/rope.webp",
+      "sourceSha256": "ef280ee5faf7e1bd094d6832e65b3acf2d50e021a03cdaa57b5d485a13efcca2",
+      "sha256": "19a66ddbff577817ae6fc175102e82e63720f5d6d7583ab98b2f3e1c4e3c3dbf",
+      "width": 640,
+      "height": 214,
+      "alpha": true
+    }
+  }
+}
