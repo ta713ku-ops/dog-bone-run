@@ -1,0 +1,21 @@
+import {mkdir,writeFile} from 'node:fs/promises';
+import {renderingLaunchOptions} from './browser-rendering.mjs';
+const {chromium}=await import('/Users/taku/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs');
+const out='test-results/home-interior/capture';await mkdir(out,{recursive:true});
+const browser=await chromium.launch(renderingLaunchOptions(chromium));
+const context=await browser.newContext({storageState:{cookies:[],origins:[]},viewport:{width:390,height:844},deviceScaleFactor:1,recordVideo:{dir:`${out}/video`,size:{width:390,height:844}}});
+const p=await context.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));
+await p.goto('http://127.0.0.1:4182/?test=1&seed=42');await p.waitForFunction(()=>__dogBoneTest?.homeShop?.owner);await p.evaluate(async()=>{await __dogBoneTest.homeShop.ready;await __dogBoneTest.renderer.ready;await __dogBoneTest.renderer.room.ready;});
+await p.screenshot({path:`${out}/white-empty.png`});
+await p.click('#home-shop');await p.screenshot({path:`${out}/catalog.png`});
+await p.click('[data-category="room"]');await p.screenshot({path:`${out}/rooms-top.png`});
+await p.click('[data-item="room-natural"]');await p.screenshot({path:`${out}/preview-natural.png`});await p.click('#preview-cancel');
+await p.click('[data-item="room-playroom"]');await p.screenshot({path:`${out}/preview-playroom.png`});await p.click('#preview-cancel');
+await p.click('[data-item="room-luxe"]');await p.screenshot({path:`${out}/preview-luxe.png`});await p.click('#preview-cancel');
+await p.click('#shop-close');
+// Film an unowned room preview, no injected coins. The modal intentionally pauses dog motion.
+await p.click('#home-shop');await p.click('[data-category="room"]');await p.click('[data-item="room-playroom"]');
+await p.waitForTimeout(12000);await p.click('#preview-cancel');await p.click('#shop-close');
+await p.evaluate(()=>__dogBoneTest.homeShop.store.close());await p.reload();await p.waitForFunction(()=>__dogBoneTest?.homeShop?.owner&&__dogBoneTest.renderer.dogs.stats.continuityReady);await p.screenshot({path:`${out}/white-after-reload.png`});
+const state=await p.evaluate(()=>({coins:__dogBoneTest.homeShop.state.coins,equipped:__dogBoneTest.homeShop.state.roomShop.equipped}));await writeFile(`${out}/results.json`,JSON.stringify({state,errors,context:'ephemeral, zero coins, preview only',realTimePreviewSeconds:12},null,2));
+await context.close();await browser.close();console.log(JSON.stringify({state,errors}));

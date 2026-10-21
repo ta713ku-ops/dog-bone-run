@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "generator": "scripts/pack-home-interior.mjs",
+  "generatorSha256": "114e0c6508465ad9f7049104171a9147ba35a36f728a9e7ec382ffd8ba340093",
+  "promptsSha256": "16dddd940add390a15e3a542793db3855f81cdb914040da6883f570a69ae2281",
+  "assets": {
+    "natural-portrait": {
+      "path": "art/home-interior/natural-portrait.webp",
+      "source": "art/home-interior/source/natural-portrait.png",
+      "sha256": "9a598baa8922964c9659180945a01e065e4483d8296c8d7fa96a457a19a67a1a",
+      "sourceSha256": "f50fef34535234178ede44363f9e5c1451558d85e2b95c39fa09b85bc8838d23",
+      "width": 1024,
+      "height": 1536
+    },
+    "natural-landscape": {
+      "path": "art/home-interior/natural-landscape.webp",
+      "source": "art/home-interior/source/natural-landscape.png",
+      "sha256": "5f5ccf1128889b746f477c32e0a484249622b3a922cd3317fcff39c0c6646086",
+      "sourceSha256": "1f149c751968702720bf630932afec345a14c89a29ad0988fe1d8ef9f1dff25b",
+      "width": 1536,
+      "height": 1024
+    },
+    "playroom-portrait": {
+      "path": "art/home-interior/playroom-portrait.webp",
+      "source": "art/home-interior/source/playroom-portrait.png",
+      "sha256": "cc1fa2315c2f92a28c1f98261f31ff303282a8dc3c43083c88ec987439a6a7d0",
+      "sourceSha256": "89b7cb1abda99f24125ed2ab6921faa0c0002f9b31272012f8db8a9ce123e7ef",
+      "width": 1024,
+      "height": 1536
+    },
+    "playroom-landscape": {
+      "path": "art/home-interior/playroom-landscape.webp",
+      "source": "art/home-interior/source/playroom-landscape.png",
+      "sha256": "332d2425464998f47cac1c7b0fecb9aaba1b1aa889f0c2c647b3abc3dcf67788",
+      "sourceSha256": "00b16d3d6cca2701e51e73d66e9e0d99e5793bf5e1e1ee3ac532aedea92b71d4",
+      "width": 1536,
+      "height": 1024
+    },
+    "luxe-portrait": {
+      "path": "art/home-interior/luxe-portrait.webp",
+      "source": "art/home-interior/source/luxe-portrait.png",
+      "sha256": "3f6f0a8f00b25d389e2fd6e8e92f69e7c315ec107f598e2a04f4ed8f122a9bc4",
+      "sourceSha256": "d64125a5fb5337564be22a6b3b038d6909eecef3f24482415d144773bc18f9b2",
+      "width": 1024,
+      "height": 1536
+    },
+    "luxe-landscape": {
+      "path": "art/home-interior/luxe-landscape.webp",
+      "source": "art/home-interior/source/luxe-landscape.png",
+      "sha256": "d4a5b02a15e5558d149fb3b3c274a40187f4b71f7b9643a2a9ba661898c5fc94",
+      "sourceSha256": "dd187e72a9fc24991ee2df30e679a7aa22ca4aa3eccdb6aae5462fd803640199",
+      "width": 1536,
+      "height": 1024
+    }
+  }
+}

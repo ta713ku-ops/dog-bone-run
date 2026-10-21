@@ -34,3 +34,22 @@ test('failed decode does not block the fallback landscape',async()=>{
   const art=new MountainNatureArt({ImageCtor:BrokenImage});await art.ready;
   assert.deepEqual({...art.stats.fallbackReasons},{props:'decode_failed',animals:'decode_failed',ground:'decode_failed',hazards:'decode_failed'});
 });
+
+test('distant sprite cache retains native DPR detail and close views use the original',async()=>{
+  const prepared=[];
+  const documentRef={createElement(){const tile={width:0,height:0,getContext(){return {drawImage(...args){prepared.push(args);}}}};return tile;}};
+  const art=new MountainNatureArt({ImageCtor:null,documentRef});await art.ready;
+  const original={name:'authored'},frame={x:12,y:24,width:512,height:512};
+  const mips=art.prepareSpriteMips(original,frame);
+  Object.defineProperty(mips,'findLast',{value:undefined});
+  art.sheets.props={status:'ready',image:original,frames:[frame],mips:[mips]};
+  const calls=[],ctx={globalAlpha:1,save(){},restore(){},getTransform:()=>({a:0,b:3,c:-3,d:0}),drawImage(...args){calls.push(args);}};
+  art.draw({ctx},'props',0,{x:100,y:200,width:50,height:50});
+  assert.equal(calls[0][0].width,256,'150 physical pixels retain at least 150 source pixels, including rotation');
+  assert.deepEqual(calls[0].slice(-4),[75,150,50,50],'the authored foot and size stay fixed');
+  art.draw({ctx},'props',0,{x:100,y:200,width:100,height:100});
+  assert.equal(calls[1][0],original,'300 physical pixels cannot use the smaller cached crop');
+  assert.equal(prepared.length,mips.length,'draws never create additional cache entries');
+  assert.ok(prepared.every(args=>args[0]===original),'every mip samples the original rather than a blurred previous mip');
+  assert.ok(art.stats.spriteMipBytes<=art.stats.spriteMipBudget);
+});

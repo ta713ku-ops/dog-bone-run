@@ -1,0 +1,44 @@
+{
+  "mode": "built-in image_gen",
+  "common": "Create a finished photorealistic background plate for a cozy virtual pet browser game, premium interior photography, realistic materials, straight verticals, warm natural soft daylight. NO dogs, NO people, NO animals, NO text, NO UI, NO rugs, NO pet beds, NO loose toys, NO objects on the foreground floor. The live dog will be composited in front. Camera at small dog's eye level, facing the back wall. Wall-floor junction at 47 percent image height, clear open floor fills bottom 53 percent. Keep center 50 percent of the image EMPTY from floor to wall, furniture confined to far left/right edges of the room; gentle low contrast behind the dog. Header top10 percent and footer bottom20 percent visually quiet. Sharp quality architectural details with atmospheric depth.",
+  "themes": {
+    "natural": "A sunny Scandinavian Japanese living room. Cream plaster back wall, pale honey oak floor boards, left tall window with sheer linen curtains and glimpses of soft green garden, on far right an oatmeal linen sofa edge and slender sideboard with small plant. Restrained, airy, elegant, no clutter.",
+    "playroom": "An adorable tasteful children's storybook room without people. Soft blush pink upper walls, sage green lower wall wainscoting, pale whitewashed oak floor, soft arched window on far left with peach gingham curtains, right edge a low wooden house shaped bookshelf with pastel books and tiny decorative wooden houses, one framed moon-and-stars illustration on upper right wall. Sophisticated soft nursery decor, NOT plastic or neon. Wide clear center wall and floor for live dog.",
+    "luxe": "An elegant luxurious residential salon, brighter upscale interior suitable for cute dog. Warm ivory paneled wall with thin brushed brass molding, smoked walnut chevron floor. Far left floor-to-ceiling window and heavy champagne silk curtains, far right edge a curved emerald velvet sofa and a small marble console with understated brass table lamp, soft daylight and warm accents. Center wall and all foreground floor free of furniture. Not dark, not hotel lobby, not busy."
+  },
+  "portrait": "Portrait composition, vertical 2:3 frame, render the whole room with enough wall above and foreground floor below.",
+  "landscape": "Landscape composition, horizontal 3:2 frame, same interior materials and mood, show spacious left and right edges, lower half clear floor.",
+  "suffix": "This is a single full-bleed room photo, not a collage.",
+  "outputs": [
+    {
+      "theme": "natural",
+      "orientation": "portrait",
+      "source": "/Users/taku/.codex/generated_images/01a14ebd-7cd3-7350-92d1-f8353fab2e92/exec-7c554ed4-5836-48c3-8c68-2a328ed362fa.png"
+    },
+    {
+      "theme": "natural",
+      "orientation": "landscape",
+      "source": "/Users/taku/.codex/generated_images/01a14ebd-7cd3-7350-92d1-f8353fab2e92/exec-9b6a2e25-1973-418f-81f7-b926d0e315c3.png"
+    },
+    {
+      "theme": "playroom",
+      "orientation": "portrait",
+      "source": "/Users/taku/.codex/generated_images/01a14ebd-7cd3-7350-92d1-f8353fab2e92/exec-39443764-f22c-49b4-a4f3-e9e3a118dd5d.png"
+    },
+    {
+      "theme": "playroom",
+      "orientation": "landscape",
+      "source": "/Users/taku/.codex/generated_images/01a14ebd-7cd3-7350-92d1-f8353fab2e92/exec-a8ba18a0-769a-41f4-8e0c-b549528d84a0.png"
+    },
+    {
+      "theme": "luxe",
+      "orientation": "portrait",
+      "source": "/Users/taku/.codex/generated_images/01a14ebd-7cd3-7350-92d1-f8353fab2e92/exec-bd6040bb-ed2a-4e09-8b3c-25a23b6590cf.png"
+    },
+    {
+      "theme": "luxe",
+      "orientation": "landscape",
+      "source": "/Users/taku/.codex/generated_images/01a14ebd-7cd3-7350-92d1-f8353fab2e92/exec-e24c0e42-6290-4cab-9bb7-b0572a40db6d.png"
+    }
+  ]
+}

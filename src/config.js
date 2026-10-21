@@ -3,12 +3,12 @@ export const USE_CONTINUOUS_HOME_DOG = true;
 export const USE_GPU_HOME_DOG = true;
 export const USE_HD_HOME_DOG = true;
 export const CONFIG = Object.freeze({
-  buildVersion: '0.35.0', configVersion: 'contact-whine-feedback-1', courseVersion: 'sprint-30s-penalty-1', logVersion: 5,
+  buildVersion: '0.37.0', configVersion: 'home-customization-toys-1', courseVersion: 'sprint-30s-penalty-1', logVersion: 5,
   durationMs: 60_000, stepMs: 1000 / 60, moveMs: 200, cooldownMs: 100,
   swipePx: 24, swipeRatio: 1.25, comboMs: 1200,
   dogHalfWidth: .22, boneHalfWidth: .12, dogHalfLength: .06, boneHalfLength: .04,
   obstacleHalfWidth: .28, obstacleHalfLength: .10,
-  lookAhead: 3.2, dprCap: 2, stallMs: 250,
+  lookAhead: 3.2, dprCap: 3, stallMs: 250,
 });
 export const PHASE2 = Object.freeze({ goalDistance: 60, slowMs: 1000, suppressMs: 1300, slowSpeed: .60,
   ruleVersion: 'phase2-walk2-v1' });

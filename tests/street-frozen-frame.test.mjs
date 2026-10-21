@@ -24,24 +24,14 @@ test('a paused frame stays still while changed content, assets and settings inva
   renderer.draw({...game});assert.equal(paints,9,'a new course object cannot reuse an earlier attempt');
 });
 
-test('the street background uses a bounded raster layer and restores the crisp foreground',()=>{
-  const previous=globalThis.devicePixelRatio;globalThis.devicePixelRatio=2;
-  try {
-    const layer={width:0,height:0}, transforms=[], copies=[];
-    const background={setTransform(...args){transforms.push(args);}};
-    layer.getContext=()=>background;
-    const foreground={drawImage(...args){copies.push(args);}};
-    const renderer=Object.create(Renderer.prototype);
-    const game=Object.freeze({state:'running',timeMs:1000});
-    Object.assign(renderer,{width:390,height:844,ctx:foreground,
-      canvas:{ownerDocument:{createElement(){return layer;}}},
-      adventure:{draw(r,g){assert.equal(r.ctx,background);assert.equal(g,game);assert.equal(r.width,390);}}});
-    renderer.drawAdventure(game,{menu:false});
-    assert.equal(renderer.ctx,foreground);
-    assert.equal(layer.width,390);assert.equal(layer.height,844);
-    assert.equal(copies.length,1);assert.deepEqual(copies[0].slice(-4),[0,0,390,844]);
-    renderer.adventure.draw=()=>{throw new Error('fixture');};
-    assert.throws(()=>renderer.drawAdventure(game,{menu:false}),/fixture/);
-    assert.equal(renderer.ctx,foreground,'failed scenery cannot corrupt the gameplay context');
-  } finally {if(previous===undefined)delete globalThis.devicePixelRatio;else globalThis.devicePixelRatio=previous;}
+test('scenery draws directly through the native foreground transform without an intermediate copy',()=>{
+  let draws=0;
+  const foreground={drawImage(){throw new Error('unexpected intermediate copy');}};
+  const renderer=Object.create(Renderer.prototype);
+  const game=Object.freeze({state:'running',timeMs:1000,walkLevel:1});
+  Object.assign(renderer,{width:390,height:844,ctx:foreground,
+    canvas:{width:1170,height:2532},
+    adventure:{draw(r,g){draws++;assert.equal(r.ctx,foreground);assert.equal(g,game);assert.equal(r.width,390);}}});
+  renderer.drawAdventure(game,{menu:false});
+  assert.equal(draws,1);assert.equal(renderer.ctx,foreground);
 });

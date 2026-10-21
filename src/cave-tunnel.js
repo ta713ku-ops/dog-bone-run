@@ -1,12 +1,17 @@
 import { projectStreet } from './street-camera.js';
+import { CaveGPU } from './cave-gpu.js';
 
 // The pinhole camera is exactly projectStreet's camera, including its pitch.
 // Every background pixel samples one point on a rock vault or the floor.
 // Materials are indexed in world space, never translated as a screen layer.
 export const CAVE_CAMERA_DEPTH = 1 / .65;
 const TAU = Math.PI * 2;
+const CPU_MAX_WIDTH = 260;
+const CPU_MAX_HEIGHT = 420;
+const PROFILE_SEGMENTS = 512;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const mod = (v, n) => ((v % n) + n) % n;
+const geometryCache = new Map();
 
 function rockRadius(cosine, sine) {
   // A lopsided limestone section, with no animated radius or camera sway.
@@ -22,12 +27,26 @@ function rockBoundary(geometry, x, y) {
 }
 
 export function caveTunnelGeometry(width, height) {
+  const key = `${width}:${height}`;
+  if (geometryCache.has(key)) return geometryCache.get(key);
   const eye = height * .52 / (width * .235);
   const centerY = eye * .35 + .9;
   const radiusY = eye * .65 + 2.9;
-  return Object.freeze({ width, height, eye, focal: width * .235 / .65,
+  const profile = Array.from({ length: PROFILE_SEGMENTS + 1 }, (_, index) => {
+    const angle = index / PROFILE_SEGMENTS * TAU;
+    const cosine = Math.cos(angle), sine = Math.sin(angle);
+    const radius = rockRadius(cosine, sine);
+    return Object.freeze({ lane: cosine * 3.65 * radius,
+      elevation: centerY + sine * radiusY * radius });
+  });
+  const geometry = { width, height, eye, focal: width * .235 / .65,
     horizon: height * .28, radiusX: 3.65, centerY, radiusY,
-    roof: centerY + radiusY * rockRadius(0, 1) });
+    roof: centerY + radiusY * rockRadius(0, 1) };
+  Object.defineProperty(geometry, 'profile', { value: Object.freeze(profile), enumerable: false });
+  Object.freeze(geometry);
+  geometryCache.set(key, geometry);
+  if (geometryCache.size > 8) geometryCache.delete(geometryCache.keys().next().value);
+  return geometry;
 }
 
 export function caveRoofAtLane(geometry, lane) {
@@ -88,15 +107,35 @@ function proceduralTexture(side, rock) {
 
 /** A bounded CPU surface buffer; sharp dogs and hazards stay on the foreground. */
 export class CaveTunnel {
-  constructor({ documentRef = globalThis.document } = {}) {
+  constructor({ documentRef = globalThis.document, gpu = null } = {}) {
     this.documentRef = documentRef; this.cache = null; this.materialKey = null;
     this.textures = null; this.lastTravel = null; this.samples = [];
+    this.gpu = gpu ?? new CaveGPU({ documentRef });
+    this.backend = 'uninitialized';
+    this.geometry = null;
   }
 
   prepare(renderer, art) {
+    if (!renderer || !Number.isFinite(renderer.width) || !Number.isFinite(renderer.height)
+      || renderer.width <= 0 || renderer.height <= 0) return false;
+    const geometry = caveTunnelGeometry(renderer.width, renderer.height);
+    this.geometry = geometry;
+    let gpuReady = false;
+    try {
+      gpuReady = this.gpu?.prepare?.(renderer, art, geometry) === true;
+    } catch { /* The first draw can still use the bounded Canvas fallback. */ }
+    // A compact fallback is prepared before play so a runtime context loss
+    // never has to build a ray map during a timed frame.
+    this.backend = gpuReady ? 'webgl' : 'cpu';
+    const cpuReady = this.prepareCPU(renderer, art);
+    return gpuReady || cpuReady;
+  }
+
+  prepareCPU(renderer, art) {
     const width = renderer.width, height = renderer.height;
-    // Surface buffers contain texture, not text or small gameplay sprites.
-    const ratio = Math.min(.78, 440 / width, 760 / height);
+    // The fallback is intentionally bounded. The normal renderer keeps the
+    // complete native DPR surface in the GPU canvas.
+    const ratio = Math.min(1, CPU_MAX_WIDTH / width, CPU_MAX_HEIGHT / height);
     const bw = Math.max(1, Math.round(width * ratio)), bh = Math.max(1, Math.round(height * ratio));
     if (!this.cache || this.cache.width !== width || this.cache.height !== height) {
       const canvas = this.documentRef?.createElement?.('canvas');
@@ -160,7 +199,19 @@ export class CaveTunnel {
   }
 
   draw(renderer, travel, art) {
-    if (!this.prepare(renderer, art)) return false;
+    if (!renderer?.ctx || !Number.isFinite(renderer.width) || !Number.isFinite(renderer.height)
+      || renderer.width <= 0 || renderer.height <= 0) return false;
+    const geometry = caveTunnelGeometry(renderer.width, renderer.height);
+    this.geometry = geometry;
+    try {
+      if (this.gpu?.draw?.(renderer, travel, art, geometry) === true) {
+        this.backend = 'webgl';
+        this.samples = this.surfaceAnchors(travel, geometry, true);
+        return true;
+      }
+    } catch { /* The CPU surface is the recovery path for WebGL failures. */ }
+    this.backend = 'cpu';
+    if (!this.prepareCPU(renderer, art)) return false;
     const c = this.cache;
     if (this.lastTravel !== travel) {
       const out = c.image.data, shift = travel / 5.8 * 256;
@@ -183,13 +234,13 @@ export class CaveTunnel {
     renderer.ctx.save(); renderer.ctx.imageSmoothingEnabled = true;
     renderer.ctx.imageSmoothingQuality = 'high';
     renderer.ctx.drawImage(c.canvas, 0, 0, c.width, c.height); renderer.ctx.restore();
-    this.samples = this.surfaceAnchors(travel);
+    this.samples = this.surfaceAnchors(travel, c.geometry, false);
     return true;
   }
 
-  surfaceAnchors(travel) {
-    if (!this.cache) return [];
-    const g = this.cache.geometry, points = [];
+  surfaceAnchors(travel, geometry = this.cache?.geometry, native = false) {
+    if (!geometry) return [];
+    const g = geometry, points = [];
     for (let index = 0; index < 12; index++) {
       const at = 2 + index * 4.4, distance = at - travel;
       if (distance < -.7 || distance > 52) continue;
@@ -199,20 +250,37 @@ export class CaveTunnel {
         const elevation = g.centerY + Math.sin(angle) * g.radiusY * radius;
         const p = projectStreet(g.width, g.height, lane, distance, elevation);
         if (p.x < 0 || p.x >= g.width || p.y < 0 || p.y >= g.height) continue;
-        const pixelX = Math.min(this.cache.bw - 1, Math.floor(p.x / g.width * this.cache.bw));
-        const pixelY = Math.min(this.cache.bh - 1, Math.floor(p.y / g.height * this.cache.bh));
-        const pixel = pixelY * this.cache.bw + pixelX;
-        points.push({ id: `tunnel-${kind}-${index}`, kind, lane, elevation, at, distance, ...p,
-          ...caveSurfaceUV(g, 'rock', lane, elevation, at),
-          rasterSample: { x: (pixelX + .5) * g.width / this.cache.bw,
+        const sampleWidth = native ? this.gpu?.stats?.width ?? g.width : this.cache?.bw ?? g.width;
+        const sampleHeight = native ? this.gpu?.stats?.height ?? g.height : this.cache?.bh ?? g.height;
+        const pixelX = Math.min(sampleWidth - 1, Math.floor(p.x / g.width * sampleWidth));
+        const pixelY = Math.min(sampleHeight - 1, Math.floor(p.y / g.height * sampleHeight));
+        let rasterSample;
+        if (native) {
+          const sampleX = (pixelX + .5) * g.width / sampleWidth;
+          const sampleY = (pixelY + .5) * g.height / sampleHeight;
+          const hit = traceCaveSurface(g, sampleX, sampleY, travel);
+          rasterSample = { x: sampleX, y: sampleY, at: hit.at, surface: hit.surface, source:'analytic-ray' };
+        } else {
+          const pixel = pixelY * this.cache.bw + pixelX;
+          rasterSample = { x: (pixelX + .5) * g.width / this.cache.bw,
             y: (pixelY + .5) * g.height / this.cache.bh,
             at: this.cache.depth[pixel] + travel,
-            surface: ['rock', 'floor', 'void'][this.cache.floor[pixel]] } });
+            surface: ['rock', 'floor', 'void'][this.cache.floor[pixel]], source:'cpu-raster' };
+        }
+        points.push({ id: `tunnel-${kind}-${index}`, kind, lane, elevation, at, distance, ...p,
+          ...caveSurfaceUV(g, 'rock', lane, elevation, at),
+          rasterSample });
       }
     }
     return points;
   }
 
-  get stats() { return { mode: 'world-ray-vault', width: this.cache?.bw ?? 0, height: this.cache?.bh ?? 0,
-    surfaces: this.samples, geometry: this.cache?.geometry ?? null }; }
+  get stats() {
+    const width = this.backend === 'webgl' ? this.gpu?.stats?.width ?? 0 : this.cache?.bw ?? 0;
+    const height = this.backend === 'webgl' ? this.gpu?.stats?.height ?? 0 : this.cache?.bh ?? 0;
+    return { mode: this.backend === 'webgl' ? 'gpu-world-vault' : 'cpu-world-vault',
+      width, height, surfaces: this.samples,
+      geometry: this.geometry ?? this.cache?.geometry ?? null,
+      gpu: this.gpu?.stats ?? null };
+  }
 }

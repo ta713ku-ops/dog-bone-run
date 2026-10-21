@@ -64,7 +64,7 @@ test('obstacle atlas readiness waits for image decoding without blocking constru
   assert.deepEqual(art.stats, { obstacles: 'pending' });
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(images.length, 1);
-  assert.match(images[0].url, /art\/street-v25\/obstacles\.webp/);
+  assert.match(images[0].url, /art\/resolution-v36\/street-obstacles\.webp/);
   images[0].finishDecode();
   await art.ready;
   assert.equal(art.atlasReady, true);

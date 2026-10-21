@@ -6,7 +6,7 @@ import {createHash} from 'node:crypto';
 const diagnosticBuild=process.argv.includes('--diagnostics');
 const destination=diagnosticBuild?'device-check':'dist';
 // Fail clearly if a generated source or packing rules changed without recompiling.
-for(const [path,command] of [['art/dog-image-animation.json','assets:animation'],['art/dog-home-motion.json','assets:home-motion'],['art/dog-home-continuity.json','assets:continuity']]){
+for(const [path,command] of [['art/dog-image-animation.json','assets:animation'],['art/dog-home-motion.json','assets:home-motion'],['art/dog-home-continuity.json','assets:continuity'],['art/dog-walk-hd.json','assets:walk-hd']]){
   const animationMetadata=JSON.parse(await readFile(path,'utf8'));
   for(const source of [...Object.values(animationMetadata.sourceSheets),animationMetadata.generator,...Object.values(animationMetadata.atlases)]){
     if(!source?.path||!source?.sha256) throw new Error(`Missing animation build provenance: run npm run ${command}`);
@@ -19,6 +19,42 @@ for(const source of [hdMetadata.generator,hdMetadata.sourceMetadata,...hdMetadat
   const path=source.path??source.source;
   if(!path||!source.sha256||createHash('sha256').update(await readFile(path)).digest('hex')!==source.sha256)
     throw new Error(`HD dog source or output changed: rebuild scripts/build-dog-hd.py (${path})`);
+}
+const directionMetadata=JSON.parse(await readFile('art/dog-direction/metadata.json','utf8'));
+for(const item of [directionMetadata.generator,...directionMetadata.sources,{path:'art/dog-direction/heads.webp',sha256:directionMetadata.sheet.sha256}]) {
+  if(!item.path||!item.sha256||createHash('sha256').update(await readFile(item.path)).digest('hex')!==item.sha256)
+    throw new Error(`Direction artwork or packing rules changed: rebuild scripts/pack-dog-direction.mjs (${item.path})`);
+}
+const resolutionMetadata=JSON.parse(await readFile('art/resolution-v36/metadata.json','utf8'));
+const roomShopArt=JSON.parse(await readFile('art/home-shop/metadata.json','utf8'));
+const interiorArt=JSON.parse(await readFile('art/home-interior/metadata.json','utf8'));
+const customArt=JSON.parse(await readFile('art/home-customization/metadata.json','utf8'));
+const toyArt=JSON.parse(await readFile('art/home-toys-v2/metadata.json','utf8'));
+for(const [path,expected]of [[toyArt.generator,toyArt.generatorSha256],['art/home-toys-v2/prompts.json',toyArt.promptsSha256],...Object.values(toyArt.assets).flatMap(a=>[[a.path,a.sha256],[a.source,a.sourceSha256]])]){
+  if(!path||!expected||createHash('sha256').update(await readFile(path)).digest('hex')!==expected)
+    throw new Error(`Toy art or packing rules changed: rebuild scripts/pack-home-toys.mjs (${path})`);
+}
+for(const [path,expected]of [[customArt.generator,customArt.generatorSha256],['art/home-customization/prompts.json',customArt.promptsSha256],...Object.values(customArt.assets).flatMap(a=>[[a.path,a.sha256],[a.source,a.sourceSha256]])]){
+  if(!path||!expected||createHash('sha256').update(await readFile(path)).digest('hex')!==expected)
+    throw new Error(`Home customization art or packing rules changed: rebuild scripts/pack-home-customization.mjs (${path})`);
+}
+for(const [path,expected]of [[interiorArt.generator,interiorArt.generatorSha256],['art/home-interior/prompts.json',interiorArt.promptsSha256],...Object.values(interiorArt.assets).flatMap(a=>[[a.path,a.sha256],[a.source,a.sourceSha256]])]){
+  if(!path||!expected||createHash('sha256').update(await readFile(path)).digest('hex')!==expected)
+    throw new Error(`Interior background or packing rules changed: rebuild scripts/pack-home-interior.mjs (${path})`);
+}
+if(createHash('sha256').update(await readFile(roomShopArt.generator)).digest('hex')!==roomShopArt.generatorSha256)
+  throw new Error('Room shop packing rules changed: rebuild scripts/pack-home-shop.mjs');
+for(const art of Object.values(roomShopArt.assets))for(const[path,expected]of[[art.path,art.sha256],[art.source,art.sourceSha256]]){
+  if(createHash('sha256').update(await readFile(path)).digest('hex')!==expected)
+    throw new Error(`Room shop art changed: rebuild scripts/pack-home-shop.mjs (${path})`);
+}
+if(createHash('sha256').update(await readFile(resolutionMetadata.generator)).digest('hex')!==resolutionMetadata.generatorSha256)
+  throw new Error('Scenery packing rules changed: rebuild scripts/build-resolution-scenery.py');
+if(!resolutionMetadata.layoutInput?.path||createHash('sha256').update(await readFile(resolutionMetadata.layoutInput.path)).digest('hex')!==resolutionMetadata.layoutInput.sha256)
+  throw new Error('Scenery source layout changed: rebuild scripts/build-resolution-scenery.py');
+for(const asset of Object.values(resolutionMetadata.assets))for(const [path,expected] of [[asset.path,asset.sha256],[asset.source,asset.sourceSha256]]){
+  if(createHash('sha256').update(await readFile(path)).digest('hex')!==expected)
+    throw new Error(`High resolution scenery changed: rebuild scripts/build-resolution-scenery.py (${path})`);
 }
 for (const metadataPath of ['art/park-v23/metadata.json', 'art/neighborhood-v24/metadata.json', 'art/street-v25/metadata.json', 'art/street-v26/metadata.json', 'art/park-level2/metadata.json', 'art/mountain-v32/metadata.json', 'art/cave-v33/metadata.json', 'art/cave-v34/metadata.json']) {
   const sceneryMetadata = JSON.parse(await readFile(metadataPath, 'utf8'));
@@ -33,7 +69,7 @@ for (const metadataPath of ['art/park-v23/metadata.json', 'art/neighborhood-v24/
 await rm(destination, { recursive: true, force: true });
 await mkdir(destination);
 for (const file of ['index.html', 'styles.css', 'favicon.svg']) await cp(file, `${destination}/${file}`);
-// Ship the runner's dependency graph, not the historical raising/3D modules.
+// Ship the runner's dependency graph, including its room shop and shared save model.
 const modules = new Map(), assets = new Set(), root = resolve('.');
 async function collect(path) {
   if (modules.has(path)) return;

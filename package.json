@@ -1,6 +1,6 @@
 {
   "name": "dog-bone-run",
-  "version": "0.35.0",
+  "version": "0.37.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,6 +13,8 @@
     "test:interruptions": "node tests/runner-interruption.browser.mjs",
     "test:realtime": "node tests/runner-realtime.browser.mjs",
     "assets:animation": "node scripts/build-sprite-animation.mjs",
+    "assets:walk-hd": "node scripts/build-dog-walk-hd.mjs",
+    "test:resolution": "node tests/resolution.browser.mjs",
     "assets:home-motion": "node scripts/build-home-motion.mjs",
     "test:home-motion": "node tests/home-motion.browser.mjs",
     "test:animation": "node tests/sprite-animation.browser.mjs",
@@ -30,6 +32,8 @@
     "test:continuity": "node tests/continuity-home.browser.mjs",
     "test:continuity-realtime": "node tests/continuity-realtime.browser.mjs",
     "test:home-command": "node tests/home-command.browser.mjs",
+    "test:home-presence": "node tests/home-presence.browser.mjs",
+    "test:home-real-preview": "node tests/home-real-preview.browser.mjs",
     "test:street-quality": "node tests/street-quality.browser.mjs",
     "test:street-quality-motion": "node tests/street-quality-motion.browser.mjs",
     "test:cave": "node tests/cave.browser.mjs",

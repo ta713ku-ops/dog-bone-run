@@ -1,4 +1,4 @@
-const FACADE_ATLAS_URL = new URL('../art/street-v26/facades.webp', import.meta.url).href;
+const FACADE_ATLAS_URL = new URL('../art/resolution-v36/facades.webp', import.meta.url).href;
 const SOURCE_SIZE = Object.freeze({ width: 1024, height: 1024 });
 const FACE_SIZE = 512;
 const DEFAULT_TIMEOUT_MS = 2_400;

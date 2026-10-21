@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "outputs": [
+    {
+      "name": "ball",
+      "sourceGenerator": "built-in image_gen",
+      "generatedSource": "/Users/taku/.codex/generated_images/01a14ebd-7cd3-7350-92d1-f8353fab2e92/exec-34f423bd-d2c0-45c6-bf01-e62eb0f2bdad.png",
+      "prompt": "Use case: product-photography.\nAsset type: transparent cutout sprite for an existing cozy photographic dog companion game.\nPrimary request: One real small soft dog toy ball, photographed, not an illustration or 3D render. Muted pale sage green and warm ivory cotton fabric panels, round handmade soft play ball with fine tactile cotton weave, very subtle curved stitching, low-saturation natural colors. The ball must look like an actual small pet toy lying on the floor of a sunlit white home alongside a photographic Pomeranian and a beige cloth bunny. Real fabric irregularity and delicate surface fuzz, no glossy plastic, no metallic sheen, no hard black outline, no neon. One ball only, fully visible, centered large with a small safe margin. Camera at low dog eye height, just slightly above the ball; near-spherical silhouette, flattened tiniest amount where it touches the floor. Soft diffused upper-left daylight, gentle natural volume and realistic material microtexture. Background genuinely transparent alpha. NO floor, NO cast shadow or ellipse underneath, NO pedestal, no text, no labels, no dog, no room, no extra objects. Lowest opaque part of the ball is its actual physical contact point, without detached tufts below it. High quality realistic product photography, crisp detailed but naturally soft, 1024 square."
+    },
+    {
+      "name": "rope",
+      "sourceGenerator": "built-in image_gen",
+      "generatedSource": "/Users/taku/.codex/generated_images/01a14ebd-7cd3-7350-92d1-f8353fab2e92/exec-a7e9b9a0-7663-45a2-9a4a-50a80cb65021.png",
+      "prompt": "Edit this cotton tug-rope photo for a small dog game sprite. Preserve the REAL photographic cotton material, actual fine braided fibers, warm ivory and sage color family, diffused upper-left daylight, genuine transparent alpha background. Make the rope toy MUCH SHORTER and CHUNKIER, with two substantial round interlocking knots almost side by side, a very short thick braided bridge between them, and SHORT compact frayed tassels. It must read like a real cotton dog tug toy when reduced to only 50 pixels wide. The overall visible object's width-to-height must be about TWO TO ONE (2:1), not a long thin horizontal rope. Deeper muted sage green threads alternating with warm ivory, slightly stronger natural tonal separation than input, no neon or outline. Low camera slightly above floor, both knots and tassels physically resting on one flat ground contact plane, no floating. Complete single object centered with small safe margin. NO floor or cast shadow/drop shadow/contact ellipse because app draws it, no pedestal, no words, no extra items. Real pet product photo, not drawing, no CGI. Transparent background.",
+      "revisions": [
+        {
+          "source": "art/home-toys-v2/source/rope-v1.png",
+          "prompt": "Use case: product-photography.\nAsset type: transparent cutout sprite for an existing cozy photographic dog companion game.\nPrimary request: One real small cotton tug rope dog toy, lying horizontally on the floor, photographed, not an illustration or 3D render. Warm ivory and muted pale sage cotton threads braided together, one loose substantial knot at each end with short frayed cotton tassels, a gently curved braided section between the knots. Rough overall width-to-height ratio about 2.5:1. Actual soft cotton fibers and natural braid details, restrained color matching beige fabric pet bed and a photographic cloth bunny toy. One toy only, fully visible, centered large with small safe margins. Low camera at dog eye height looking slightly down, floor level product photograph. Soft diffused upper-left daylight, realistic volume, no strong specular shine or dark outline. Background genuinely transparent alpha. NO floor, NO drop shadow/cast shadow/ellipse, no pedestal, no labels, no text, no dog, no furniture, no room. Bottom of knots and lowest fibers sit on the same ground plane; believable weight, toy not floating. High quality realistic product photography, no cartoon or CGI look, 1024 square.",
+          "generatedSource": "/Users/taku/.codex/generated_images/01a14ebd-7cd3-7350-92d1-f8353fab2e92/exec-61b79b35-238a-448a-8bad-f5cdbd183fec.png",
+          "issue": "Too flat and pale at small scale."
+        }
+      ]
+    }
+  ]
+}

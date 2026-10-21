@@ -5,6 +5,10 @@ const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const smooth=x=>{x=clamp(x,0,1);return x*x*(3-2*x);};
 const HEAD_ANGLE_LIMIT=0.055;
 const HEAD_LIFT_LIMIT=4;
+const HEAD_REST_DROP_LIMIT=14;
+const BODY_SHIFT_LIMIT=3;
+const PAW_ADJUST_X_LIMIT=2;
+const PAW_ADJUST_Y_LIMIT=1;
 const HEAD_WARP_PADDING=12;
 const PREALIGNED_MOTION_PADDING=16;
 
@@ -36,6 +40,76 @@ function normalizedHeadAngle(value) {
 
 function normalizedHeadLift(value) {
   return Number.isFinite(value) ? clamp(value, 0, HEAD_LIFT_LIMIT) : 0;
+}
+
+function normalizedHeadRest(value) {
+  return Number.isFinite(value) ? clamp(value, 0, 1) : 0;
+}
+
+function normalizedBodyShift(value) {
+  return Number.isFinite(value) ? clamp(value, -1, 1) : 0;
+}
+
+function normalizedPawAdjust(value) {
+  return Number.isFinite(value) ? clamp(value, 0, 1) : 0;
+}
+
+function normalizedGazeX(value) {
+  return Number.isFinite(value) ? clamp(value, -1, 1) : 0;
+}
+
+/** Horizontal torso sway in canonical pixels; the planted-foot rows fade to zero. */
+export function bodyShiftOffsetAt(y, eyeY, ground, amount = 0) {
+  if (![y, eyeY, ground].every(Number.isFinite)) return 0;
+  const shift = normalizedBodyShift(amount);
+  if (shift === 0) return 0;
+  const start = eyeY + 36;
+  const end = ground - 22;
+  if (end <= start) return 0;
+  const fade = 1 - smooth((y - start) / (end - start));
+  return fade <= 0 ? 0 : shift * BODY_SHIFT_LIMIT * fade;
+}
+
+/** Subpixel eye-region shift shared with the WebGL composite shader. */
+export function gazeOffsetAt(x, y, eyes, amount = 0, out = [0, 0]) {
+  out[0] = 0;
+  out[1] = 0;
+  const gaze = normalizedGazeX(amount);
+  if (gaze === 0 || !Array.isArray(eyes) || eyes.length !== 2
+    || ![x, y, eyes[0]?.x, eyes[0]?.y, eyes[1]?.x, eyes[1]?.y].every(Number.isFinite)) return out;
+  let weight = 0;
+  for (const eye of eyes) {
+    const horizontal = 1 - smooth((Math.abs(x - eye.x) - 12) / 4);
+    const vertical = 1 - smooth((Math.abs(y - eye.y) - 10) / 4);
+    weight = Math.max(weight, horizontal * vertical);
+  }
+  out[0] = gaze * weight;
+  return out;
+}
+
+/**
+ * A tiny viewer-left forepaw settle for the authored final sitting frame. The motion is
+ * centered from that frame's eye landmarks and ground anchor, and never exceeds
+ * 2px horizontally or 1px upward in canonical 384px coordinates.
+ */
+export function pawAdjustOffsetAt(x, y, landmarks, ground, amount = 0, out = [0, 0]) {
+  out[0] = 0;
+  out[1] = 0;
+  const adjust = normalizedPawAdjust(amount);
+  const eyes = landmarks?.eyes;
+  if (adjust === 0 || !Array.isArray(eyes) || eyes.length !== 2
+    || ![x, y, ground, eyes[0]?.x, eyes[1]?.x].every(Number.isFinite)) return out;
+  const eyeMidX = (eyes[0].x + eyes[1].x) / 2;
+  const eyeHalfSpan = Math.abs(eyes[1].x - eyes[0].x) / 2;
+  const centerX = eyeMidX - eyeHalfSpan * 1.9;
+  const centerY = ground - 26;
+  const horizontal = 1 - smooth((Math.abs(x - centerX) - 11) / 6);
+  const vertical = 1 - smooth((Math.abs(y - centerY) - 10) / 7);
+  const local = horizontal * vertical;
+  if (local <= 0) return out;
+  out[0] = PAW_ADJUST_X_LIMIT * adjust * local;
+  out[1] = -PAW_ADJUST_Y_LIMIT * adjust * local;
+  return out;
 }
 
 export function createHeadMotionRegion(landmarks) {
@@ -80,17 +154,18 @@ function headMotionWeight(x, y, region) {
   return clamp(horizontal * entersAtTop * fadesIntoChest, 0, 1);
 }
 
-export function headMotionPoint(x, y, region, headAngle = 0, headLift = 0) {
+export function headMotionPoint(x, y, region, headAngle = 0, headLift = 0, headRest = 0) {
   if (!region || !Number.isFinite(x) || !Number.isFinite(y)) return { x, y };
   const angle = normalizedHeadAngle(headAngle);
   const lift = normalizedHeadLift(headLift);
-  if (angle === 0 && lift === 0) return { x, y };
+  const restDrop = normalizedHeadRest(headRest) * HEAD_REST_DROP_LIMIT;
+  if (angle === 0 && lift === 0 && restDrop === 0) return { x, y };
   const weight = headMotionWeight(x, y, region);
   const dx = x - region.pivotX;
   const dy = y - region.pivotY;
   const cosine = Math.cos(angle), sine = Math.sin(angle);
   const rotatedX = region.pivotX + cosine * dx - sine * dy;
-  const rotatedY = region.pivotY + sine * dx + cosine * dy - lift;
+  const rotatedY = region.pivotY + sine * dx + cosine * dy - lift + restDrop;
   return { x: x + (rotatedX - x) * weight, y: y + (rotatedY - y) * weight };
 }
 
@@ -134,9 +209,10 @@ function samplePremultiplied(sourcePixels, sourceLeft, sourceTop, sourceWidth, s
 }
 
 function warpHeadPixelsInBounds(sourcePixels, sourceLeft, sourceTop, sourceWidth, sourceHeight,
-  region, headAngle, headLift, outputPixels, outputLeft = 0, outputTop = 0, outputWidth = 384) {
+  region, headAngle, headLift, outputPixels, outputLeft = 0, outputTop = 0, outputWidth = 384, headRest = 0) {
   const angle = normalizedHeadAngle(headAngle), lift = normalizedHeadLift(headLift);
-  if (!region?.bounds || (angle === 0 && lift === 0)) return false;
+  const restDrop = normalizedHeadRest(headRest) * HEAD_REST_DROP_LIMIT;
+  if (!region?.bounds || (angle === 0 && lift === 0 && restDrop === 0)) return false;
   const { left, right, top, bottom } = region.bounds;
   const cosine = Math.cos(angle), sine = Math.sin(angle);
   for (let y = top; y < bottom; y++) {
@@ -152,7 +228,7 @@ function warpHeadPixelsInBounds(sourcePixels, sourceLeft, sourceTop, sourceWidth
         }
         const dx = sourceX - region.pivotX, dy = sourceY - region.pivotY;
         const rotatedX = region.pivotX + cosine * dx - sine * dy;
-        const rotatedY = region.pivotY + sine * dx + cosine * dy - lift;
+        const rotatedY = region.pivotY + sine * dx + cosine * dy - lift + restDrop;
         sourceX = x - (rotatedX - sourceX) * weight;
         sourceY = y - (rotatedY - sourceY) * weight;
       }
@@ -164,14 +240,16 @@ function warpHeadPixelsInBounds(sourcePixels, sourceLeft, sourceTop, sourceWidth
   return true;
 }
 
-export function warpHeadPixels(sourcePixels, region, headAngle, headLift, outputPixels) {
-  if ((!normalizedHeadAngle(headAngle) && !normalizedHeadLift(headLift)) || !region?.bounds) return sourcePixels;
+export function warpHeadPixels(sourcePixels, region, headAngle, headLift, outputPixels, headRest = 0) {
+  if ((!normalizedHeadAngle(headAngle) && !normalizedHeadLift(headLift) && !normalizedHeadRest(headRest))
+    || !region?.bounds) return sourcePixels;
   const byteLength = 384 * 384 * 4;
   if (sourcePixels.length !== byteLength || outputPixels.length !== byteLength || outputPixels === sourcePixels) {
     throw new RangeError('Head warp requires separate 384px RGBA buffers.');
   }
   outputPixels.set(sourcePixels);
-  warpHeadPixelsInBounds(sourcePixels, 0, 0, 384, 384, region, headAngle, headLift, outputPixels);
+  warpHeadPixelsInBounds(sourcePixels, 0, 0, 384, 384, region, headAngle, headLift,
+    outputPixels, 0, 0, 384, headRest);
   return outputPixels;
 }
 
@@ -332,7 +410,7 @@ export function interpolateFace(features,layers) {
  return{eyes};
 }
 
-export function faceWarp(source,target,ground,breath=0,attention=0) {
+export function faceWarp(source,target,ground,breath=0,attention=0,bodyShift=0) {
  const [a,b]=source.eyes,[u,v]=target.eyes;
  const sx=(a.x+b.x)/2,sy=(a.y+b.y)/2,tx=(u.x+v.x)/2,ty=(u.y+v.y)/2;
  const dx=b.x-a.x,dy=b.y-a.y,den=dx*dx+dy*dy;
@@ -344,7 +422,8 @@ export function faceWarp(source,target,ground,breath=0,attention=0) {
    const footFade=1-smooth((y-(ground-60))/38);
    const chest=Math.sin(clamp((y-sy)/(ground-sy),0,1)*Math.PI)*footFade;
    const head=(1-smooth((y-(sy+15))/(ground-sy-15)))*footFade;
-   return{x:x+(px-x)*influence+breath*(x-tx)*.004*chest+attention*.8*head,
+   return{x:x+(px-x)*influence+breath*(x-tx)*.004*chest+attention*.8*head
+       +bodyShiftOffsetAt(y,sy,ground,bodyShift),
      y:y+(py-y)*influence-breath*.65*chest-attention*.4*head};
  };
 }
@@ -371,7 +450,7 @@ export class NaturalDogPainter {
   this.canvas=document.createElement('canvas');this.canvas.width=this.canvas.height=384;this.ctx=this.canvas.getContext('2d');
   this.blinkCache=new Map();this.pixelCache=new Map();this.pixels=dc;
   this.output=this.ctx.createImageData(384,384);this.accumulated=new Float32Array(384*384*4);
-  this.earPixels=new Uint8ClampedArray(384*384*4);this.earOffset=[0,0];
+  this.earPixels=new Uint8ClampedArray(384*384*4);this.earOffset=[0,0];this.motionOffset=[0,0];
   // The padded head support is at most 242px wide/high; reuse one bounded patch.
   this.headPatch=this.ctx.createImageData(256,256);
  }
@@ -379,8 +458,14 @@ export class NaturalDogPainter {
   const features=layers.map(l=>this.features[l.atlas]?.[l.index]);if(features.some(f=>!f))return false;
   const earLeft=clamp(sample.earLeft??0,-1,1),earRight=clamp(sample.earRight??0,-1,1);
   const headAngle=normalizedHeadAngle(sample.headAngle??0),headLift=normalizedHeadLift(sample.headLift??0);
+  const headRest=normalizedHeadRest(sample.headRest??0);
+  const bodyShift=normalizedBodyShift(sample.bodyShift??0);
+  const gazeX=normalizedGazeX(sample.gazeX??0);
+  const stableSitPose=sample.prealigned===true&&layers.length===1
+    &&layers[0].atlas==='sitdown'&&layers[0].index===47;
+  const pawAdjust=stableSitPose?normalizedPawAdjust(sample.pawAdjust??0):0;
   const postureLift=sample.prealigned&&this.posturePathEnabled?this.posturePath.sample(layers):0;
-  const signature=JSON.stringify([layers,sample.prealigned??false,sample.breath??0,sample.attention??0,sample.blink??0,earLeft,earRight,headAngle,headLift,postureLift]);
+  const signature=JSON.stringify([layers,sample.prealigned??false,sample.breath??0,sample.attention??0,sample.blink??0,earLeft,earRight,headAngle,headLift,headRest,bodyShift,pawAdjust,gazeX,postureLift]);
   const scale=size/336;
   if(signature===this.lastSignature){
    ctx.drawImage(this.canvas,x-192*scale,foot-372*scale,384*scale,384*scale);
@@ -430,7 +515,16 @@ export class NaturalDogPainter {
     let px=(dd*(-ee)-cc*(y-ff))/det,py=(-bb*(-ee)+aa*(y-ff))/det;
     px+=layerLeft*ix;py+=layerLeft*iy;
     for(let x=layerLeft;x<layerRight;x++,px+=ix,py+=iy){
-     const sourceX=px,sourceY=py;
+     let sourceX=px,sourceY=py;
+     if(bodyShift!==0)sourceX-=bodyShiftOffsetAt(sourceY,sy,ground,bodyShift);
+     if(gazeX!==0){
+      gazeOffsetAt(sourceX,sourceY,f.eyes,gazeX,this.motionOffset);
+      sourceX-=this.motionOffset[0];sourceY-=this.motionOffset[1];
+     }
+     if(pawAdjust!==0){
+      pawAdjustOffsetAt(sourceX,sourceY,f,ground,pawAdjust,this.motionOffset);
+      sourceX-=this.motionOffset[0];sourceY-=this.motionOffset[1];
+     }
      if(sourceX<0||sourceY<0||sourceX>=383||sourceY>=383)continue;
      const x0=Math.floor(sourceX),y0=Math.floor(sourceY),fx=sourceX-x0,fy=sourceY-y0,p=(y0*384+x0)*4;
      const w0=(1-fx)*(1-fy)*pixels[p+3]/255,w1=fx*(1-fy)*pixels[p+7]/255;
@@ -485,7 +579,7 @@ export class NaturalDogPainter {
 
    }
   }
-  const headRegion=(headAngle!==0||headLift!==0)?createHeadMotionRegion(target):null;
+  const headRegion=(headAngle!==0||headLift!==0||headRest!==0)?createHeadMotionRegion(target):null;
   if(headRegion){
    // Blink patches use stable face landmarks, then move with the composed head.
    const {left,top,right,bottom}=headRegion.bounds,w=right-left,h=bottom-top;
@@ -503,17 +597,17 @@ export class NaturalDogPainter {
      patch.set(sourcePixels.subarray(from,from+w*4),row*this.headPatch.width*4);
     }
     warpHeadPixelsInBounds(sourcePixels,sourceLeft,sourceTop,sourceWidth,sourceHeight,
-     headRegion,headAngle,headLift,patch,left,top,this.headPatch.width);
+     headRegion,headAngle,headLift,patch,left,top,this.headPatch.width,headRest);
     c.putImageData(this.headPatch,left,top,0,0,w,h);
    }else{
     const full=blink>.001?c.getImageData(0,0,384,384).data:out;
-    warpHeadPixels(full,headRegion,headAngle,headLift,this.earPixels);
+    warpHeadPixels(full,headRegion,headAngle,headLift,this.earPixels,headRest);
     out.set(this.earPixels);
     c.putImageData(this.output,0,0);
    }
   }
   this.lastSignature=signature;
   ctx.drawImage(this.canvas,x-192*scale,foot-372*scale,384*scale,384*scale);
-  this.last={eyes:target.eyes,layers:layers.length,blink,earLeft,earRight,headAngle,headLift};return true;
+  this.last={eyes:target.eyes,layers:layers.length,blink,earLeft,earRight,headAngle,headLift,headRest,bodyShift,pawAdjust,gazeX};return true;
  }
 }

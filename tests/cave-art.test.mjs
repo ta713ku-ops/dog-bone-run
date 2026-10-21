@@ -46,6 +46,27 @@ function renderer(art = null) {
 
 function nextTurn() { return new Promise(resolve => setImmediate(resolve)); }
 
+test('native cave sprite mips preserve hanging anchors and use the original for close views',async()=>{
+  class ImageMock{
+    naturalWidth=1536;naturalHeight=1024;
+    set src(value){this.url=value;if(value.includes('stalactite.png')){this.naturalWidth=1024;this.naturalHeight=1536;}queueMicrotask(()=>this.onload());}
+    async decode(){}
+  }
+  const preparations=[];
+  const documentRef={createElement(){return {width:0,height:0,getContext(){return {drawImage(...args){preparations.push(args);}}}}}};
+  const art=new CaveArt({ImageCtor:ImageMock,documentRef});await art.ready;
+  const hangingCrop=preparations.find(args=>args[0]===art.hangingSheet.image);
+  assert.deepEqual(hangingCrop.slice(1,5),[337,10,338,1515],'the actual portrait source keeps its authored alpha boundary');
+  const r=renderer(art);r.ctx.getTransform=()=>({a:3,b:0,c:0,d:3});
+  art.drawHangingSprite(r,195,20,20,100);
+  const first=r.ctx.images[0];
+  assert.ok(first[0].width>=60&&first[0].height>=300,'mip retains native DPR3 target pixels');
+  assert.deepEqual(first.slice(-4),[185,20,20,100],'top attachment and bottom remain unchanged');
+  art.drawHangingSprite(r,195,20,500,1000);
+  assert.equal(r.ctx.images[1][0],art.hangingSheet.image,'close views retain the authored source');
+  assert.ok(art.stats.spriteMipBytes<=art.stats.spriteMipBudget);
+});
+
 test('cave atlases stay loading until decode finishes, then expose separate sprite and material status', async () => {
   const decodeResolvers = [];
   class DelayedImage {

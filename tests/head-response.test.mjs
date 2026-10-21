@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createHeadMotionRegion, headMotionPoint, rasterWorkBounds, warpHeadPixels } from '../src/dog-natural-motion.js';
+import {
+  bodyShiftOffsetAt, createHeadMotionRegion, gazeOffsetAt, headMotionPoint,
+  pawAdjustOffsetAt, rasterWorkBounds, warpHeadPixels,
+} from '../src/dog-natural-motion.js';
 
 const homeAtlases = JSON.parse(readFileSync(new URL('../art/dog-home-continuity.json', import.meta.url), 'utf8')).atlases;
 const poses = [
@@ -121,4 +124,63 @@ test('head point transforms clamp motion and keep invalid samples finite', () =>
   assert.ok(Number.isFinite(bounded.x) && Number.isFinite(bounded.y));
   assert.deepEqual(bounded, atLimit, 'large inputs clamp to the 0.055rad and 4px limits');
   assert.deepEqual(invalid, { x: eye.x, y: eye.y }, 'nonfinite inputs resolve to a still head');
+});
+
+test('head rest lowers the face rigidly while preserving the independent headLift contract', () => {
+  const pose = poses.find(candidate => candidate.name === 'lying');
+  const region = createHeadMotionRegion(pose);
+  const eye = pose.eyes[0];
+  const atRest = headMotionPoint(eye.x, eye.y, region, 0, 0, 1);
+  const withLift = headMotionPoint(eye.x, eye.y, region, 0, 4, 1);
+
+  assert.ok(Math.abs(atRest.y - eye.y - 14) < 1e-8, 'headRest adds at most fourteen canonical pixels downward');
+  assert.ok(Math.abs(withLift.y - eye.y - 10) < 1e-8, 'headLift still subtracts its existing four-pixel maximum');
+  const unchanged = headMotionPoint(eye.x, eye.y, region, 0, 0, 0);
+  assert.deepEqual(unchanged, { x: eye.x, y: eye.y },
+    'the new channel defaults to the original face coordinates');
+});
+
+test('body shift, gaze and paw adjustment stay inside their small local supports', () => {
+  const pose = poses.find(candidate => candidate.name === 'sitting');
+  const eyeY = (pose.eyes[0].y + pose.eyes[1].y) / 2;
+  const ground = 372;
+  assert.equal(bodyShiftOffsetAt(eyeY + 36, eyeY, ground, 1), 3);
+  assert.equal(bodyShiftOffsetAt(ground - 22, eyeY, ground, 1), 0);
+  assert.ok(bodyShiftOffsetAt(350, eyeY, ground, -1) === 0,
+    'the body shift is zero throughout strict foot rows at or below 350');
+
+  const gaze = [0, 0];
+  gazeOffsetAt(pose.eyes[0].x, pose.eyes[0].y, pose.eyes, 1, gaze);
+  assert.deepEqual(gaze, [1, 0], 'gaze reaches one canonical pixel at the eye center');
+  gazeOffsetAt(pose.eyes[0].x + 16, pose.eyes[0].y, pose.eyes, 1, gaze);
+  assert.deepEqual(gaze, [0, 0], 'gaze returns to zero outside its feathered eye patch');
+  gazeOffsetAt(10, 100, [{ x: 0, y: 100 }, { x: 20, y: 100 }], -1, gaze);
+  assert.deepEqual(gaze, [-1, 0], 'overlapping eye supports still obey the one-pixel contract in either direction');
+
+  const eyeMidX = (pose.eyes[0].x + pose.eyes[1].x) / 2;
+  const eyeHalfSpan = Math.abs(pose.eyes[1].x - pose.eyes[0].x) / 2;
+  const pawX = eyeMidX - eyeHalfSpan * 1.9;
+  const pawY = ground - 26;
+  const paw = [0, 0];
+  pawAdjustOffsetAt(pawX, pawY, pose, ground, 1, paw);
+  assert.deepEqual(paw, [2, -1], 'paw adjustment reaches only two pixels right and one pixel up');
+  pawAdjustOffsetAt(pawX + 17, pawY, pose, ground, 1, paw);
+  assert.deepEqual(paw, [0, 0], 'paw adjustment returns to zero outside its feathered paw patch');
+});
+
+test('head-rest raster warp leaves every foot row byte-identical', () => {
+  const pose = poses.find(candidate => candidate.name === 'lying');
+  const region = createHeadMotionRegion(pose);
+  const source = new Uint8ClampedArray(384 * 384 * 4);
+  const output = new Uint8ClampedArray(source.length);
+  for (let y = 0; y < 384; y++) {
+    for (let x = 0; x < 384; x++) {
+      const pixel = (y * 384 + x) * 4;
+      source.set([x % 251, y % 251, (x + y) % 251, 255], pixel);
+    }
+  }
+  assert.equal(warpHeadPixels(source, region, 0, 0, output, 1), output);
+  for (let y = 350 * 384 * 4; y < source.length; y++) {
+    assert.equal(output[y], source[y], `head rest cannot change row ${Math.floor(y / (384 * 4))}`);
+  }
 });

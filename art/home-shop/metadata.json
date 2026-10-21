@@ -1,0 +1,43 @@
+{
+  "generator": "scripts/pack-home-shop.mjs",
+  "generatorSha256": "3fcafa0ba63f4f27bf5239a56fccec10f617e507084fa6696d6a88a865d3b59e",
+  "sourceGenerator": "built-in image_gen",
+  "assets": {
+    "bed": {
+      "source": "art/home-shop/source/bed-v1.png",
+      "path": "art/home-shop/bed.webp",
+      "sourceSha256": "0b78b156787dde3f5ce9e61d9fded71975fec44ff1d9d0181edff694845d439c",
+      "sha256": "805457adc3b1c7abcf1d049dcefcd5ddfc059b5726b38a85f0cfc6984353fbd6",
+      "width": 640,
+      "height": 166,
+      "hasAlpha": true
+    },
+    "plush": {
+      "source": "art/home-shop/source/plush-v1.png",
+      "path": "art/home-shop/plush.webp",
+      "sourceSha256": "b3fc276a36c92b0e16a0603a92e8924acb28989738fe6366139fa2eba4760cae",
+      "sha256": "b9fbfd08f05c3a2c6cbe84ed7c502ee242c18e82be791b3f3b13ef54d7970d2a",
+      "width": 384,
+      "height": 176,
+      "hasAlpha": true
+    },
+    "rug-oat": {
+      "source": "art/home-shop/source/rug-oat-v1.png",
+      "path": "art/home-shop/rug-oat.webp",
+      "sourceSha256": "de3f5bd2e4814938a803fabff8a543d5ebc28afe748568e22cd654522fada80c",
+      "sha256": "739a896dda6ef0dd1f55383f6cfa350e761fa920cc43f8da65f05e8fb7a9df02",
+      "width": 768,
+      "height": 156,
+      "hasAlpha": true
+    },
+    "rug-sage": {
+      "source": "art/home-shop/source/rug-sage-v1.png",
+      "path": "art/home-shop/rug-sage.webp",
+      "sourceSha256": "42807a72ee2e014d4c9308d50c6e377dea08a5e3292a89b0fd9d3bec93ce858f",
+      "sha256": "80c4d627e9001ce2dc99364921dd0afa3006cb99e693e4d8f5192dc7566a5b43",
+      "width": 768,
+      "height": 148,
+      "hasAlpha": true
+    }
+  }
+}

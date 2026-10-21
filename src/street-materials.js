@@ -1,4 +1,4 @@
-const MATERIAL_ATLAS_URL = new URL('../art/street-v26/materials.webp', import.meta.url).href;
+const MATERIAL_ATLAS_URL = new URL('../art/resolution-v36/street-materials.webp', import.meta.url).href;
 const MATERIAL_KINDS = Object.freeze(['asphalt', 'plaster', 'roof', 'concrete']);
 const CELLS = Object.freeze({
   asphalt: Object.freeze([0, 0]),

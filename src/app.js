@@ -8,6 +8,8 @@ import { SessionLog, FrameMetrics } from './log.js';
 import { RecordStore, RunnerSettingsStore, WalkPreferencesStore } from './storage.js';
 import { getWalkLevel } from './walk-levels.js';
 import { DEVELOPMENT } from './build-mode.js';
+import { homeDogLayout, HOME_ATTENTION_MS } from './home-presence.js';
+import { HomeShopController } from './home-shop-controller.js';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -43,6 +45,8 @@ const log = new SessionLog(), metrics = new FrameMetrics(), renderer = new Rende
 let input, lastUpdate = null, lastFrame = null, pending = false, activation = 0, intent = 'start';
 let discoveryPaused = false, resultAt = null, runOpen = false, lastRunId = null;
 let settingsTrigger = null, parkGuideTrigger = null;
+let homeAssetsReady = !renderer.dogs;
+let homeShop = null;
 const game = new Game({ phase, walkLevel: selectedWalkLevel, seed: nextSeed(), onEvent: event => {
   const { type, activeMs, ...data } = event; log.record(type, data, activeMs);
   if (type === 'collect') {
@@ -64,6 +68,7 @@ const game = new Game({ phase, walkLevel: selectedWalkLevel, seed: nextSeed(), o
     show('falling'); $('announcement').textContent = '穴に落ちました。';
   }
   if (type === 'end') {
+    void homeShop?.settle(event);
     runOpen = false; audio.stop(); input?.clear();
     if (log.run) { log.run.endedAt = new Date().toISOString(); log.run.result = { ...data }; lastRunId = log.run.id; }
     log.record('frame_summary', metrics.summary(), game.timeMs);
@@ -100,6 +105,8 @@ audio.setMusicEnabled(presentationPhase >= 4);
 audio.setVolumes({ music: .35, sfx: .8 });
 void audio.preload();
 renderer.setReducedMotion(false);
+homeShop = new HomeShopController({renderer,game,onLostOwnership:leaveStaleWalk});
+renderer.furnitureArt?.ready?.then(()=>homeShop.ui.paintThumbnails());
 
 
 const reasons = {
@@ -109,6 +116,7 @@ const reasons = {
   discovery: '観察のため一時停止中。', test_panel: '観察のため一時停止中。',
 };
 function show(state) {
+  if (state !== 'ready') homeTouchNoticeUntil = 0;
   $('game').dataset.state = state;
   for (const name of ['ready', 'paused', 'result']) $(name).hidden = name !== state;
   $('hud').hidden = !['running', 'falling', 'paused'].includes(state);
@@ -185,6 +193,10 @@ function pause(reason) {
   $('pause-reason').textContent = reasons[reason] ?? reasons.manual;
   show('paused'); $('pause-title').focus({ preventScroll: true });
 }
+function leaveStaleWalk(){
+  pause('manual');homeShop?.ui.close();audio.stop();input.clear();game.reset();renderer.reset();
+  runOpen=false;log.run=null;show('ready');
+}
 function soundLabels() {
   for (const id of ['ready-sound', 'pause-sound']) { $(id).textContent = audio.enabled ? '音：オン' : '音：オフ'; $(id).setAttribute('aria-pressed', String(audio.enabled)); }
 }
@@ -226,12 +238,30 @@ function closeSettings() {
 }
 async function beginNewRun() {
   audio.stop(); input.clear(); const seed=nextSeed(); renderer.reset(); metrics.reset(); discoveryPaused = false;
-  if (selectedWalkLevel >= 2) {
-    $('ready-record').hidden = false; $('ready-record').textContent = selectedWalkLevel === 4 ? '洞窟を準備しています…' : selectedWalkLevel === 3 ? '山を準備しています…' : '公園を準備しています…';
+  {
+    $('ready-record').hidden = false; $('ready-record').textContent = selectedWalkLevel === 4 ? '洞窟を準備しています…' : selectedWalkLevel === 3 ? '山を準備しています…' : selectedWalkLevel === 2 ? '公園を準備しています…' : 'まちを準備しています…';
     $('start').setAttribute('aria-busy', 'true');
-    try { await renderer.prepareWalk(selectedWalkLevel); } finally { $('start').removeAttribute('aria-busy'); }
+    try {
+      await renderer.ready;
+      await renderer.prepareWalk(selectedWalkLevel);
+      // Upload the selected world's images and compile its first native-size
+      // paint before the timed run. The real Game clock and log remain untouched.
+      try {
+        const preview = new Game({phase, walkLevel:selectedWalkLevel, seed});
+        preview.start(); preview.pause('preparation');
+        renderer.draw(preview,{force:true});
+        // Canvas commands are deferred; a tiny readback completes the initial
+        // texture uploads while the game clock is still stopped.
+        renderer.ctx.getImageData(0,0,1,1);
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      } catch(error) {
+        // Warming is optional; a restricted readback must not lock the start UI.
+        log.record('render_warmup_fallback',{reason:error.message});
+      }
+    } finally { renderer.reset(); $('start').removeAttribute('aria-busy'); }
   }
   game.reset({seed, walkLevel: selectedWalkLevel});
+  if (!(await homeShop.beginWalk(game))) return false;
   log.run = null;
   log.beginRun(environment(), phase >= 2 ? { phase, walkLevel: game.walkLevel, seed: game.seed, goldIds: [...game.goldIds], ruleVersion, courseVersion: getWalkLevel(game.walkLevel).courseVersion, generation: game.courseData?.generation } : { phase: 1 }); runOpen = true; show('ready'); return true;
 }
@@ -242,6 +272,9 @@ function audioPanel(visible) {
 }
 async function activate(nextIntent = intent) {
   if (pending) return;
+  if(nextIntent==='resume'&&homeShop&&!homeShop.unrewardedWalk&&(!homeShop.owner||!homeShop.currentRunId||homeShop.state?.roomShop.activeWalk?.runId!==homeShop.currentRunId)){
+    leaveStaleWalk();homeShop.ui.message('別のタブで切り替わったため、おさんぽを終了しました。ホームからもう一度出発できます。',true);return;
+  }
   intent = nextIntent;
   if (rotated()) {
     if (game.state === 'paused') $('pause-reason').textContent = reasons.rotation;
@@ -493,7 +526,7 @@ if (testMode) {
     $('log-status').textContent = log.incomplete ? 'ログ不完全：上限に達しました。このセッションは合格判定に使わないでください。' : `${log.sessions.length}セッション・${log.events.length}イベントを書き出しました。`;
   });
   // Explicit testing surface only. No autoplay or simulation controls in normal mode.
-  window.__dogBoneTest = { game, log, audio, renderer, metrics, get records() { return records; }, settingsStore, walkPreferences, selectWalkLevel, pause, syncTime, get pending() { return pending; } };
+  window.__dogBoneTest = { game, log, audio, renderer, homeShop, metrics, get records() { return records; }, settingsStore, walkPreferences, selectWalkLevel, pause, syncTime, get pending() { return pending; } };
   // On-device measurement is opt-in and removed from the distribution build.
   const diagnostic = {active:false,rows:[],conditions:null,last:null,start:0,duration:0};
   const summarise = values => {
@@ -561,20 +594,39 @@ function frame(now) {
   if (advancing) { syncTime(now); updateHud(); }
   if (game.state === 'running') audio.updateMusic(game.timeMs);
   lastFrame = advancing && ['running', 'falling'].includes(game.state) ? now : null;
-  renderer.setMenuPaused?.(document.hidden || !$('settings-panel').hidden || !$('audio-panel').hidden || !$('park-guide').hidden || !$('walk-picker').hidden);
+  renderer.setMenuPaused?.(document.hidden || homeShop?.modalOpen || !$('settings-panel').hidden || !$('audio-panel').hidden || !$('park-guide').hidden || !$('walk-picker').hidden);
   renderer.draw(game);
   updateHomeControls();
   if (testMode && log.incomplete) $('log-status').textContent = 'ログ不完全：20,000イベントの上限に達しました。';
   requestAnimationFrame(frame);
 }
 let homeGestureWasBusy=false;
+let homeTouchSize = '';
+let homeTouchNoticed = false;
+let homeTouchNoticeUntil = 0;
 function updateHomeControls() {
-  const unavailable=!renderer.dogs?.stats.ready||!renderer.dogs?.stats.animationReady;
+  const unavailable=!homeAssetsReady||!renderer.dogs?.stats.ready||!renderer.dogs?.stats.animationReady;
   const animationMissing=renderer.dogs?.stats.ready&&!renderer.dogs?.stats.animationReady;
   const status=$('home-dog-status'),kind=animationMissing?'error':'gesture';
   if(status.dataset.kind!==kind){status.dataset.kind=kind;status.classList.toggle('sr-only',!animationMissing);}
   if(animationMissing&&status.textContent!=='しぐさの画像を読み込めませんでした。おさんぽは遊べます。') status.textContent='しぐさの画像を読み込めませんでした。おさんぽは遊べます。';
   const busy=renderer.homeBusy;
+  const touch = $('home-touch');
+  if (touch.disabled !== (unavailable || busy)) touch.disabled = unavailable || busy;
+  const responding = Boolean(renderer.homeAttention || renderer.homeInteraction?.action === 'greet' && homeTouchNoticed);
+  const staticNotice = renderer.reducedMotion && renderer.menuElapsedMs < homeTouchNoticeUntil;
+  if (touch.getAttribute('aria-busy') !== String(responding)) touch.setAttribute('aria-busy', String(responding));
+  const sizeKey = `${renderer.width}:${renderer.height}`;
+  if (sizeKey !== homeTouchSize) {
+    const { touch: bounds } = homeDogLayout(renderer.width, renderer.height);
+    for (const [key, value] of Object.entries(bounds)) touch.style[key] = `${value}px`;
+    homeTouchSize = sizeKey;
+  }
+  const note = $('home-touch-note');
+  const noteText = staticNotice ? '声をかけました' : responding ? 'こっちを見てくれた' : 'タップして、声をかけてみて';
+  if (note.textContent !== noteText) note.textContent = noteText;
+  const hideNote = unavailable || homeTouchNoticed && !responding && !staticNotice;
+  if (note.hidden !== hideNote) note.hidden = hideNote;
   for (const id of ['home-sit','home-lie','home-greet']) {
     const button=$(id),disabled=unavailable||busy;
     if(button.disabled!==disabled) button.disabled=disabled;
@@ -585,6 +637,14 @@ function updateHomeControls() {
   if(homeGestureWasBusy&&!busy) $('home-dog-status').textContent='';
   homeGestureWasBusy=busy;
 }
+action('home-touch', () => {
+  if (game.state !== 'ready' || renderer.menuPaused || !renderer.homeRespond()) return;
+  homeTouchNoticed = true;
+  homeTouchNoticeUntil = renderer.menuElapsedMs + HOME_ATTENTION_MS;
+  $('home-dog-status').textContent = renderer.reducedMotion ? '声をかけました。動きを控える設定はオンです。' : '声に気づいて、耳と顔で応えてくれました。';
+  log.record('home_attention', {}, 0);
+  updateHomeControls();
+});
 for(const actionName of ['sit','lie','greet']) action(`home-${actionName}`,()=>{
   if(game.state!=='ready'||!renderer.homeGesture(actionName)) return;
   $('home-dog-status').textContent=actionName==='sit'?'おすわり。':actionName==='lie'?'ふせ。':'こっちを見て。';
@@ -617,6 +677,7 @@ if (renderer.dogs) {
   $('start').disabled = true; $('start').setAttribute('aria-busy', 'true');
   $('ready-record').hidden=false; $('ready-record').dataset.kind='loading'; $('ready-record').textContent = 'おさんぽを準備しています…';
   renderer.ready.then(() => {
+    homeAssetsReady = true;
     $('start').disabled = false; $('start').removeAttribute('aria-busy'); refreshRecord();
     if (!renderer.dogs.stats.animationReady) $('home-dog-status').textContent='しぐさの画像を読み込めませんでした。おさんぽは遊べます。';
   }).catch(error => {

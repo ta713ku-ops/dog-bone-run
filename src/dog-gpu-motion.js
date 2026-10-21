@@ -12,6 +12,7 @@ const TEXTURE_BUDGET_BYTES = 8 * 1024 * 1024;
 const BORDER = 1;
 const HEAD_ANGLE_LIMIT = 0.055;
 const HEAD_LIFT_LIMIT = 4;
+const HEAD_REST_DROP_LIMIT = 14;
 
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 const finiteOr = (value, fallback = 0) => Number.isFinite(value) ? value : fallback;
@@ -78,6 +79,36 @@ vec2 inverseFace(
   );
 }
 
+float bodyShiftOffset(float y, float eyeY, float ground, float amount) {
+  float start = eyeY + 36.0;
+  float end = ground - 22.0;
+  if (amount == 0.0 || end <= start) return 0.0;
+  return amount * 3.0 * (1.0 - sm((y - start) / (end - start)));
+}
+
+float gazeEyeWeight(vec2 p, vec2 eye) {
+  vec2 delta = abs(p - eye);
+  float horizontal = 1.0 - sm((delta.x - 12.0) / 4.0);
+  float vertical = 1.0 - sm((delta.y - 10.0) / 4.0);
+  return horizontal * vertical;
+}
+
+vec2 gazeOffset(vec2 p, vec2 sourceA, vec2 sourceB, float amount) {
+  if (abs(amount) < 0.00000001) return vec2(0.0);
+  return vec2(amount * max(gazeEyeWeight(p, sourceA), gazeEyeWeight(p, sourceB)), 0.0);
+}
+
+vec2 pawAdjustOffset(vec2 p, vec2 sourceA, vec2 sourceB, float ground, float amount) {
+  if (amount < 0.00000001) return vec2(0.0);
+  float eyeMidX = (sourceA.x + sourceB.x) * 0.5;
+  float eyeHalfSpan = abs(sourceB.x - sourceA.x) * 0.5;
+  vec2 center = vec2(eyeMidX - eyeHalfSpan * 1.9, ground - 26.0);
+  float horizontal = 1.0 - sm((abs(p.x - center.x) - 11.0) / 6.0);
+  float vertical = 1.0 - sm((abs(p.y - center.y) - 10.0) / 7.0);
+  float local = horizontal * vertical;
+  return vec2(amount * 2.0 * local, -amount * local);
+}
+
 vec2 earOffset(
   vec2 p, vec4 bounds, vec2 fade, float side, float amount
 ) {
@@ -119,6 +150,10 @@ uniform float u_earRightAmount${i};
     body.push(`
   vec2 source${i} = inverseFace(position, u_sourceA${i}, u_sourceB${i}, u_targetA, u_targetB,
     u_ground${i}, u_align${i}, u_breath, u_attention, u_postureLift);
+  source${i}.x -= bodyShiftOffset(source${i}.y, (u_sourceA${i}.y + u_sourceB${i}.y) * 0.5,
+    u_ground${i}, u_bodyShift);
+  source${i} -= gazeOffset(source${i}, u_sourceA${i}, u_sourceB${i}, u_gazeX);
+  source${i} -= pawAdjustOffset(source${i}, u_sourceA${i}, u_sourceB${i}, u_ground${i}, u_pawAdjust);
   source${i} -= earOffset(source${i}, u_earLeftBounds${i}, u_earLeftFade${i},
     u_earLeftSide${i}, u_earLeftAmount${i});
   source${i} -= earOffset(source${i}, u_earRightBounds${i}, u_earRightFade${i},
@@ -142,6 +177,9 @@ uniform vec2 u_targetB;
 uniform float u_breath;
 uniform float u_attention;
 uniform float u_postureLift;
+uniform float u_bodyShift;
+uniform float u_gazeX;
+uniform float u_pawAdjust;
 ${declarations.join('\n')}
 ${MOTION_GLSL}
 void main() {
@@ -162,6 +200,7 @@ uniform float u_blink;
 uniform float u_attention;
 uniform float u_headAngle;
 uniform float u_headLift;
+uniform float u_headRest;
 uniform vec3 u_eye0;
 uniform vec3 u_eye1;
 uniform vec4 u_headShape;
@@ -196,6 +235,7 @@ vec2 inverseHead(vec2 target) {
     vec2 rotated = vec2(
       u_headPivot.x + cosine * delta.x - sine * delta.y,
       u_headPivot.y + sine * delta.x + cosine * delta.y - u_headLift
+        + u_headRest * ${HEAD_REST_DROP_LIMIT.toFixed(1)}
     );
     source = target - (rotated - source) * weight;
   }
@@ -310,7 +350,8 @@ function makeProgram(gl, fragmentSource, uniformNames) {
 }
 
 function compositeUniformNames(layerCount) {
-  const names = ['u_resolution', 'u_targetA', 'u_targetB', 'u_breath', 'u_attention', 'u_postureLift'];
+  const names = ['u_resolution', 'u_targetA', 'u_targetB', 'u_breath', 'u_attention', 'u_postureLift',
+    'u_bodyShift', 'u_gazeX', 'u_pawAdjust'];
   for (let i = 0; i < layerCount; i++) {
     names.push(`u_texture${i}`, `u_weight${i}`, `u_rect${i}`, `u_pixels${i}`,
       `u_sourceA${i}`, `u_sourceB${i}`, `u_ground${i}`, `u_align${i}`,
@@ -443,7 +484,7 @@ export class GpuDogPainter {
   }
 
   _createOutputPass() {
-    const names = ['u_source', 'u_resolution', 'u_blink', 'u_attention', 'u_headAngle', 'u_headLift',
+    const names = ['u_source', 'u_resolution', 'u_blink', 'u_attention', 'u_headAngle', 'u_headLift', 'u_headRest',
       'u_eye0', 'u_eye1', 'u_headShape', 'u_headFade', 'u_headFeatherX', 'u_headPivot'];
     this.outputProgram = makeProgram(this.gl, OUTPUT_SHADER, names);
     this.quadBuffer = this.gl.createBuffer();
@@ -721,9 +762,16 @@ export class GpuDogPainter {
     const earRight = clamp(finiteOr(motion.earRight), -1, 1);
     const headAngle = clamp(finiteOr(motion.headAngle), -HEAD_ANGLE_LIMIT, HEAD_ANGLE_LIMIT);
     const headLift = clamp(finiteOr(motion.headLift), 0, HEAD_LIFT_LIMIT);
+    const headRest = clamp(finiteOr(motion.headRest), 0, 1);
+    const bodyShift = clamp(finiteOr(motion.bodyShift), -1, 1);
+    const gazeX = clamp(finiteOr(motion.gazeX), -1, 1);
+    const stableSitPose = motion.prealigned === true && activeLayers.length === 1
+      && activeLayers[0].atlas === 'sitdown' && activeLayers[0].index === 47;
+    const pawAdjust = stableSitPose ? clamp(finiteOr(motion.pawAdjust), 0, 1) : 0;
     const postureLift=motion.prealigned&&this.posturePathEnabled?this.posturePath.sample(activeLayers):0;
     const correctedTarget={...target,eyes:target.eyes.map(eye=>({...eye,y:eye.y-postureLift}))};
-    const headRegion = headAngle !== 0 || headLift !== 0 ? createHeadMotionRegion(correctedTarget) : null;
+    const headRegion = headAngle !== 0 || headLift !== 0 || headRest !== 0
+      ? createHeadMotionRegion(correctedTarget) : null;
     let program;
     try {
       program = this._getCompositeProgram(resolved.length);
@@ -745,6 +793,9 @@ export class GpuDogPainter {
     gl.uniform1f(program.uniforms.u_breath, breath);
     gl.uniform1f(program.uniforms.u_attention, attention);
     gl.uniform1f(program.uniforms.u_postureLift, postureLift);
+    gl.uniform1f(program.uniforms.u_bodyShift, bodyShift);
+    gl.uniform1f(program.uniforms.u_gazeX, gazeX);
+    gl.uniform1f(program.uniforms.u_pawAdjust, pawAdjust);
     for (let index = 0; index < resolved.length; index++) {
       const layer = resolved[index];
       const entry = this.textures.get(layer.frameKey);
@@ -777,6 +828,7 @@ export class GpuDogPainter {
     gl.uniform1f(output.uniforms.u_attention, attention);
     gl.uniform1f(output.uniforms.u_headAngle, headAngle);
     gl.uniform1f(output.uniforms.u_headLift, headLift);
+    gl.uniform1f(output.uniforms.u_headRest, headRest);
     gl.uniform3f(output.uniforms.u_eye0, correctedTarget.eyes[0].x, correctedTarget.eyes[0].y, target.eyes[0].ry);
     gl.uniform3f(output.uniforms.u_eye1, correctedTarget.eyes[1].x, correctedTarget.eyes[1].y, target.eyes[1].ry);
     if (headRegion) {
@@ -801,7 +853,8 @@ export class GpuDogPainter {
     }
     this.stats.drawCount++;
     this.stats.textureBytes = this.textureBytes;
-    this.last = { eyes: correctedTarget.eyes, layers: resolved.length, blink, earLeft, earRight, headAngle, headLift,postureLift };
+    this.last = { eyes: correctedTarget.eyes, layers: resolved.length, blink, earLeft, earRight,
+      headAngle, headLift, headRest, bodyShift, pawAdjust, gazeX, postureLift };
     return true;
   }
 

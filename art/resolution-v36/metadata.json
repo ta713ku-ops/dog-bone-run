@@ -1,0 +1,101 @@
+{
+  "generator": "scripts/build-resolution-scenery.py",
+  "generatorSha256": "dbc8027ed253d8fced8bfb0321a832d7737cb9f5b1a769fddc41f57ba41525a2",
+  "layoutInput": {
+    "path": "art/street-v26/metadata.json",
+    "sha256": "1aff1c6b5d671faea2c5c6a9a61580e3e45d4943ef56ae5c367e4c9ca4bfdc3d"
+  },
+  "note": "Original sources repacked; source crops and normalized roots unchanged. No generated replacement artwork.",
+  "assets": {
+    "foliage": {
+      "path": "art/resolution-v36/foliage.webp",
+      "source": "art/street-v26/source/foliage.png",
+      "sha256": "688f5dd82a8740180b28672efd138228b0791689e73a012d4cf6bf25f9f89769",
+      "sourceSha256": "b5b045a8fbdfe6c72bc38d1e10ef0bf62e886a22a7e9cfdf74a3bcb7ae4ae998",
+      "width": 1536,
+      "height": 768,
+      "bytes": 309624,
+      "decodedBytes": 4718592,
+      "layoutScale": 3,
+      "referenceWidth": 512,
+      "referenceHeight": 256
+    },
+    "toys": {
+      "path": "art/resolution-v36/toys.webp",
+      "source": "art/street-v26/source/toys.png",
+      "sha256": "6ce1735cf8ebeffda275ad0e1c034a9ed2713c7db82aa5bbbfc287932bea6e97",
+      "sourceSha256": "5300ecaf8dd82657809da9ca15e0b751a1c39e8d403ada36b83eb530bdd9a3f6",
+      "width": 1536,
+      "height": 768,
+      "bytes": 95004,
+      "decodedBytes": 4718592,
+      "layoutScale": 3,
+      "referenceWidth": 512,
+      "referenceHeight": 256
+    },
+    "street-materials": {
+      "path": "art/resolution-v36/street-materials.webp",
+      "source": "art/street-v26/source/materials.png",
+      "sha256": "af0e217eb99e90d23f664937c9d9ef6f61e30fef63927261f7ff4877126ff801",
+      "sourceSha256": "bbefbe0fcf3bd7380a591f3dbc4afd7f3f80e2dcb5873db74bfd06c13c8b7e25",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 505122,
+      "decodedBytes": 4194304
+    },
+    "park-path": {
+      "path": "art/resolution-v36/park-path.webp",
+      "source": "art/park-level2/source/path-material.png",
+      "sha256": "a1453ba8f85456bc8447a87829e42cd675575de25f87c5cd91c1fd05c5dfa684",
+      "sourceSha256": "8d1095fcfc9e5c0861acd5ffbf368caa9a5a8b9e826e2c951156e2b1486d1fb7",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 544910,
+      "decodedBytes": 4194304
+    },
+    "park-grass": {
+      "path": "art/resolution-v36/park-grass.webp",
+      "source": "art/park-level2/source/grass-original.png",
+      "sha256": "25e8b6178dc46e2a4de03f75ef85605a4a74d086b86fe42b119f354fe78fad8a",
+      "sourceSha256": "d01fa56bfbe143f906aac13f6f1fee998845e52d859175643240b21af7c4d317",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 669070,
+      "decodedBytes": 4194304
+    },
+    "street-obstacles": {
+      "path": "art/resolution-v36/street-obstacles.webp",
+      "source": "art/street-v25/source/obstacles.png",
+      "sha256": "a384c1b309455aa25d8829c07f06fda30c321f78fd8985e1c9b2bb2873f80716",
+      "sourceSha256": "69237a539b92a83b856841c0d586c30c08275a004a180fe6e2c69a8207d24885",
+      "width": 1800,
+      "height": 600,
+      "bytes": 205062,
+      "decodedBytes": 4320000
+    },
+    "facades": {
+      "path": "art/resolution-v36/facades.webp",
+      "source": "art/street-v26/source/facades.png",
+      "sha256": "231b0b92199723d5b806aeb7db2c63896c81286c6c87dcf1078accf022dd0b84",
+      "sourceSha256": "6f10265aba4e98f3040193f199742f75895177869b22546dd7a8b4169737b5d8",
+      "width": 1238,
+      "height": 1238,
+      "bytes": 419382,
+      "decodedBytes": 6130576,
+      "referenceWidth": 1024,
+      "referenceHeight": 1024
+    },
+    "variants": {
+      "path": "art/resolution-v36/variants.webp",
+      "source": "art/street-v26/source/variants.png",
+      "sha256": "152a5da4b1b0d31dc86e7263ea608f32a7efb0dde4dc44e935ac5f64766cfc68",
+      "sourceSha256": "2a9536d4e98a963ff2a21591fe046ca634aba0e93c85d7ec49edaa7b5d52b522",
+      "width": 1238,
+      "height": 1238,
+      "bytes": 527084,
+      "decodedBytes": 6130576,
+      "referenceWidth": 1024,
+      "referenceHeight": 1024
+    }
+  }
+}
