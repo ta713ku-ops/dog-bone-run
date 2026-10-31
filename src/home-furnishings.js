@@ -247,14 +247,14 @@ function drawNativeBed(ctx, box, environment = 'indoor') {
   ctx.restore();
 }
 
-function drawBall(ctx, box, environment = 'indoor') {
+function drawBall(ctx, box, environment = 'indoor', { contactShadow = true } = {}) {
   const { x, y, width, height } = box;
   const diameter = Math.min(width * .90, height * .94);
   const radius = diameter / 2;
   const cx = x + width * .5;
   const cy = box.bottom - radius * .97;
   ctx.save();
-  drawContactShadow(ctx, box, environment, .72, .12, { alignToBottom: true });
+  if (contactShadow) drawContactShadow(ctx, box, environment, .72, .12, { alignToBottom: true });
   const fill = radial(ctx, cx - radius * .34, cy - radius * .42, radius * .06, cx, cy, radius * 1.24, [
     [0, '#f4f0e4'], [.38, '#dce0cd'], [.76, '#b5bea1'], [1, '#8f9b82'],
   ], '#c7ceb8');
@@ -281,13 +281,13 @@ function drawBall(ctx, box, environment = 'indoor') {
   ctx.restore();
 }
 
-function drawNativePlush(ctx, box, environment = 'indoor') {
+function drawNativePlush(ctx, box, environment = 'indoor', { contactShadow = true } = {}) {
   const { x, y, width, height } = box;
   const cx = x + width / 2;
   const cy = y + height / 2;
   const unit = Math.min(width, height);
   ctx.save();
-  drawContactShadow(ctx, box, environment, .70, .11);
+  if (contactShadow) drawContactShadow(ctx, box, environment, .70, .11);
   ellipse(ctx, cx - width * .22, cy - height * .18, width * .12, height * .26,
     linear(ctx, x, cy - height * .4, x + width, cy + height * .1, [[0, '#f1d6b2'], [1, '#9b6745']], '#bd8961'));
   ellipse(ctx, cx + width * .22, cy - height * .18, width * .12, height * .26,
@@ -314,7 +314,7 @@ function drawNativePlush(ctx, box, environment = 'indoor') {
   ctx.restore();
 }
 
-function drawBraidedRope(ctx, box, environment = 'indoor') {
+function drawBraidedRope(ctx, box, environment = 'indoor', { contactShadow = true } = {}) {
   const { x, y, width, height } = box;
   const unit = Math.min(width, height);
   const knotRadius = Math.min(unit * .12, height * .20);
@@ -333,7 +333,7 @@ function drawBraidedRope(ctx, box, environment = 'indoor') {
   ctx.save();
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  drawContactShadow(ctx, rect(x + width * .08, box.bottom - knotRadius * 2.1, width * .84, knotRadius * 2.1),
+  if (contactShadow) drawContactShadow(ctx, rect(x + width * .08, box.bottom - knotRadius * 2.1, width * .84, knotRadius * 2.1),
     environment, .96, .18, { alignToBottom: true });
   ctx.beginPath();
   points.forEach((point, index) => index ? ctx.lineTo(point.x, point.y) : ctx.moveTo(point.x, point.y));
@@ -574,7 +574,7 @@ function drawAsset(ctx, image, box, {
   }
 }
 
-function drawFurnitureItem(ctx, itemId, box, images = {}, environment = 'indoor') {
+function drawFurnitureItemBase(ctx, itemId, box, images = {}, environment = 'indoor', { contactShadow = true } = {}) {
   if (!ctx || !box || !ITEM_SLOT[itemId]) return false;
   if (itemId === 'rug-oat' || itemId === 'rug-sage') {
     if (!drawAsset(ctx, images[itemId], box, {
@@ -590,20 +590,20 @@ function drawFurnitureItem(ctx, itemId, box, images = {}, environment = 'indoor'
   }
   if (itemId === 'starterBall') {
     if (!drawAsset(ctx, images.starterBall, box, {
-      verticalAlign: 'bottom', environment, shadowWidth: .72, shadowHeight: .12, shadowAtBottom: true,
-    })) drawBall(ctx, box, environment);
+      verticalAlign: 'bottom', environment, contactShadow, shadowWidth: .72, shadowHeight: .12, shadowAtBottom: true,
+    })) drawBall(ctx, box, environment, { contactShadow });
     return true;
   }
   if (itemId === 'plush') {
     if (!drawAsset(ctx, images.plush, box, {
-      verticalAlign: 'bottom', environment, shadowWidth: .76, shadowHeight: .12, shadowAtBottom: true,
-    })) drawNativePlush(ctx, box, environment);
+      verticalAlign: 'bottom', environment, contactShadow, shadowWidth: .76, shadowHeight: .12, shadowAtBottom: true,
+    })) drawNativePlush(ctx, box, environment, { contactShadow });
     return true;
   }
   if (itemId === 'rope') {
     if (!drawAsset(ctx, images.rope, box, {
-      verticalAlign: 'bottom', environment, shadowWidth: .92, shadowHeight: .18, shadowAtBottom: true,
-    })) drawBraidedRope(ctx, box, environment);
+      verticalAlign: 'bottom', environment, contactShadow, shadowWidth: .92, shadowHeight: .18, shadowAtBottom: true,
+    })) drawBraidedRope(ctx, box, environment, { contactShadow });
     return true;
   }
   if (itemId === 'decor-plant') {
@@ -621,12 +621,24 @@ function drawFurnitureItem(ctx, itemId, box, images = {}, environment = 'indoor'
   return false;
 }
 
+function drawFurnitureItem(ctx, itemId, box, images = {}, environment = 'indoor', rotation = 0, options = {}) {
+  const angle = Number.isFinite(rotation) ? rotation : 0;
+  if (Math.abs(angle) < 1e-8) return drawFurnitureItemBase(ctx, itemId, box, images, environment, options);
+  ctx.save();
+  ctx.translate(box.centerX, box.centerY);
+  ctx.rotate(angle);
+  ctx.translate(-box.centerX, -box.centerY);
+  const drawn = drawFurnitureItemBase(ctx, itemId, box, images, environment, options);
+  ctx.restore();
+  return drawn;
+}
+
 function outputBox(itemId, slot, geometry) {
   return { itemId, slot, ...geometry };
 }
 
 /** Paints items into their room slots. The caller must draw this before the dog. */
-export function drawHomeFurniture(ctx, width, height, equipped, { images = {}, preview = false, environment = 'indoor' } = {}) {
+export function drawHomeFurniture(ctx, width, height, equipped, { images = {}, preview = false, environment = 'indoor', skipToy = false } = {}) {
   void preview; // Preview uses the exact same art and geometry as committed furniture.
   const layout = homeFurnitureLayout(width, height);
   const result = { rug: null, bed: null, decor: null, toy: null };
@@ -635,10 +647,20 @@ export function drawHomeFurniture(ctx, width, height, equipped, { images = {}, p
   for (const slot of ['rug', 'bed', 'decor', 'toy']) {
     const itemId = equipped[slot];
     if (typeof itemId !== 'string' || !SLOT_IDS[slot].has(itemId)) continue;
+    if (slot === 'toy' && skipToy) {
+      result[slot] = outputBox(itemId, slot, layout.slots[slot]);
+      continue;
+    }
     if (!drawFurnitureItem(ctx, itemId, layout.slots[slot], images, environment)) continue;
     result[slot] = outputBox(itemId, slot, layout.slots[slot]);
   }
   return result;
+}
+
+/** Draw an equipped item at a sampled play position using the same art and shadow painter as the room slot. */
+export function drawHomeFurnitureItem(ctx, itemId, box, { images = {}, environment = 'indoor', rotation = 0, attached = false } = {}) {
+  if (!ctx || !box || !ITEM_SLOT[itemId]) return false;
+  return drawFurnitureItem(ctx, itemId, box, images, environment, rotation, { contactShadow: !attached });
 }
 
 /** Thumbnail previews call the same item painter used for the room. */
@@ -717,27 +739,35 @@ function loadArt(ImageClass, itemId, url, timeoutMs) {
 
 /** Optional raster art loader. Any failed, transparent, unreadable or absent asset uses a native painter. */
 export class HomeFurnitureArt {
-  constructor({ ImageClass = globalThis.Image, timeoutMs = DEFAULT_ART_TIMEOUT_MS } = {}) {
+  constructor({ ImageClass = globalThis.Image, timeoutMs = DEFAULT_ART_TIMEOUT_MS, eager = true } = {}) {
     this.images = Object.create(null);
-    this._states = Object.fromEntries(Object.keys(ASSET_URLS).map(key=>[key,'pending']));
-    const boundedTimeout = Number.isFinite(timeoutMs) ? Math.max(0, Math.min(30_000, timeoutMs)) : DEFAULT_ART_TIMEOUT_MS;
-    this.ready = Promise.all(Object.entries(ASSET_URLS).map(([itemId, url]) =>
-      loadArt(ImageClass, itemId, url, boundedTimeout)))
-      .then(results => {
-        for (const result of results) {
-          this._states[result.itemId] = result.state;
-          if (result.image) this.images[result.itemId] = result.image;
-        }
-        return this;
-      });
+    this._states = Object.fromEntries(Object.keys(ASSET_URLS).map(key=>[key,'idle']));
+    this.ImageClass=ImageClass;
+    this.timeoutMs=Number.isFinite(timeoutMs)?Math.max(0,Math.min(30000,timeoutMs)):DEFAULT_ART_TIMEOUT_MS;
+    this.requests=new Map();
+    this.ready=eager?this.prepareAll():Promise.resolve(this);
   }
+  prepare(equipped={}) {
+    const ids=Array.isArray(equipped)?equipped:Object.values(equipped??{});
+    const requests=ids.filter(id=>Object.hasOwn(ASSET_URLS,id)).map(itemId=>{
+      if(!this.requests.has(itemId)) {
+        this._states[itemId]='pending';
+        this.requests.set(itemId,loadArt(this.ImageClass,itemId,ASSET_URLS[itemId],this.timeoutMs).then(result=>{
+          this._states[itemId]=result.state;if(result.image)this.images[itemId]=result.image;
+        }));
+      }
+      return this.requests.get(itemId);
+    });
+    return Promise.all(requests).then(()=>this);
+  }
+  prepareAll() {return this.prepare(Object.keys(ASSET_URLS));}
 
   get stats() {
     const states = Object.values(this._states);
     return Object.freeze({
       pending: states.filter(state => state === 'pending').length,
       ready: states.filter(state => state === 'ready').length,
-      fallback: states.filter(state => state !== 'pending' && state !== 'ready').length,
+      fallback: states.filter(state => state !== 'pending' && state !== 'ready' && state !== 'idle').length,
       states: Object.freeze({ ...this._states }),
     });
   }

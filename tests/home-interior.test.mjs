@@ -99,6 +99,22 @@ function fakeImageClass(modeForUrl = () => 'ready') {
   };
 }
 
+test('lazy room loading fetches only the visible room until the shop requests its catalog', async()=>{
+  const Base=fakeImageClass(),requested=[];
+  class CountedImage extends Base {
+    set src(value){requested.push(value);super.src=value;}
+    get src(){return super.src;}
+  }
+  const backdrop=new HomeInteriorBackdrop({ImageClass:CountedImage,eager:false});
+  await backdrop.ready;assert.equal(requested.length,0);
+  assert.equal(backdrop.getAssetState('room-white',390,844).state,'loading');
+  assert.equal(requested.length,1);
+  backdrop.getAssetState('room-white',390,844);assert.equal(requested.length,1,'repeated frames never start duplicate requests');
+  await backdrop.prepareAll();
+  assert.equal(requested.length,10);
+  assert.equal(backdrop.getAssetState('room-garden',390,844).state,'ready');
+});
+
 test('white start is an empty room, rejects bad dimensions, and caps its one cache at DPR 2', async () => {
   const created = [];
   const backdrop = new HomeInteriorBackdrop({ ImageClass: null, createCanvas: fakeCanvasFactory(created) });

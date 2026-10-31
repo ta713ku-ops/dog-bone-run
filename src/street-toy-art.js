@@ -56,17 +56,19 @@ function loadImage(url, ImageCtor, timeoutMs) {
 /** Optional toy atlas. Failed or pending art never gates a run. */
 export class StreetToyArt {
   constructor({ ImageCtor = globalThis.Image, timeoutMs = DEFAULT_TIMEOUT_MS,
-    atlasUrl = TOY_ATLAS_URL, sourceSize = SOURCE_SIZE, cells = DEFAULT_CELLS } = {}) {
+    atlasUrl = TOY_ATLAS_URL, sourceSize = SOURCE_SIZE, cells = DEFAULT_CELLS, lazy = false } = {}) {
     this.image = null;
     this.sourceSize = Object.freeze({ width: sourceSize.width, height: sourceSize.height });
     this.cells = cells;
     this.status = Object.fromEntries(Object.keys(cells).map(kind => [kind, 'pending']));
-    this.ready = loadImage(atlasUrl, ImageCtor, timeoutMs).then(image => {
+    this.load=()=>this._ready??=loadImage(atlasUrl, ImageCtor, timeoutMs).then(image => {
       this.image = image;
       for (const kind of Object.keys(cells)) this.status[kind] = image ? 'ready' : 'fallback';
       return this;
     });
+    if(!lazy)this.load();
   }
+  get ready(){return this.load();}
 
   get atlasReady() { return validImage(this.image); }
   get stats() { return Object.freeze({ ...this.status }); }
@@ -111,7 +113,7 @@ export class StreetToyArt {
   }
 }
 
-export const STREET_TOY_ART = new StreetToyArt();
+export const STREET_TOY_ART = new StreetToyArt({lazy:true,timeoutMs:10000});
 
 export function drawToy(ctx, x, y, width, kind = 'normal') {
   return STREET_TOY_ART.drawToy(ctx, x, y, width, kind);

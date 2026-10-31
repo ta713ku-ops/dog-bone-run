@@ -1,0 +1,55 @@
+.journey-tool-dialog {
+  width: min(680px, calc(100vw - 24px)); max-height: calc(100dvh - 32px);
+  padding: 24px; overflow: auto; border: 1px solid #d6c4ad; border-radius: 24px;
+  color: #513c2b; background: #fff9f0; box-shadow: 0 16px 64px #32271e38;
+  font: 14px/1.65 -apple-system, BlinkMacSystemFont, 'Hiragino Sans', sans-serif;
+}
+.journey-tool-dialog::backdrop { background: #32271e70; }
+.journey-tool-dialog h2 { margin: 0 0 12px; font-size: 24px; line-height: 1.4; }
+.journey-tool-dialog > p { margin: 12px 0; }
+.journey-tool-dialog > .button { min-height: 46px; margin: 8px 6px 0 0; font-size: 14px; }
+.journey-photo-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin: 18px 0; }
+.journey-photo-grid img { display: block; width: 100%; max-height: 300px; object-fit: contain; background: #e9e0d2; border-radius: 12px; }
+.journey-photo-grid article { min-width: 0; }
+.journey-photo-grid p { font-size: 12px; }
+.journey-photo-grid button { min-height: 44px; padding: 8px 12px; font-size: 14px; }
+.journey-photo-preview { width: min(420px,calc(100vw - 24px)); }
+.journey-photo-preview img { display: block; margin: auto; max-height: 42dvh; max-width: 100%; object-fit: contain; border-radius: 12px; }
+.journey-photo-actions { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.journey-photo-actions button { width:100%; min-height:44px; padding:8px; font-size:14px; }
+.journey-photo-actions button:last-child { grid-column:1/-1; }
+.journey-tool-close { float:right; position:sticky; top:0; z-index:1; min-height:44px; padding:8px 12px; margin:0 0 8px 12px; border:1px solid #c8bba7; border-radius:12px; color:#513c2b; background:#fff9f0; font-size:14px; }
+.journey-observation {
+  position: fixed; inset: auto 0 max(10px, env(safe-area-inset-bottom));
+  width: min(500px,calc(100vw - 20px)); max-height: 48dvh; margin: auto; padding: 18px;
+  overflow: auto; border: 1px solid #d6c4ad; border-radius: 22px;
+  background: #fff9f0f7; color: #513c2b; box-shadow: 0 8px 32px #32271e30;
+  font: 14px/1.55 -apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;
+}
+.journey-observation::backdrop { background: #30261e10; }
+.journey-observation h2 { margin: 4px 0 7px; font-size: 22px; line-height: 1.3; }
+.journey-observation p { margin: 6px 0; }
+.journey-observation .journey-observation-tag { color: #52644b; font-size: 12px; font-weight: 700; }
+.journey-observation-response { padding: 10px 12px; border-radius: 12px; background: #eaf0e2; }
+.journey-observation small { display: block; margin-top: 8px; font-size: 12px; color: #6d5d4e; }
+.journey-observation-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; margin-top: 12px; }
+.journey-observation-actions button { min-height: 44px; padding: 8px 6px; font-size: 14px; }
+.journey-observation-actions button:last-child { grid-column: 1/-1; }
+.journey-live-guide { position: absolute; z-index: 9; top: 82px; left: 12px; right: 12px; max-width: 380px; margin: auto; padding: 12px 16px; border: 1px solid #c8d6be; border-radius: 16px; color: #344e31; background: #fff9f0ed; font: 700 14px/1.55 -apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif; pointer-events: none; box-shadow: 0 3px 14px #513c2b14; }
+.journey-live-guide[hidden] { display: none; }
+.journey-extras-routes { display: grid; gap: 18px; margin: 20px 0; }
+.journey-extras-routes article { overflow: hidden; padding: 0 16px 16px; background: #f5eedf; border: 1px solid #deceb7; border-radius: 18px; }
+.journey-extras-routes img { display: block; width: calc(100% + 32px); height: 160px; object-fit: cover; object-position: center 44%; margin: 0 -16px 12px; }
+.journey-extras-routes h3 { font-size: 20px; margin: 0 0 8px; }
+.journey-extras-routes button { min-height: 44px; padding: 8px 12px; font-size: 14px; }
+.journey-tool-dialog button:focus-visible,.journey-observation button:focus-visible { outline: 3px solid #52644b; outline-offset: 3px; }
+@media(max-width:350px) {
+  .journey-tool-dialog { padding: 16px; }
+  .journey-photo-grid { grid-template-columns: minmax(0,1fr); }
+  .journey-observation { padding: 14px; }
+}
+@media(max-width:520px) { .journey-photo-grid { grid-template-columns:minmax(0,1fr); } }
+@media(prefers-reduced-motion:reduce) { .journey-tool-dialog *, .journey-observation * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+.settings-check { display:flex; align-items:center; gap:10px; min-height:44px; margin:12px 0; font-size:14px; }
+.settings-check input { width:20px; height:20px; }

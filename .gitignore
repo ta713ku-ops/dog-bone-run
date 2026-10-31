@@ -17,3 +17,11 @@ Secrets.xcconfig
 *.key
 __pycache__/
 art/reference/
+release/
+ios/DogBoneRun/Resources/Site/
+ios/DerivedData/
+ios/Build/
+ios/Local.xcconfig
+*.xcuserstate
+xcuserdata/
+DerivedData/

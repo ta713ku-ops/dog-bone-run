@@ -10,6 +10,11 @@ import {
   HOME_SHOP_SLOTS,
   HOME_SHOP_VERSION,
 } from './home-shop-catalog.js';
+import {
+  ALL_JOURNEY_ROUTES,
+  getJourneyRoute,
+} from './journey-catalog.js';
+import { createJourneyLife, getJourneyDiscoveryReaction } from './journey-life.js';
 
 const MAX_COINS = 1_000_000_000;
 const MAX_WALK_BONES = 10_000;
@@ -18,8 +23,23 @@ const BASE_TOP_LEVEL_KEYS = Object.keys(createInitialSave());
 const HOME_TOP_LEVEL_KEYS = [...BASE_TOP_LEVEL_KEYS, 'roomShop'];
 const ITEM_IDS = new Set(HOME_SHOP_ITEMS.map(item => item.id));
 const ROOM_IDS = new Set(HOME_SHOP_ITEMS.filter(item => item.slot === 'room').map(item => item.id));
+const ROUTE_IDS = new Set(ALL_JOURNEY_ROUTES.map(route => route.id));
+const DISCOVERY_IDS = new Set(ALL_JOURNEY_ROUTES.flatMap(route => route.discoveries.map(item => item.id)));
+const JOURNEY_MODES = new Set(['calm', 'challenge']);
 const DEFAULT_ROOM_ID = 'room-white';
 const LEGACY_ROOM_TOY_IDS = new Set(['starterBall', 'plush', 'rope']);
+const JOURNEY_VERSION = 1;
+const JOURNEY_LIFE_VERSION = 1;
+const MAX_JOURNEY_RUNS = 1_000_000_000;
+const MAX_JOURNEY_BONUS = 400;
+const DISCOVERY_REWARD = 5;
+const DISCOVERY_REWARD_CAP = 15;
+
+/** First six completed journey trips get a one-time welcome award. */
+export const JOURNEY_STARTER_AWARDS = Object.freeze([140, 180, 230, 280, 330, 380]);
+/** Welcome awards taper smoothly, then settle into a repeatable 100-coin bonus. */
+export const JOURNEY_REPEAT_AWARDS = Object.freeze([340, 300, 260, 220, 190, 170, 150, 135, 120, 110, 100]);
+const HOME_PLAY_IDS = new Set(['pet', 'starterBall', 'plush', 'rope', 'bed']);
 
 function isObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -40,6 +60,12 @@ function isIntegerIn(value, min, max) {
 function isRunId(value) {
   return typeof value === 'string' && value.length >= 16 && value.length <= 128
     && /^[A-Za-z0-9_-]+$/.test(value);
+}
+
+function isIsoDate(value) {
+  return typeof value === 'string' && value.length <= 40
+    && Number.isFinite(Date.parse(value))
+    && new Date(value).toISOString() === value;
 }
 
 function clone(value) {
@@ -65,6 +91,12 @@ function freshRoomShop() {
   };
 }
 
+function freshJourney() {
+  const journey = { version: JOURNEY_VERSION, discoveryIds: [], completedRoutes: [], completedRuns: 0 };
+  journey.life = createJourneyLife(journey);
+  return journey;
+}
+
 function roomShopFromLegacy(base) {
   const roomShop = freshRoomShop();
   if (base.owned.decorations.includes('bed')) roomShop.owned.push('bed');
@@ -88,7 +120,10 @@ function stripRoomShop(value) {
 }
 
 function validRoomShop(roomShop) {
-  if (!hasExactKeys(roomShop, ['version', 'owned', 'equipped', 'activeWalk', 'settledRunIds', 'lastReward'])
+  const hasJourney = isObject(roomShop) && Object.prototype.hasOwnProperty.call(roomShop, 'journey');
+  const roomShopKeys = ['version', 'owned', 'equipped', 'activeWalk', 'settledRunIds', 'lastReward',
+    ...(hasJourney ? ['journey'] : [])];
+  if (!hasExactKeys(roomShop, roomShopKeys)
     || roomShop.version !== HOME_SHOP_VERSION
     || !Array.isArray(roomShop.owned)
     || roomShop.owned.length < 1
@@ -116,9 +151,16 @@ function validRoomShop(roomShop) {
     || !roomShop.settledRunIds.every(isRunId)
     || new Set(roomShop.settledRunIds).size !== roomShop.settledRunIds.length) return false;
 
+  // Validate the optional namespace before comparing a retained journey
+  // receipt against it; malformed imported JSON must fail closed, not throw.
+  if (hasJourney && !validJourney(roomShop.journey)) return false;
+
   if (roomShop.activeWalk !== null) {
     const walk = roomShop.activeWalk;
-    if (!hasExactKeys(walk, ['runId', 'level', 'seed', 'ownerEpoch', 'normalTotal', 'goldTotal'])
+    const hasJourneyRoute = isObject(walk) && Object.prototype.hasOwnProperty.call(walk, 'routeId');
+    const walkKeys = ['runId', 'level', 'seed', 'ownerEpoch', 'normalTotal', 'goldTotal',
+      ...(hasJourneyRoute ? ['routeId', 'mode'] : [])];
+    if (!hasExactKeys(walk, walkKeys)
       || !isRunId(walk.runId)
       || !isIntegerIn(walk.level, 1, 4)
       || !isIntegerIn(walk.seed, 0, 0xffff_ffff)
@@ -127,19 +169,118 @@ function validRoomShop(roomShop) {
       || !isIntegerIn(walk.goldTotal, 0, MAX_WALK_BONES)
       || walk.normalTotal + walk.goldTotal > MAX_WALK_BONES
       || roomShop.settledRunIds.includes(walk.runId)) return false;
+    if (hasJourneyRoute) {
+      const route = getJourneyRoute(walk.routeId);
+      if (!route || route.level !== walk.level || !JOURNEY_MODES.has(walk.mode) || !hasJourney) return false;
+    }
   }
 
   if (roomShop.lastReward !== null) {
     const reward = roomShop.lastReward;
-    if (!hasExactKeys(reward, ['runId', 'reward', 'completed', 'normalCollected', 'goldCollected', 'level'])
+    const hasJourneyResult = isObject(reward) && Object.prototype.hasOwnProperty.call(reward, 'journey');
+    if (!hasExactKeys(reward, ['runId', 'reward', 'completed', 'normalCollected', 'goldCollected', 'level',
+      ...(hasJourneyResult ? ['journey'] : [])])
       || !isRunId(reward.runId)
       || !isIntegerIn(reward.reward, 0, MAX_COINS)
       || typeof reward.completed !== 'boolean'
       || !isIntegerIn(reward.normalCollected, 0, MAX_WALK_BONES)
       || !isIntegerIn(reward.goldCollected, 0, MAX_WALK_BONES)
       || !isIntegerIn(reward.level, 1, 4)) return false;
+    if (hasJourneyResult && (!hasJourney || !validJourneyResult(reward.journey, reward.level))) return false;
+    if (hasJourneyResult && (reward.journey.completed !== reward.completed
+      || reward.journey.completedRuns > roomShop.journey.completedRuns
+      || !reward.journey.discoveryIds.every(id => roomShop.journey.discoveryIds.includes(id))
+      || !reward.journey.completedRoutes.every(id => roomShop.journey.completedRoutes.includes(id)))) return false;
   }
   return true;
+}
+
+function validUniqueIds(value, knownIds, maxLength) {
+  return Array.isArray(value) && value.length <= maxLength
+    && value.every(id => typeof id === 'string' && knownIds.has(id))
+    && new Set(value).size === value.length;
+}
+
+function validJourney(journey) {
+  const hasLife = isObject(journey) && Object.prototype.hasOwnProperty.call(journey, 'life');
+  return hasExactKeys(journey, ['version', 'discoveryIds', 'completedRoutes', 'completedRuns',
+    ...(hasLife ? ['life'] : [])])
+    && journey.version === JOURNEY_VERSION
+    && validUniqueIds(journey.discoveryIds, DISCOVERY_IDS, DISCOVERY_IDS.size)
+    && validUniqueIds(journey.completedRoutes, ROUTE_IDS, ROUTE_IDS.size)
+    && isIntegerIn(journey.completedRuns, journey.completedRoutes.length, MAX_JOURNEY_RUNS)
+    && ((journey.completedRuns === 0) === (journey.completedRoutes.length === 0))
+    && (!hasLife || validJourneyLife(journey.life, journey));
+}
+
+function validJourneyLife(life, journey) {
+  if (!hasExactKeys(life, [
+    'version', 'memories', 'routeVisits', 'lastRouteId', 'lastDiscoveryId', 'firstWalkAt', 'lastWalkAt',
+    'tutorialComplete', 'named', 'homePlays',
+  ]) || life.version !== JOURNEY_LIFE_VERSION || !isObject(life.memories) || !isObject(life.routeVisits)) return false;
+
+  for (const [discoveryId, memory] of Object.entries(life.memories)) {
+    if (!DISCOVERY_IDS.has(discoveryId)
+      || !journey.discoveryIds.includes(discoveryId)
+      || !hasExactKeys(memory, ['firstSeenAt', 'lastSeenAt', 'visits', 'reaction'])
+      || (memory.firstSeenAt !== null && !isIsoDate(memory.firstSeenAt))
+      || (memory.lastSeenAt !== null && !isIsoDate(memory.lastSeenAt))
+      || !isIntegerIn(memory.visits, 1, MAX_JOURNEY_RUNS)
+      || (memory.reaction !== null && (typeof memory.reaction !== 'string' || memory.reaction.length < 1 || memory.reaction.length > 128))) {
+      return false;
+    }
+    if (memory.firstSeenAt && memory.lastSeenAt && memory.firstSeenAt > memory.lastSeenAt) return false;
+  }
+  if (journey.discoveryIds.some(id => !Object.hasOwn(life.memories, id))) return false;
+
+  for (const [routeId, visits] of Object.entries(life.routeVisits)) {
+    if (!ROUTE_IDS.has(routeId) || !isIntegerIn(visits, 1, MAX_JOURNEY_RUNS)) return false;
+  }
+  if (journey.completedRoutes.some(id => !isIntegerIn(life.routeVisits[id], 1, MAX_JOURNEY_RUNS))) return false;
+  if ((life.lastRouteId !== null && (!ROUTE_IDS.has(life.lastRouteId)
+    || !isIntegerIn(life.routeVisits[life.lastRouteId], 1, MAX_JOURNEY_RUNS)))
+    || (life.lastDiscoveryId !== null && (!DISCOVERY_IDS.has(life.lastDiscoveryId)
+      || !Object.hasOwn(life.memories, life.lastDiscoveryId)))) return false;
+  if ((life.firstWalkAt !== null && !isIsoDate(life.firstWalkAt))
+    || (life.lastWalkAt !== null && !isIsoDate(life.lastWalkAt))
+    || (life.firstWalkAt && life.lastWalkAt && life.firstWalkAt > life.lastWalkAt)) return false;
+  if (typeof life.tutorialComplete !== 'boolean' || typeof life.named !== 'boolean'
+    || !hasExactKeys(life.homePlays, ['pet', 'starterBall', 'plush', 'rope', 'bed'])
+    || Object.values(life.homePlays).some(count => !isIntegerIn(count, 0, MAX_JOURNEY_RUNS))) return false;
+  return true;
+}
+
+function plannedStarterAward(completedRuns) {
+  if (completedRuns < JOURNEY_STARTER_AWARDS.length) return JOURNEY_STARTER_AWARDS[completedRuns];
+  const repeatIndex = completedRuns - JOURNEY_STARTER_AWARDS.length;
+  return JOURNEY_REPEAT_AWARDS[Math.min(repeatIndex, JOURNEY_REPEAT_AWARDS.length - 1)];
+}
+
+function validJourneyResult(summary, level) {
+  if (!hasExactKeys(summary, [
+    'routeId', 'mode', 'runDiscoveryIds', 'newDiscoveryIds', 'discoveryIds', 'completedRoutes',
+    'completedRuns', 'completed', 'starterCoins', 'discoveryCoins', 'bonusCoins', 'completedAt',
+  ])) return false;
+  const route = getJourneyRoute(summary.routeId);
+  const routeDiscoveryIds = new Set(route?.discoveries.map(item => item.id) ?? []);
+  return Boolean(route)
+    && route.level === level
+    && JOURNEY_MODES.has(summary.mode)
+    && validUniqueIds(summary.runDiscoveryIds, routeDiscoveryIds, routeDiscoveryIds.size)
+    && validUniqueIds(summary.newDiscoveryIds, routeDiscoveryIds, routeDiscoveryIds.size)
+    && summary.newDiscoveryIds.every(id => summary.runDiscoveryIds.includes(id))
+    && validUniqueIds(summary.discoveryIds, DISCOVERY_IDS, DISCOVERY_IDS.size)
+    && summary.newDiscoveryIds.every(id => summary.discoveryIds.includes(id))
+    && validUniqueIds(summary.completedRoutes, ROUTE_IDS, ROUTE_IDS.size)
+    && isIntegerIn(summary.completedRuns, summary.completedRoutes.length, MAX_JOURNEY_RUNS)
+    && ((summary.completedRuns === 0) === (summary.completedRoutes.length === 0))
+    && typeof summary.completed === 'boolean'
+    && isIntegerIn(summary.starterCoins, 0, Math.max(...JOURNEY_STARTER_AWARDS))
+    && isIntegerIn(summary.discoveryCoins, 0, DISCOVERY_REWARD_CAP)
+    && isIntegerIn(summary.bonusCoins, 0, MAX_JOURNEY_BONUS)
+    && summary.bonusCoins === summary.starterCoins + summary.discoveryCoins
+    && (summary.completedAt === null || isIsoDate(summary.completedAt))
+    && (!summary.completed || summary.completedRoutes.includes(summary.routeId));
 }
 
 function legacyBaseValidation(value) {
@@ -274,6 +415,111 @@ function initializeInteriorsCommand(save) {
   return success(next, { initialized: true, changed: true });
 }
 
+function initializeJourneyCommand(save) {
+  if (save.roomShop.journey && save.roomShop.journey.life) {
+    return success(save, { initialized: true, changed: false,
+      discoveryIds: [...save.roomShop.journey.discoveryIds],
+      completedRoutes: [...save.roomShop.journey.completedRoutes],
+      completedRuns: save.roomShop.journey.completedRuns });
+  }
+  const next = clone(save);
+  if (!next.roomShop.journey) next.roomShop.journey = freshJourney();
+  else next.roomShop.journey.life = createJourneyLife(next.roomShop.journey);
+  return success(next, { initialized: true, changed: true,
+    discoveryIds: [...next.roomShop.journey.discoveryIds],
+    completedRoutes: [...next.roomShop.journey.completedRoutes],
+    completedRuns: next.roomShop.journey.completedRuns });
+}
+
+function journeyLifeCommandTarget(save) {
+  return save.roomShop.journey?.life ? null : 'journey-not-initialized';
+}
+
+function truncateUtf16ByCodePoint(value, maxUnits) {
+  let result = '';
+  for (const point of value) {
+    if (result.length + point.length > maxUnits) break;
+    result += point;
+  }
+  return result;
+}
+
+function setDogNameCommand(save, command) {
+  const targetError = journeyLifeCommandTarget(save);
+  if (targetError) return failure(save, targetError);
+  if (typeof command.name !== 'string') return failure(save, 'invalid-dog-name');
+  const requested = truncateUtf16ByCodePoint(command.name.trim(), 32);
+  const named = requested.length > 0;
+  const name = named ? requested : 'この子';
+  const changed = save.dog.name !== name || save.roomShop.journey.life.named !== named;
+  if (!changed) return success(save, { name, named, changed: false });
+  const next = clone(save);
+  next.dog.name = name;
+  next.roomShop.journey.life.named = named;
+  return success(next, { name, named, changed: true });
+}
+
+function completeJourneyTutorialCommand(save) {
+  const targetError = journeyLifeCommandTarget(save);
+  if (targetError) return failure(save, targetError);
+  if (save.roomShop.journey.life.tutorialComplete) {
+    return success(save, { tutorialComplete: true, changed: false });
+  }
+  const next = clone(save);
+  next.roomShop.journey.life.tutorialComplete = true;
+  return success(next, { tutorialComplete: true, changed: true });
+}
+
+function recordHomePlayCommand(save, command) {
+  const targetError = journeyLifeCommandTarget(save);
+  if (targetError) return failure(save, targetError);
+  const itemId = command.itemId;
+  if (typeof itemId !== 'string' || !HOME_PLAY_IDS.has(itemId)) return failure(save, 'invalid-home-play-item');
+  if (itemId !== 'pet') {
+    const slot = itemId === 'bed' ? 'bed' : 'toy';
+    if (!save.roomShop.owned.includes(itemId)) return failure(save, 'item-not-owned');
+    if (save.roomShop.equipped[slot] !== itemId) return failure(save, 'item-not-equipped');
+  }
+  const plays = save.roomShop.journey.life.homePlays[itemId];
+  if (plays >= MAX_JOURNEY_RUNS) return failure(save, 'home-play-limit');
+  const next = clone(save);
+  next.roomShop.journey.life.homePlays[itemId] += 1;
+  return success(next, { itemId, plays: next.roomShop.journey.life.homePlays[itemId] });
+}
+
+function lastKnownOnOrAfterFirst(completedAt, firstAt) {
+  // A device clock rollback cannot provide a valid last date before the known
+  // first date. Preserve that first date and leave the last date unknown.
+  if (completedAt === null || (firstAt !== null && completedAt < firstAt)) return null;
+  return completedAt;
+}
+
+function recordJourneySettlementLife(journey, routeId, discoveryIds, completedAt) {
+  const life = journey.life ?? createJourneyLife(journey);
+  const hadPriorVisit = Object.values(life.routeVisits).some(visits => visits > 0);
+  const priorVisits = life.routeVisits[routeId] ?? 0;
+  if (priorVisits >= MAX_JOURNEY_RUNS) return 'journey-visit-limit';
+
+  life.routeVisits[routeId] = priorVisits + 1;
+  life.lastRouteId = routeId;
+  if (!hadPriorVisit && life.firstWalkAt === null) life.firstWalkAt = completedAt;
+  life.lastWalkAt = lastKnownOnOrAfterFirst(completedAt, life.firstWalkAt);
+  if (discoveryIds.length > 0) life.lastDiscoveryId = discoveryIds.at(-1);
+  for (const discoveryId of discoveryIds) {
+    const prior = life.memories[discoveryId];
+    if (prior?.visits >= MAX_JOURNEY_RUNS) return 'journey-memory-limit';
+    const firstSeenAt = prior ? prior.firstSeenAt : completedAt;
+    life.memories[discoveryId] = {
+      firstSeenAt,
+      lastSeenAt: lastKnownOnOrAfterFirst(completedAt, firstSeenAt),
+      visits: (prior?.visits ?? 0) + 1,
+      reaction: getJourneyDiscoveryReaction(discoveryId),
+    };
+  }
+  journey.life = life;
+  return null;
+}
+
 function appendSettledId(ids, runId) {
   return [...ids.filter(id => id !== runId), runId].slice(-ID_HISTORY_LIMIT);
 }
@@ -295,6 +541,18 @@ function beginWalkCommand(save, command) {
     || !isIntegerIn(command.normalTotal, 0, MAX_WALK_BONES)
     || !isIntegerIn(command.goldTotal, 0, MAX_WALK_BONES)
     || command.normalTotal + command.goldTotal > MAX_WALK_BONES) return failure(save, 'invalid-walk');
+  const hasRouteId = command.routeId !== undefined && command.routeId !== null;
+  let routeId;
+  let mode;
+  if (hasRouteId) {
+    const route = getJourneyRoute(command.routeId);
+    mode = command.mode === undefined || command.mode === null ? 'calm' : command.mode;
+    if (!route || route.level !== command.level || !JOURNEY_MODES.has(mode)) return failure(save, 'invalid-journey-walk');
+    if (!save.roomShop.journey) return failure(save, 'journey-not-initialized');
+    routeId = route.id;
+  } else if (command.mode !== undefined && command.mode !== null && command.mode !== 'calm') {
+    return failure(save, 'invalid-journey-mode');
+  }
   if (save.roomShop.activeWalk) return failure(save, 'walk-already-active');
   if (save.roomShop.settledRunIds.includes(command.runId)
     || save.roomShop.lastReward?.runId === command.runId) return failure(save, 'walk-id-already-settled');
@@ -306,8 +564,9 @@ function beginWalkCommand(save, command) {
     ownerEpoch: command.ownerEpoch,
     normalTotal: command.normalTotal,
     goldTotal: command.goldTotal,
+    ...(routeId ? { routeId, mode } : {}),
   };
-  return success(next, { runId: command.runId, active: true });
+  return success(next, { runId: command.runId, active: true, ...(routeId ? { routeId, mode } : {}) });
 }
 
 function resumeWalkCommand(save, command) {
@@ -332,7 +591,8 @@ function settleWalkCommand(save, command) {
     || !isIntegerIn(command.normalCollected, 0, MAX_WALK_BONES)
     || !isIntegerIn(command.goldCollected, 0, MAX_WALK_BONES)
     || typeof command.completed !== 'boolean'
-    || !isIntegerIn(command.ownerEpoch, 0, Number.MAX_SAFE_INTEGER)) return failure(save, 'invalid-settlement');
+    || !isIntegerIn(command.ownerEpoch, 0, Number.MAX_SAFE_INTEGER)
+    || (command.completedAt !== undefined && !isIsoDate(command.completedAt))) return failure(save, 'invalid-settlement');
 
   if (roomShop.settledRunIds.includes(command.runId) || roomShop.lastReward?.runId === command.runId) {
     const prior = roomShop.lastReward?.runId === command.runId ? roomShop.lastReward : null;
@@ -345,6 +605,23 @@ function settleWalkCommand(save, command) {
   if (!active || active.runId !== command.runId) return failure(save, 'active-walk-mismatch');
   if (active.ownerEpoch !== command.ownerEpoch) return failure(save, 'foreign-owner-epoch');
 
+  const journeyRun = typeof active.routeId === 'string';
+  let runDiscoveryIds = [];
+  if (journeyRun) {
+    if (!roomShop.journey) return failure(save, 'journey-not-initialized');
+    const route = getJourneyRoute(active.routeId);
+    const routeDiscoveryIds = new Set(route?.discoveries.map(item => item.id) ?? []);
+    const requested = command.discoveryIds === undefined ? [] : command.discoveryIds;
+    if (!Array.isArray(requested) || requested.length > routeDiscoveryIds.size
+      || !requested.every(id => typeof id === 'string' && routeDiscoveryIds.has(id))
+      || new Set(requested).size !== requested.length) return failure(save, 'invalid-journey-discoveries');
+    runDiscoveryIds = [...requested];
+  } else if (command.discoveryIds !== undefined) {
+    if (!Array.isArray(command.discoveryIds) || command.discoveryIds.length !== 0) {
+      return failure(save, 'unexpected-journey-discoveries');
+    }
+  }
+
   const calculated = calculateRunRewardInput({
     normalCollected: command.normalCollected,
     goldCollected: command.goldCollected,
@@ -352,8 +629,50 @@ function settleWalkCommand(save, command) {
     difficulty: active.level,
     course: syntheticCourse(active.normalTotal, active.goldTotal),
   });
-  const reward = Math.min(calculated.reward, MAX_COINS - save.coins);
+  const baseReward = Math.min(calculated.reward, MAX_COINS - save.coins);
   const next = clone(save);
+  let reward = baseReward;
+  let journeySummary = null;
+  if (journeyRun) {
+    const journey = next.roomShop.journey;
+    const previousDiscoveries = new Set(journey.discoveryIds);
+    const newDiscoveryIds = runDiscoveryIds.filter(id => !previousDiscoveries.has(id));
+    const completedRuns = journey.completedRuns + (command.completed ? 1 : 0);
+    if (completedRuns > MAX_JOURNEY_RUNS) return failure(save, 'journey-run-limit');
+    const starterPlanned = command.completed ? plannedStarterAward(journey.completedRuns) : 0;
+    const discoveryPlanned = Math.min(newDiscoveryIds.length * DISCOVERY_REWARD, DISCOVERY_REWARD_CAP);
+    const maxAffordableBonus = Math.max(0, MAX_COINS - save.coins - baseReward);
+    const starterCoins = Math.min(starterPlanned, maxAffordableBonus);
+    const discoveryCoins = Math.min(discoveryPlanned, Math.max(0, maxAffordableBonus - starterCoins));
+    const bonusCoins = Math.min(MAX_JOURNEY_BONUS, starterCoins + discoveryCoins);
+    const allDiscoveryIds = [...journey.discoveryIds, ...newDiscoveryIds];
+    const completedRoutes = command.completed && !journey.completedRoutes.includes(active.routeId)
+      ? [...journey.completedRoutes, active.routeId]
+      : [...journey.completedRoutes];
+    journey.life ??= createJourneyLife(journey);
+    journey.discoveryIds = allDiscoveryIds;
+    journey.completedRoutes = completedRoutes;
+    journey.completedRuns = completedRuns;
+    const lifeError = recordJourneySettlementLife(
+      journey, active.routeId, runDiscoveryIds, command.completedAt ?? null,
+    );
+    if (lifeError) return failure(save, lifeError);
+    reward = Math.min(MAX_COINS - save.coins, baseReward + bonusCoins);
+    journeySummary = {
+      routeId: active.routeId,
+      mode: active.mode,
+      runDiscoveryIds,
+      newDiscoveryIds,
+      discoveryIds: [...journey.discoveryIds],
+      completedRoutes: [...journey.completedRoutes],
+      completedRuns: journey.completedRuns,
+      completed: command.completed,
+      starterCoins,
+      discoveryCoins,
+      bonusCoins,
+      completedAt: command.completedAt ?? null,
+    };
+  }
   next.coins += reward;
   next.records.totalCoinsEarned = Math.min(MAX_COINS, next.records.totalCoinsEarned + reward);
   next.roomShop.activeWalk = null;
@@ -365,8 +684,10 @@ function settleWalkCommand(save, command) {
     normalCollected: calculated.normalCollected,
     goldCollected: calculated.goldCollected,
     level: active.level,
+    ...(journeySummary ? { journey: journeySummary } : {}),
   };
-  return success(next, { ...next.roomShop.lastReward, duplicate: false });
+  return success(next, { ...next.roomShop.lastReward, duplicate: false,
+    ...(journeySummary ? { journey: clone(journeySummary) } : {}) });
 }
 
 function cancelWalkCommand(save, command) {
@@ -397,6 +718,10 @@ export function applyHomeShopCommand(state, command) {
   try {
     switch (command.type) {
       case 'initializeInteriors': result = initializeInteriorsCommand(state); break;
+      case 'initializeJourney': result = initializeJourneyCommand(state); break;
+      case 'setDogName': result = setDogNameCommand(state, command); break;
+      case 'completeJourneyTutorial': result = completeJourneyTutorialCommand(state); break;
+      case 'recordHomePlay': result = recordHomePlayCommand(state, command); break;
       case 'purchase': result = purchaseCommand(state, command); break;
       case 'equip': result = equipCommand(state, command); break;
       case 'beginWalk': result = beginWalkCommand(state, command); break;

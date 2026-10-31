@@ -1,4 +1,4 @@
-import { cp, mkdir, rm, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdir, rm, readdir, readFile, writeFile, stat } from 'node:fs/promises';
 import { dirname, resolve, relative } from 'node:path';
 import { CONFIG, PHASE4 } from '../src/config.js';
 import { WALK_LEVELS } from '../src/walk-levels.js';
@@ -68,7 +68,8 @@ for (const metadataPath of ['art/park-v23/metadata.json', 'art/neighborhood-v24/
 }
 await rm(destination, { recursive: true, force: true });
 await mkdir(destination);
-for (const file of ['index.html', 'styles.css', 'favicon.svg']) await cp(file, `${destination}/${file}`);
+for (const file of ['index.html', 'styles.css', 'journey.css','journey-tools.css', 'favicon.svg','manifest.webmanifest','about.html','about.css','credits.html']) await cp(file, `${destination}/${file}`);
+await cp('icons',`${destination}/icons`,{recursive:true});
 // Ship the runner's dependency graph, including its room shop and shared save model.
 const modules = new Map(), assets = new Set(), root = resolve('.');
 async function collect(path) {
@@ -90,12 +91,15 @@ async function collect(path) {
 }
 await collect('src/app.js');
 for(const frame of hdMetadata.frames)assets.add(frame.path);
+for(const directory of ['art/journey-previews','art/journey-memories']){
+  for(const file of await readdir(directory).catch(()=>[]))if(file.endsWith('.webp'))assets.add(`${directory}/${file}`);
+}
 // Version every dependency, including transitive modules.
 // A new HTML URL alone cannot invalidate resources cached under unchanged URLs.
 const versioned = path => `${path}?v=${encodeURIComponent(CONFIG.buildVersion)}`;
 const originalHtml=await readFile(`${destination}/index.html`,'utf8');
 const html = diagnosticBuild?originalHtml:originalHtml.replace(/  <aside class="test-panel"[\s\S]*?<\/aside>/,'');
-await writeFile(`${destination}/index.html`, html.replace(/(src|href)="(\.\/[^"?]+\.(?:js|css|svg))"/g,
+await writeFile(`${destination}/index.html`, html.replace(/(src|href)="(\.\/[^"?]+\.(?:js|css|svg|webp|json))"/g,
   (_, attribute, path) => `${attribute}="${versioned(path)}"`));
 for (const [modulePath, source] of modules) {
   const path = `${destination}/${modulePath}`;
@@ -114,6 +118,15 @@ await writeFile(`${destination}/version.json`, JSON.stringify({ buildVersion: CO
   configVersion: CONFIG.configVersion, courseVersion: CONFIG.courseVersion,
   ruleVersion: PHASE4.ruleVersion, walkLevels: Object.values(WALK_LEVELS), durationMs: PHASE4.durationMs, mode: 'runner', renderer: 'canvas-image-with-2d-gpu-home',
   releaseReady: false, physicalIPhoneVerified: false,
+  webFeatures: {authoredRoutes:12,discoveries:36,extraRoutes:3,extraDiscoveries:9,lifeMemories:true,photoLibrary:true,observation:true,classicCourses:4,walkModes:['calm','challenge'],album:true,photoExport:true,saveTransfer:true,offline:true},
+  storePaymentsConfigured: false,
   diagnosticBuild,
   modules: [...modules.keys()].sort(), assets: [...assets].sort() }, null, 2));
+const staticFiles=['index.html','styles.css','journey.css','journey-tools.css','favicon.svg','manifest.webmanifest','about.html','about.css','credits.html','icons/app-192.png','icons/app-512.png','icons/app-maskable.png','version.json'];
+const offlineFiles=[...staticFiles,...modules.keys(),...assets].sort();
+const totalBytes=(await Promise.all(offlineFiles.map(path=>stat(`${destination}/${path}`)))).reduce((sum,item)=>sum+item.size,0);
+await writeFile(`${destination}/offline-index.json`,JSON.stringify({version:CONFIG.buildVersion,bytes:totalBytes,files:offlineFiles}));
+const shell=staticFiles.filter(path=>!path.endsWith('version.json')).concat([...modules.keys()]).map(path=>/\.(js|css)$/.test(path)?versioned(path):path);
+const worker=(await readFile('scripts/service-worker-template.js','utf8')).replace('__CACHE_NAME__',`hone-walk-${CONFIG.buildVersion}`).replace('__SHELL_FILES__',JSON.stringify(shell));
+await writeFile(`${destination}/sw.js`,worker);
 console.log(`Built static site → ${destination}/ (no external runtime dependencies)`);

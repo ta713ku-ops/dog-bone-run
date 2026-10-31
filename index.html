@@ -4,10 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fff9f0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="おさんぽ">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icons/app-192.png">
   <meta name="description" content="愛犬と過ごすおうちとお庭。おさんぽでコインを集め、部屋やおもちゃを選んで模様替えできる、30秒のおさんぽゲーム。">
   <title>ほねのおさんぽ</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./journey.css">
+  <link rel="stylesheet" href="./journey-tools.css">
+  <link rel="preload" href="./art/dog-image-animation.json" as="fetch" crossorigin>
+  <link rel="preload" href="./art/dog-walk-animated.webp" as="fetch" crossorigin>
+  <link rel="preload" href="./art/dog-expressions-animated.webp" as="fetch" crossorigin>
+  <link rel="preload" href="./art/dog-postures-animated.webp" as="fetch" crossorigin>
   <script type="module" src="./src/app.js"></script>
 </head>
 <body>
@@ -88,7 +98,7 @@
       <div class="modal settings-modal"><p class="eyebrow">おさんぽの設定</p><h2 id="settings-title" tabindex="-1">音と表示</h2>
         <button class="sound-toggle" id="ready-sound" aria-pressed="true">音：オン</button>
         <button class="sound-toggle" id="music-toggle" aria-pressed="true">BGM：オン</button>
-        <label class="volume-setting" for="music-volume"><span>BGMの音量 <output id="music-volume-value">35%</output></span><input id="music-volume" type="range" min="0" max="100" value="35" step="5"></label>
+        <label class="volume-setting" for="music-volume"><span>BGM・環境音の音量 <output id="music-volume-value">35%</output></span><input id="music-volume" type="range" min="0" max="100" value="35" step="5"></label>
         <label class="volume-setting" for="sfx-volume"><span>効果音の音量 <output id="sfx-volume-value">80%</output></span><input id="sfx-volume" type="range" min="0" max="100" value="80" step="5"></label>
         <label class="motion-setting"><input id="reduce-motion" type="checkbox">動きを控えめにする</label>
         <p class="settings-note" id="settings-note">端末の「動きを減らす」設定も反映します。</p>

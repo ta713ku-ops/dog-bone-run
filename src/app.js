@@ -10,6 +10,15 @@ import { getWalkLevel } from './walk-levels.js';
 import { DEVELOPMENT } from './build-mode.js';
 import { homeDogLayout, HOME_ATTENTION_MS } from './home-presence.js';
 import { HomeShopController } from './home-shop-controller.js';
+import { getJourneyRoute, getJourneyDiscovery } from './journey-catalog.js';
+import { getDogName, getHomeMemoryMessage } from './journey-life.js';
+import { JourneyPhotos } from './journey-photos.js';
+import { JourneyMoments, JourneyGuide } from './journey-moments.js';
+import { JourneyExtras, canWalkExtra } from './journey-extras.js';
+import { JourneyUI } from './journey-ui.js';
+import { JourneyTransfer } from './journey-transfer.js';
+import { initializeOffline, prepareOffline } from './journey-offline.js';
+import { JourneyCommerce } from './journey-commerce.js';
 
 const $ = id => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -47,11 +56,27 @@ let discoveryPaused = false, resultAt = null, runOpen = false, lastRunId = null;
 let settingsTrigger = null, parkGuideTrigger = null;
 let homeAssetsReady = !renderer.dogs;
 let homeShop = null;
+let journey = null;
+let moments=null,guide=null;
+let selectedJourneyRoute = null;
+let selectedJourneyMode = 'calm';
+let journeyResult = null;
 const game = new Game({ phase, walkLevel: selectedWalkLevel, seed: nextSeed(), onEvent: event => {
   const { type, activeMs, ...data } = event; log.record(type, data, activeMs);
   if (type === 'collect') {
     renderer.collect(event); audio.play(event.level, event.kind);
     if (!renderer.reducedMotion) { $('score').classList.remove('score-pop'); void $('score').offsetWidth; $('score').classList.add('score-pop'); }
+  }
+  if(type === 'input')guide?.input(event);
+  if (type === 'discovery') {
+    const discovery=getJourneyDiscovery(event.discoveryId);
+    renderer.reactToDiscovery?.(discovery??event);
+    guide?.discovery();
+    journey?.showDiscovery(event);
+    audio.playDiscovery?.();
+    audio.playNature?.(discovery?.kind);
+    $('announcement').textContent = `${event.title ?? '小さな発見'}を見つけました。`;
+    if(moments?.show(event)){lastUpdate=null;lastFrame=null;}
   }
   if (type === 'obstacle_contact') {
     renderer.contact(event);
@@ -68,6 +93,7 @@ const game = new Game({ phase, walkLevel: selectedWalkLevel, seed: nextSeed(), o
     show('falling'); $('announcement').textContent = '穴に落ちました。';
   }
   if (type === 'end') {
+    moments?.dispose();
     void homeShop?.settle(event);
     runOpen = false; audio.stop(); input?.clear();
     if (log.run) { log.run.endedAt = new Date().toISOString(); log.run.result = { ...data }; lastRunId = log.run.id; }
@@ -94,6 +120,8 @@ const game = new Game({ phase, walkLevel: selectedWalkLevel, seed: nextSeed(), o
       $('result-combo').textContent = event.maxCombo;
       $('announcement').textContent = `${failed ? 'ゲームオーバー' : 'おさんぽ終了'}。スコア${event.score}、骨${event.collected}個、最大コンボ${event.maxCombo}${failed ? `、到達率${Math.floor(event.progress * 100)}パーセント` : ''}。`;
       $('result-title').focus({ preventScroll: true });
+      journeyResult = event;
+      journey?.showResult(event);
     }
   }
 } });
@@ -106,6 +134,65 @@ audio.setVolumes({ music: .35, sfx: .8 });
 void audio.preload();
 renderer.setReducedMotion(false);
 homeShop = new HomeShopController({renderer,game,onLostOwnership:leaveStaleWalk});
+const transfer = new JourneyTransfer(homeShop, message => journey?.showHomeMessage(message));
+const photos=new JourneyPhotos({renderer,getName:()=>getDogName(homeShop.state),report:message=>journey?.showHomeMessage(message)});
+journey = new JourneyUI({
+  controller: homeShop, renderer, game,
+  onSelectRoute: selectJourneyRoute,
+  onSelectClassic: () => {
+    selectedJourneyRoute = null;
+    if (game.state === 'result') { game.reset({journeyRouteId:null}); show('ready'); }
+    selectWalkLevel(selectedWalkLevel); openWalkPicker();
+  },
+  onPhoto: async () => {
+    try {
+      renderer.draw(game,{force:true});
+      await photos.shoot({title:'おうちのひととき'});
+      return {ok:true,message:'写真帳に、この子との一枚を残しました。'};
+    } catch(error) { journey.showHomeMessage(error.message); return {ok:false,error:error.message}; }
+  },
+  onNameDog: name=>homeShop.command({type:'setDogName',name}),
+  onOpenPhotos: ()=>photos.open(),
+  onOpenExtras: ()=>extras.open(),
+  onReplayTutorial: ()=>guide.replay(),
+  onExportSave: () => transfer.exportSave(),
+  onImportSave: file => transfer.importSave(file),
+  onPrepareOffline: prepareOffline,
+  onReturnHome: returnJourneyHome,
+  onRetrySettlement: () => homeShop.retryReward(),
+  onHomeReact: itemId => {
+    const accepted = renderer.reactToHomeItem?.(itemId);
+    if(!accepted)journey.showHomeMessage('この子が落ち着くまで、少し待ってみよう。');
+    if(accepted)void homeShop.command({type:'recordHomePlay',itemId},{silent:true});
+    return accepted;
+  },
+});
+homeShop.onStateChange = () => journey.render();
+homeShop.onJourneySettled = summary => {
+  if(journeyResult && selectedJourneyRoute === summary.routeId) journey.showResult({...journeyResult,journey:summary,reward:homeShop.state?.roomShop?.lastReward?.reward});
+  journey.render();
+};
+homeShop.ready.then(() => journey.render());
+window.addEventListener('journey:imported', () => {
+  applySavedSettings(settingsStore.read().settings);
+  const restored=walkPreferences.read();
+  selectedWalkLevel=restored.walkLevel;parkGuideSeen=restored.parkGuideSeen;walkSaveFailed=!restored.ok;
+  selectedJourneyRoute=null;ruleVersion=getWalkLevel(selectedWalkLevel).ruleVersion;
+  records=new RecordStore({ruleVersion});game.reset({walkLevel:selectedWalkLevel,journeyRouteId:null});renderer.reset();
+  updateLevelUI();refreshRecord();journey.render();
+});
+// Install the offline shell after the first usable home so its downloads do
+// not compete with the dog's required first frames on a cold connection.
+renderer.ready.then(()=>initializeOffline(message => journey.showHomeMessage(message))).catch(()=>false);
+const commerce = new JourneyCommerce();
+const extras=new JourneyExtras({commerce,controller:homeShop,onSelectRoute:selectJourneyRoute});
+guide=new JourneyGuide({controller:homeShop,report:message=>journey.showHomeMessage(message)});
+moments=new JourneyMoments({game,renderer,audio,controller:homeShop,photos,onContinue:()=>activate('resume')});
+void commerce.initialize();
+const ambientLabel=document.createElement('label');ambientLabel.className='settings-check';
+const ambientToggle=document.createElement('input');ambientToggle.type='checkbox';ambientToggle.id='journey-ambient-toggle';ambientToggle.checked=audio.ambientEnabled;
+ambientToggle.onchange=()=>{audio.setAmbientEnabled(ambientToggle.checked);try{localStorage.setItem('dog-bone-run:settings:ambience',String(ambientToggle.checked));}catch{journey.showHomeMessage('環境音の設定を保存できませんでした。');}};
+ambientLabel.append(ambientToggle,document.createTextNode('環境音と足音'));document.querySelector('#settings-panel .modal').append(ambientLabel);
 renderer.furnitureArt?.ready?.then(()=>homeShop.ui.paintThumbnails());
 
 
@@ -124,6 +211,7 @@ function show(state) {
   if (state === 'ready') refreshRecord();
   updateHud();
   if (state==='ready') $('home-dog-status').textContent='';
+  journey?.render();
 }
 function refreshRecord() {
   const caption=$('ready-record');
@@ -154,7 +242,8 @@ function updateHud() {
   if($('clock-label').textContent!==label) $('clock-label').textContent=label;
   const urgent=String(phase===4&&remaining<=5&&remaining>0);
   if($('hud').dataset.urgent!==urgent) $('hud').dataset.urgent=urgent;
-  $('control-hint').hidden = game.state !== 'running' || game.timeMs >= 2200;
+  $('control-hint').hidden = game.state !== 'running' || Boolean(game.journeyRouteId) || game.timeMs >= 2200;
+  guide?.update(game);
 }
 function rotated() { return matchMedia('(pointer: coarse)').matches && innerWidth > innerHeight; }
 function environment() {
@@ -203,6 +292,8 @@ function soundLabels() {
 function applySavedSettings(settings) {
   audio.setEnabled(settings.soundEnabled); audio.setMusicEnabled(settings.musicEnabled);
   audio.setVolumes({music:settings.musicVolume,sfx:settings.sfxVolume});
+  try{audio.setAmbientEnabled(localStorage.getItem('dog-bone-run:settings:ambience')!=='false');}catch{audio.setAmbientEnabled(true);}
+  const environmentToggle=$('journey-ambient-toggle');if(environmentToggle)environmentToggle.checked=audio.ambientEnabled;
   $('music-volume').value = Math.round(settings.musicVolume*100); $('sfx-volume').value = Math.round(settings.sfxVolume*100);
   $('reduce-motion').checked = settings.reducedMotion;
   renderer.setReducedMotion(settings.reducedMotion); soundLabels(); settingsLabels();
@@ -237,7 +328,8 @@ function closeSettings() {
   settingsTrigger?.focus({ preventScroll: true }); settingsTrigger = null;
 }
 async function beginNewRun() {
-  audio.stop(); input.clear(); const seed=nextSeed(); renderer.reset(); metrics.reset(); discoveryPaused = false;
+  audio.stop(); input.clear(); const seed=selectedJourneyRoute?getJourneyRoute(selectedJourneyRoute).seed:nextSeed(); renderer.reset(); metrics.reset(); discoveryPaused = false;
+  journeyResult = null;
   {
     $('ready-record').hidden = false; $('ready-record').textContent = selectedWalkLevel === 4 ? '洞窟を準備しています…' : selectedWalkLevel === 3 ? '山を準備しています…' : selectedWalkLevel === 2 ? '公園を準備しています…' : 'まちを準備しています…';
     $('start').setAttribute('aria-busy', 'true');
@@ -247,7 +339,7 @@ async function beginNewRun() {
       // Upload the selected world's images and compile its first native-size
       // paint before the timed run. The real Game clock and log remain untouched.
       try {
-        const preview = new Game({phase, walkLevel:selectedWalkLevel, seed});
+        const preview = new Game({phase, walkLevel:selectedWalkLevel, seed,journeyRouteId:selectedJourneyRoute,journeyMode:selectedJourneyMode});
         preview.start(); preview.pause('preparation');
         renderer.draw(preview,{force:true});
         // Canvas commands are deferred; a tiny readback completes the initial
@@ -260,7 +352,10 @@ async function beginNewRun() {
       }
     } finally { renderer.reset(); $('start').removeAttribute('aria-busy'); }
   }
-  game.reset({seed, walkLevel: selectedWalkLevel});
+  game.reset({seed, walkLevel: selectedWalkLevel,journeyRouteId:selectedJourneyRoute,journeyMode:selectedJourneyMode});
+  audio.setEnvironment?.(game.journeyRouteId ? game.walkLevel : null);
+  audio.setJourneyRoute?.(game.journeyRouteId);
+  if(game.journeyRouteId)guide?.begin();
   if (!(await homeShop.beginWalk(game))) return false;
   log.run = null;
   log.beginRun(environment(), phase >= 2 ? { phase, walkLevel: game.walkLevel, seed: game.seed, goldIds: [...game.goldIds], ruleVersion, courseVersion: getWalkLevel(game.walkLevel).courseVersion, generation: game.courseData?.generation } : { phase: 1 }); runOpen = true; show('ready'); return true;
@@ -272,6 +367,13 @@ function audioPanel(visible) {
 }
 async function activate(nextIntent = intent) {
   if (pending) return;
+  // Preserve Safari's user activation before reopening a bfcache-restored save.
+  // The audio unlock and lease recovery can complete independently.
+  let resumeAudioPreparation=null;
+  if(nextIntent==='resume'&&homeShop&&!homeShop.unrewardedWalk){
+    resumeAudioPreparation=audio.unlock();
+    await homeShop.ensureActive();
+  }
   if(nextIntent==='resume'&&homeShop&&!homeShop.unrewardedWalk&&(!homeShop.owner||!homeShop.currentRunId||homeShop.state?.roomShop.activeWalk?.runId!==homeShop.currentRunId)){
     leaveStaleWalk();homeShop.ui.message('別のタブで切り替わったため、おさんぽを終了しました。ホームからもう一度出発できます。',true);return;
   }
@@ -283,11 +385,11 @@ async function activate(nextIntent = intent) {
   }
   const runPreparation = intent === 'start' && !runOpen ? beginNewRun() : Promise.resolve(true);
   const ticket = ++activation; pending = true;
-  $('audio-title').textContent = '音を準備しています'; $('audio-message').textContent = 'もうすぐ、おさんぽ。';
+  $('audio-title').textContent = 'おさんぽを準備しています'; $('audio-message').textContent = 'もうすぐ、この子と出発。';
   $('audio-options').hidden = true; audioPanel(audio.enabled);
   $('audio-silent').textContent = intent === 'resume' ? '音なしで再開' : '音なしで開始';
   // No await before unlock: resume is called within this button's activation.
-  const audioPreparation = audio.unlock();
+  const audioPreparation = resumeAudioPreparation??audio.unlock();
   const prepared = await runPreparation;
   const outcome = await audioPreparation;
   if (!prepared) { pending=false; audioPanel(false); return; }
@@ -409,12 +511,41 @@ function saveWalkPreferences() {
 }
 function selectWalkLevel(id) {
   if (phase !== 4 || game.state !== 'ready' || pending || !$('park-guide').hidden) return;
+  selectedJourneyRoute = null;
   selectedWalkLevel = id; ruleVersion = getWalkLevel(id).ruleVersion;
   renderer.prepareWalk(id);
   records = new RecordStore({ ruleVersion });
-  game.reset({ seed: nextSeed(), walkLevel: id }); renderer.reset(); runOpen = false; log.run = null;
+  game.reset({ seed: nextSeed(), walkLevel: id,journeyRouteId:null }); renderer.reset(); runOpen = false; log.run = null;
   saveWalkPreferences(); refreshRecord();
   log.record('walk_level_select', { walkLevel: id, ruleVersion }, 0);
+}
+async function selectJourneyRoute(routeId, mode = 'calm') {
+  const route = getJourneyRoute(routeId);
+  if(!route || !['calm','challenge'].includes(mode) || pending)return false;
+  if(!canWalkExtra(routeId,commerce)){journey.showHomeMessage('この道は追加の散歩集に含まれています。ホームの追加のおさんぽから確認できます。');return false;}
+  if(homeShop.pendingReward){journey.showHomeMessage('思い出の保存が終わるまで、少しお待ちください。');return false;}
+  if(!['ready','result'].includes(game.state))return false;
+  selectedJourneyRoute = route.id; selectedJourneyMode = mode; selectedWalkLevel = route.level;
+  ruleVersion = `journey-v1:${route.id}:${mode}`;
+  records = new RecordStore({ruleVersion});
+  game.reset({seed:route.seed,walkLevel:route.level,journeyRouteId:route.id,journeyMode:mode});
+  renderer.reset(); runOpen=false; log.run=null; show('ready');
+  $('control-hint').textContent = matchMedia('(pointer: coarse)').matches?'左右スワイプで、光る発見のある道へ':'← → キーで、光る発見のある道へ';
+  updateLevelUI();
+  return activate('start');
+}
+function returnJourneyHome() {
+  moments?.dispose();
+  audio.stop(); input.clear(); game.reset({journeyRouteId:null}); renderer.reset();
+  runOpen=false; log.run=null; selectedJourneyRoute=null; show('ready');
+  homeShop.render();
+  const summary=homeShop.state?.roomShop?.lastReward?.journey;
+  if(summary?.newDiscoveryIds?.length){
+    const equipped=homeShop.state.roomShop.equipped;
+    if(!renderer.reactToHomeItem?.(equipped.toy??equipped.bed))renderer.homeRespond?.();
+    journey.showHomeMessage(getHomeMemoryMessage(homeShop.state));
+  }
+  $('start').focus({preventScroll:true});
 }
 function openWalkPicker() {
   if (pending || game.state !== 'ready') return;
@@ -455,7 +586,7 @@ action('walk-picker-close', closeWalkPicker);
 action('walk-picker-start', startSelectedWalk);
 action('start', () => {
   if (renderer.assetError) { location.reload(); return; }
-  if (phase === 4) { openWalkPicker(); return; }
+  if (phase === 4) { journey.showMap($('start')); return; }
   activate('start');
 });
 action('resume', () => activate('resume'));
@@ -484,7 +615,7 @@ action('retry', () => {
 });
 action('end', () => {
   log.record('end_choice', { resultWaitMs: resultAt === null ? null : performance.now() - resultAt }, game.timeMs);
-  audio.stop(); input.clear(); game.reset(); renderer.reset(); runOpen = false; log.run = null; show('ready'); $('start').focus({ preventScroll: true });
+  returnJourneyHome();
 });
 action('quit', () => {
   activation++; pending = false; game.abandon(); audio.stop(); input.clear(); game.reset(); renderer.reset(); runOpen = false;
@@ -526,7 +657,7 @@ if (testMode) {
     $('log-status').textContent = log.incomplete ? 'ログ不完全：上限に達しました。このセッションは合格判定に使わないでください。' : `${log.sessions.length}セッション・${log.events.length}イベントを書き出しました。`;
   });
   // Explicit testing surface only. No autoplay or simulation controls in normal mode.
-  window.__dogBoneTest = { game, log, audio, renderer, homeShop, metrics, get records() { return records; }, settingsStore, walkPreferences, selectWalkLevel, pause, syncTime, get pending() { return pending; } };
+  window.__dogBoneTest = { game, log, audio, renderer, homeShop, journey, moments, guide, photos, commerce, metrics, get records() { return records; }, settingsStore, walkPreferences, selectWalkLevel, selectJourneyRoute, pause, syncTime, get pending() { return pending; } };
   // On-device measurement is opt-in and removed from the distribution build.
   const diagnostic = {active:false,rows:[],conditions:null,last:null,start:0,duration:0};
   const summarise = values => {
@@ -592,9 +723,9 @@ function frame(now) {
     if (interval > CONFIG.stallMs) { log.record('long_stall', { intervalMs: interval, source: 'render' }, game.timeMs); pause('stall'); }
   }
   if (advancing) { syncTime(now); updateHud(); }
-  if (game.state === 'running') audio.updateMusic(game.timeMs);
+  if (game.state === 'running') {audio.updateMusic(game.timeMs);audio.updateNature?.(game.timeMs);}
   lastFrame = advancing && ['running', 'falling'].includes(game.state) ? now : null;
-  renderer.setMenuPaused?.(document.hidden || homeShop?.modalOpen || !$('settings-panel').hidden || !$('audio-panel').hidden || !$('park-guide').hidden || !$('walk-picker').hidden);
+  renderer.setMenuPaused?.(document.hidden || homeShop?.modalOpen || journey?.modalOpen || Boolean(document.querySelector('.journey-transfer-confirm[open],.journey-tool-dialog[open]')) || !$('settings-panel').hidden || !$('audio-panel').hidden || !$('park-guide').hidden || !$('walk-picker').hidden);
   renderer.draw(game);
   updateHomeControls();
   if (testMode && log.incomplete) $('log-status').textContent = 'ログ不完全：20,000イベントの上限に達しました。';
@@ -639,6 +770,7 @@ function updateHomeControls() {
 }
 action('home-touch', () => {
   if (game.state !== 'ready' || renderer.menuPaused || !renderer.homeRespond()) return;
+  void homeShop.command({type:'recordHomePlay',itemId:'pet'},{silent:true});
   homeTouchNoticed = true;
   homeTouchNoticeUntil = renderer.menuElapsedMs + HOME_ATTENTION_MS;
   $('home-dog-status').textContent = renderer.reducedMotion ? '声をかけました。動きを控える設定はオンです。' : '声に気づいて、耳と顔で応えてくれました。';

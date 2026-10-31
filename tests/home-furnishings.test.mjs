@@ -284,3 +284,12 @@ test('optional art load resolves safely when Image is unavailable and reports na
   assert.equal(context.calls.filter(call => call.name === 'drawImage').length, 0);
   assert.ok(context.calls.filter(call => call.name === 'fill').length > 0, 'the native fallback remains visible');
 });
+
+test('lazy furniture artwork fetches only the equipped items and coalesces repeat requests',async()=>{
+  const art=new HomeFurnitureArt({ImageClass:null,eager:false});
+  await art.ready;assert.equal(art.requests.size,0);
+  await art.prepare({room:'room-white',toy:'starterBall',bed:null});
+  assert.equal(art.requests.size,1);assert.equal(art._states.starterBall,'unavailable');
+  await art.prepare({toy:'starterBall'});assert.equal(art.requests.size,1);
+  await art.prepareAll();assert.equal(art.requests.size,8);
+});

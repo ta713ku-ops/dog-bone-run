@@ -5,7 +5,7 @@ const CELLS = Object.freeze({
   tree: Object.freeze([33, 8, 189, 240]),
   hedge: Object.freeze([264, 87, 240, 82]),
 });
-export const STREET_FOLIAGE_ART = new StreetToyArt({ atlasUrl: ATLAS_URL, cells: CELLS });
+export const STREET_FOLIAGE_ART = new StreetToyArt({ atlasUrl: ATLAS_URL, cells: CELLS, lazy:true,timeoutMs:10000 });
 
 /** The plant's root remains on the common ground plane. */
 export function drawFoliage(ctx, x, baseline, width, kind = 'tree') {

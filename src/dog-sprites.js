@@ -181,10 +181,12 @@ export class DogSprites {
     continuousHome = USE_CONTINUOUS_HOME_DOG,
     gpuHome = USE_GPU_HOME_DOG,
     hdHome = USE_HD_HOME_DOG,
+    canWarmHome = () => true,
   } = {}) {
     this.continuousHome = continuousHome;
     this.gpuHome = gpuHome;
     this.hdHome = hdHome;
+    this.canWarmHome = canWarmHome;
     this.images = null;
     this.metadata = null;
     this.crops = null;
@@ -196,22 +198,24 @@ export class DogSprites {
       mode: 'photo-reference-sprites', triangleCount: 0, materials: 0,
       textureSizes: [[1024, 1024], [1024, 1024]], compressedBytes: 0, ready: false,
     };
-    this.ready = this.#loadAnimation().then(async () => {
-      this.stats.ready = false;
-      try {
-        if(this.continuousHome) {
-          try { await this.#loadHomeMotion(true); }
-          catch(error) { this.stats.continuityFallbackReason=String(error.message); await this.#loadHomeMotion(false); }
-        } else await this.#loadHomeMotion(false);
-      }
-      catch (error) {
-        this.stats.homeMotionReady = false;
-        this.stats.homeMotionFallbackReason = String(error.message);
-      }
-      this.stats.ready = true;
-    }).catch(async error => {
+    // The small original animation pack is immediately usable. Detailed
+    // continuity/HD channels load after that first interactive frame.
+    this.baseReady = this.#loadAnimation().catch(async error => {
       await this.#load(frontAtlasUrl, backAtlasUrl, metadataUrl);
       this.stats.fallbackReason = String(error.message);
+    });
+    this.ready = this.baseReady.then(async () => {
+      if (!this.animation) return;
+      await new Promise(resolve => setTimeout(resolve, 350));
+      try {
+        if (this.continuousHome) {
+          try { await this.#loadHomeMotion(true); }
+          catch (error) { this.stats.continuityFallbackReason=String(error.message); await this.#loadHomeMotion(false); }
+        } else await this.#loadHomeMotion(false);
+      } catch (error) {
+        this.stats.homeMotionReady=false;
+        this.stats.homeMotionFallbackReason=String(error.message);
+      }
     });
   }
 
@@ -244,6 +248,9 @@ export class DogSprites {
       // failure keeps the complete previous animation set usable.
       const allImages={...this.images,...Object.fromEntries(names.map((name,i)=>[name,images[i]]))};
       const allAtlases={...this.animation.atlases,...metadata.atlases};
+      // Texture extraction and GPU compilation belong to the quiet home,
+      // never to a timed walk or an early gesture on the base animation pack.
+      while (!this.canWarmHome()) await new Promise(resolve=>setTimeout(resolve,150));
       const naturalPainter=new NaturalDogPainter(allImages,allAtlases);
       Object.assign(this.animation.atlases,metadata.atlases);
       for(let i=0;i<names.length;i++) this.images[names[i]]=images[i];
@@ -260,13 +267,16 @@ export class DogSprites {
         this.hdFrames = this.hdHome ? new HdDogFrames() : null;
         this.gpuPainter = new GpuDogPainter(allImages,allAtlases,{features:naturalPainter.features,frameProvider:this.hdFrames});
         this.gpuPainter.warmUp();
-        if(this.gpuPainter.available&&this.hdFrames&&await this.hdFrames.ready){
+        // The validated continuous pack is already usable. Optional HD frames
+        // warm in the background and blend through the existing GPU provider.
+        this.homeUpgradeReady=Promise.resolve(this.hdFrames?.ready).then(loaded=>{
+          if(!loaded||!this.gpuPainter?.available)return false;
           const warm=document.createElement('canvas');warm.width=warm.height=640;
           const context=warm.getContext('2d');
           for(const [atlas,index]of[['sitdown',0],['sitdown',47],['liedown',47]])
             this.gpuPainter.draw(context,{x:192,foot:372,size:336,sample:{prealigned:true},layers:[{atlas,index,weight:1}]});
-          warm.width=warm.height=1;
-        }
+          warm.width=warm.height=1;return true;
+        }).catch(()=>false);
         this.stats.gpu = this.gpuPainter.stats;
         this.stats.hd = this.hdFrames?.stats ?? null;
         if (!this.gpuPainter.available) { this.hdFrames?.dispose(); }
@@ -330,8 +340,12 @@ export class DogSprites {
     this.stats={mode:'authored-image-animation',ready:true,animationReady:true,homeMotionReady:false,homeFrames:20,triangleCount:0,materials:0,
       textureSizes:images.map(i=>[i.width,i.height]),textureCount:images.length,
       compressedBytes:bytes.reduce((sum,b)=>sum+b.byteLength,0),decodedBytes:metadata.textureBytes};
-    await upgradeWalkAtlas({animation:this.animation,images:this.images,stats:this.stats});
     return true;
+  }
+  prepareWalk(){
+    if(!this.animation)return Promise.resolve(false);
+    this.walkUpgradeReady??=upgradeWalkAtlas({animation:this.animation,images:this.images,stats:this.stats});
+    return this.walkUpgradeReady;
   }
 
   async #load(frontAtlasUrl, backAtlasUrl, metadataUrl) {

@@ -279,7 +279,7 @@ function makeAssetRecord(state, reason = null) {
  * the animated dog, furniture, and DOM controls stay in their own layers.
  */
 export class HomeInteriorBackdrop {
-  constructor({ ImageClass = globalThis.Image, createCanvas = null, loadTimeoutMs = DEFAULT_LOAD_TIMEOUT_MS } = {}) {
+  constructor({ ImageClass = globalThis.Image, createCanvas = null, loadTimeoutMs = DEFAULT_LOAD_TIMEOUT_MS, eager = true } = {}) {
     this.images = Object.create(null);
     this.assetStates = Object.create(null);
     this.cacheCanvas = null;
@@ -289,6 +289,7 @@ export class HomeInteriorBackdrop {
     this.assetVersion = 0;
     this.createCanvas = createCanvas;
     this.ImageClass = ImageClass;
+    this.assetPromises=Object.create(null);
     this.loadTimeoutMs = Number.isFinite(loadTimeoutMs) && loadTimeoutMs > 0
       ? Math.min(loadTimeoutMs, 30_000)
       : DEFAULT_LOAD_TIMEOUT_MS;
@@ -298,15 +299,25 @@ export class HomeInteriorBackdrop {
       this.assetStates[roomId] = Object.create(null);
       for (const orientation of ORIENTATIONS) {
         this.assetStates[roomId][orientation] = makeAssetRecord(
-          typeof ImageClass === 'function' ? 'loading' : 'unavailable',
+          typeof ImageClass === 'function' ? (eager?'loading':'idle') : 'unavailable',
           typeof ImageClass === 'function' ? null : 'image-api-unavailable',
         );
       }
     }
 
-    this.ready = Promise.all(PHOTO_ROOM_IDS.flatMap(roomId => ORIENTATIONS.map(orientation =>
-      this.#loadAsset(roomId, orientation, INTERIOR_URLS[roomId][orientation]))))
-      .then(() => this.assetStates);
+    this.ready = eager?this.prepareAll():Promise.resolve(this.assetStates);
+  }
+  prepareAll(){
+    return Promise.all(PHOTO_ROOM_IDS.flatMap(roomId=>ORIENTATIONS.map(orientation=>this.#requestAsset(roomId,orientation))))
+      .then(()=>this.assetStates);
+  }
+  #requestAsset(roomId,orientation){
+    const key=`${roomId}:${orientation}`;
+    if(!this.assetPromises[key]){
+      if(typeof this.ImageClass==='function')this.#setAssetState(roomId,orientation,'loading');
+      this.assetPromises[key]=this.#loadAsset(roomId,orientation,INTERIOR_URLS[roomId][orientation]);
+    }
+    return this.assetPromises[key];
   }
 
   #setAssetState(roomId, orientation, state, reason = null, image = null) {
@@ -363,6 +374,7 @@ export class HomeInteriorBackdrop {
     if (!PHOTO_ROOM_IDS.includes(roomId)) return { roomId, orientation: null, state: 'error', reason: 'unknown-room' };
     const orientation = validDrawSize(width, height) ? orientationFor(width, height) : null;
     if (!orientation) return { roomId, orientation: null, state: 'error', reason: 'invalid-viewport' };
+    if(this.assetStates[roomId][orientation].state==='idle')void this.#requestAsset(roomId,orientation);
     const state=this.assetStates[roomId][orientation];
     if(roomId==='room-white'&&['error','unavailable'].includes(state.state))return {roomId,orientation,state:'ready',reason:'native-white-fallback'};
     return { roomId, orientation, ...state };
