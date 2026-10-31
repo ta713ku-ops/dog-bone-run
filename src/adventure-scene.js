@@ -1801,6 +1801,7 @@ function makeStreetBuildings(scrollDistance) {
 function drawStreetBuildings(renderer, scrollDistance) {
   const buildings = makeStreetBuildings(scrollDistance);
   for (const building of buildings) {
+    if(renderer.journeyRiverbank && building.side===1)continue;
     drawStreetGroundLot(renderer, building, scrollDistance);
     drawStreetBuilding(renderer, building, scrollDistance);
     drawStreetFrontageTree(renderer, building, scrollDistance);
@@ -1888,6 +1889,7 @@ function drawStreetTree(renderer, side, slot, worldDistance, scrollDistance) {
 
 function drawStreetTrees(renderer, scrollDistance) {
   for (const side of [-1, 1]) {
+    if(renderer.journeyRiverbank && side===1)continue;
     const spacing = 7.65;
     const offset = side < 0 ? 6.8 : 12.2;
     const first = Math.floor((scrollDistance + STREET_NEAR_DISTANCE - offset) / spacing);
@@ -1949,6 +1951,7 @@ function drawStreetPower(renderer, scrollDistance) {
   const spacing = 9.6;
   const pointsBySide = new Map();
   for (const side of [-1, 1]) {
+    if(renderer.journeyRiverbank && side===1)continue;
     const offset = side < 0 ? 7.4 : 14.6;
     const first = Math.floor((scrollDistance + STREET_NEAR_DISTANCE - offset) / spacing);
     const last = Math.ceil((scrollDistance + STREET_HORIZON_DISTANCE - offset) / spacing);
@@ -2082,6 +2085,7 @@ export class AdventureScene {
   }
 
   draw(renderer, game, { menu = false, timeMs = 0 } = {}) {
+    renderer.journeyRiverbank=game?.journeyRouteId==='street-2'&&!menu;
     const w = renderer.width, h = renderer.height;
     if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return;
     const frameTime = menu ? finiteTime(timeMs) : finiteTime(game?.timeMs);

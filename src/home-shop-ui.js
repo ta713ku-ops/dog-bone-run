@@ -36,6 +36,7 @@ export class HomeShopUI {
     if(this.c.game.state!=='ready')return;
     this.tab=tab;this.category='all';this.trigger=trigger;this.resetPreview();this.buildCatalog();
     if(!this.dialog.open)this.dialog.showModal();this.dialog.querySelector('#shop-close')?.focus();
+    void Promise.all([this.c.renderer.room?.prepareAll?.(),this.c.renderer.furnitureArt?.prepareAll?.()]).then(()=>{this.paintThumbnails();this.updatePreview();});
     if(!this.c.state)this.message(this.c.error??'storage_unavailable',true);
   }
   close(){if(this.c.pending)return;this.resetPreview();if(this.dialog.open)this.dialog.close();this.c.render();}

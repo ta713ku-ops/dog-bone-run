@@ -11,7 +11,11 @@ import {sampleWalk, sampleHome, homeInteractionDuration} from './sprite-animatio
 import {createHomeCommand, sampleHomeCommand} from './home-command-motion.js';
 import {homeDogLayout, HOME_ATTENTION_MS, HOME_IDLE_GESTURE_MS, HOME_DIRECTION_GESTURE_MS, sampleHomeAttention, sampleHomeIdleGesture, homeGestureRestTarget} from './home-presence.js';
 import {HomeAutonomy} from './home-autonomy.js';
-import {HomeFurnitureArt, drawHomeFurniture} from './home-furnishings.js';
+import {HomeFurnitureArt, drawHomeFurniture, drawHomeFurnitureItem} from './home-furnishings.js';
+import {
+  createJourneyDogPlay, sampleJourneyDogPlay,
+  createJourneyDiscoveryReaction, sampleJourneyDiscoveryReaction,
+} from './journey-dog-play.js';
 import {
   deriveVisualSeed, ROAD_COMFORT_FLAGS, ROAD_DECORATION_MODES,
   RoadComfortTracker, shouldKeepRoadDecoration,
@@ -25,11 +29,13 @@ import {
   drawParkCrow, drawParkCrowAt, drawParkPuddle, drawParkBall, parkObstacleBodyBounds,
 } from './park-level2-art.js';
 import { parkObstacleLaneAt, parkObstacleVisibleAt } from './park-course.js';
+import { JourneyScene } from './journey-scene.js';
 
 const INK = '#65412a', BROWN = '#bf783e', LIGHT = '#dfaa68', WHITE = '#fff8e9';
 const OBSTACLE_HALF_WIDTH = .28, OBSTACLE_HALF_LENGTH = .10;
 const CONTACT_SHADOW = 'rgba(68, 51, 30, .18)';
 const PICKUP_EFFECT_MS = 520, PICKUP_FLIGHT_MS = 360, PICKUP_SPARKLE_MS = 220;
+const finiteTime = value => Number.isFinite(value) ? value : 0;
 
 function linearGradient(ctx, x0, y0, x1, y1, stops, fallback) {
   const gradient = ctx.createLinearGradient?.(x0, y0, x1, y1);
@@ -49,22 +55,34 @@ export class Renderer {
     // Authored image animation uses the existing Canvas layer; original
     // photo-reference images remain available if the new sheets cannot load.
     this.liveDog = null;
-    this.dogs = useSprites ? new DogSprites() : null;
-    this.adventure = useSprites ? new AdventureScene() : null;
+    this.dogs = useSprites ? new DogSprites({
+      canWarmHome: () => (this.lastDrawState == null || this.lastDrawState === 'ready') && !this.homeBusy,
+    }) : null;
+    this.useSprites=useSprites;
+    this.adventure = null;
     this.streetArt = useSprites ? STREET_OBSTACLE_ART : null;
     this.toyArt = useSprites ? STREET_TOY_ART : null;
-    this.room = new HomeInteriorBackdrop();
+    this.room = new HomeInteriorBackdrop({eager:false});
     this.homeInterior = 'room-white';
-    this.furnitureArt = new HomeFurnitureArt();
+    this.furnitureArt = new HomeFurnitureArt({eager:false});
     this.homeFurniture = null;
     this.petStartedAt = null;
     this.menuElapsedMs = 0; this.menuLastFrameNow = null; this.menuPaused = false;
     this.homeClockOffset = 0; this.homeInteraction = null; this.homeSample = null; this.homeStillPose = null;
     this.homeHeldFrame = null;
     this.homeAttention = null;
+    this.homeReaction = null;
+    this.homePlay = null; this.homePlaySample = null;
+    this.homeReturnReaction = null; this.homeReturnTripSignature = null;
+    this.discoveryReaction = null; this.discoverySample = null;
+    this.discoveryElapsedMs = 0; this.discoveryLastFrameNow = null;
+    this.discoveryFocusProgress = 0; this.discoveryFocusLastFrameNow = null;
+    this.observingDiscovery = false;
+    this.homeJourneyContext = null;
+    this.journeyScene = new JourneyScene();
     this.homeAutonomy = new HomeAutonomy(Math.floor(Math.random() * 0x100000000));
     this.resetHomeAutonomy();
-    this.ready = this.dogs?.ready ?? Promise.resolve();
+    this.ready = this.dogs?.baseReady ?? this.dogs?.ready ?? Promise.resolve();
     this.lastDrawState = null;
     this.systemReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.reducedMotion = this.systemReducedMotion;
@@ -84,6 +102,9 @@ export class Renderer {
   }
   collect(event) { this.effects.push(event); }
   prepareWalk(level) {
+    // The standard walk is ready; optional HD must not delay home startup.
+    void this.dogs?.prepareWalk?.();
+    void this.toyArt?.ready;
     if (level === 4) {
       this.caveScene ??= new CaveScene();
       return this.caveScene.ready.then(()=>this.caveScene.prepare(this));
@@ -92,7 +113,10 @@ export class Renderer {
       this.mountainScene ??= new MountainScene();
       return this.mountainScene.ready;
     }
-    if (level !== 2) return this.adventure?.ready ?? Promise.resolve();
+    if (level !== 2) {
+      if(this.useSprites)this.adventure??=new AdventureScene();
+      return Promise.all([this.adventure?.ready,this.streetArt?.ready,this.toyArt?.ready]);
+    }
     this.parkLevel2Scene ??= new ParkLevel2Scene();
     return this.parkLevel2Scene.ready;
   }
@@ -101,6 +125,8 @@ export class Renderer {
     const wasReduced = this.reducedMotion;
     const settlingManualCommand = this.homeInteraction?.durationMs !== undefined;
     const nextReduced = this.systemReducedMotion || Boolean(enabled);
+    const freezingHomePlay = Boolean(this.homePlay?.status === 'running' && !wasReduced && nextReduced);
+    const frozenHomePlaySample = freezingHomePlay ? this.sampleHomePlay(this.menuElapsedMs) : null;
     if (this.homeAutonomy && !wasReduced && nextReduced) {
       const sample=this.homeSample ?? {};
       this.homeFrozenLocal=Object.fromEntries(['headAngle','headLift','headRest','eyeRest','bodyShift','pawAdjust','gazeX','blink','earLeft','earRight','headYaw'].map(key=>[key,sample[key]??0]));
@@ -112,6 +138,12 @@ export class Renderer {
       ? {sample:this.updateHomeSample(this.menuElapsedMs),action:this.homeInteraction?.action} : null;
     this.userReducedMotion = Boolean(enabled);
     this.reducedMotion = this.systemReducedMotion || this.userReducedMotion;
+    if (freezingHomePlay && frozenHomePlaySample?.active) {
+      this.homePlay = { ...this.homePlay, frozenSample: { ...frozenHomePlaySample } };
+    } else if (wasReduced && !this.reducedMotion && this.homePlay?.frozenSample) {
+      const { frozenSample: ignored, ...resumedPlay } = this.homePlay;
+      this.homePlay = resumedPlay;
+    }
     if (this.homeAutonomy) {
       if(this.reducedMotion && this.homeReducedStartedAt==null) this.homeReducedStartedAt=this.menuElapsedMs;
       if(wasReduced && !this.reducedMotion && this.homeReducedStartedAt!=null){
@@ -203,6 +235,11 @@ export class Renderer {
     this.homeClockOffset = 0; this.homeInteraction = null; this.homeSample = null; this.homeStillPose = null;
     this.homeHeldFrame = null;
     this.homeAttention = null;
+    this.homeReaction = null; this.homePlay = null; this.homePlaySample = null;
+    this.homeReturnReaction = null;
+    this.discoveryReaction = null; this.discoverySample = null;
+    this.discoveryElapsedMs = 0; this.discoveryLastFrameNow = null;
+    this.discoveryFocusProgress = 0; this.discoveryFocusLastFrameNow = null; this.observingDiscovery = false;
     this.resetHomeAutonomy();
     this.roadRunOpen = false;
     this.roadComfort.resetTrajectory();
@@ -218,11 +255,16 @@ export class Renderer {
     this.menuPaused = next;
     return this.menuPaused;
   }
-  get homeBusy() { return Boolean(this.homeInteraction || this.homeAttention); }
+  get homeBusy() {
+    const activePlay = this.homePlay?.status === 'running'
+      && !this.reducedMotion
+      && this.homeClockAt(this.menuElapsedMs) - this.homePlay.startedAt < this.homePlay.durationMs;
+    return Boolean(this.homeInteraction || this.homeAttention || activePlay);
+  }
   homeClockAt(timeMs) {
     const stopped=this.homeAutonomy && this.reducedMotion && this.homeReducedStartedAt!=null
-      ? Math.max(0,timeMs-this.homeReducedStartedAt) : 0;
-    return timeMs+this.homeClockOffset-stopped;
+      ? Math.max(0,finiteTime(timeMs)-this.homeReducedStartedAt) : 0;
+    return finiteTime(timeMs)+finiteTime(this.homeClockOffset)-stopped;
   }
   resetHomeAutonomy() {
     this.homeAutonomyReady = false;
@@ -234,6 +276,32 @@ export class Renderer {
     this.homeAutoCommand = null; this.homeAutoGesture = null; this.homePosture = 'stand';
     this.homeIdleRest = {headRest:0,eyeRest:0};
   }
+  homePlayIsActive(timeMs = this.menuElapsedMs) {
+    return Boolean(this.homePlay?.status === 'running' && (
+      (this.reducedMotion && this.homePlay.frozenSample)
+      || (!this.reducedMotion && this.homeClockAt(timeMs) - this.homePlay.startedAt < this.homePlay.durationMs)
+    ));
+  }
+  sampleHomePlay(timeMs = this.menuElapsedMs, { toyOffset } = {}) {
+    if (!this.homePlay) {
+      this.homePlaySample = null;
+      return null;
+    }
+    const slot = this.homeFurnitureBounds?.toy;
+    const dog = this.width > 0 && this.height > 0 ? homeDogLayout(this.width, this.height) : null;
+    const measuredOffset = slot && dog?.size > 0 ? (slot.centerX - dog.x) / dog.size : .55;
+    const sample = this.reducedMotion && this.homePlay.frozenSample
+      ? { ...this.homePlay.frozenSample, active: true, phase: 'reduced-motion' }
+      : sampleJourneyDogPlay(this.homePlay, this.homeClockAt(timeMs), {
+        toyOffset: Number.isFinite(toyOffset) ? toyOffset : measuredOffset,
+        reducedMotion: this.reducedMotion,
+      });
+    this.homePlaySample = sample;
+    if (sample.progress >= 1 && this.homePlay.status === 'running') {
+      this.homePlay = { ...this.homePlay, status: 'settled', completedAt: this.homeClockAt(timeMs) };
+    }
+    return sample;
+  }
   homePostureFor(frame) {
     const counts = this.dogs?.stats.homeFrameCounts;
     const pose = createHomeCommand('greet', 0, frame, counts).sourcePose;
@@ -241,6 +309,7 @@ export class Renderer {
   }
   homeRespond() {
     if (this.homeBusy || !this.dogs?.stats.animationReady) return false;
+    this.homeReaction = null;
     if (!this.dogs.stats.continuityReady) return this.homeGesture('greet');
     if (this.lastDrawState !== 'ready') {
       this.lastDrawState = 'ready'; this.menuElapsedMs = 0; this.menuLastFrameNow = null;
@@ -252,6 +321,7 @@ export class Renderer {
   }
   homeGesture(action) {
     if (!['sit','lie','greet'].includes(action) || this.homeBusy || !this.dogs?.stats.animationReady) return false;
+    this.homeReaction = null;
     // A command immediately after returning to the title may precede its
     // first RAF. Establish that clock now so the draw cannot discard it.
     if(this.lastDrawState!=='ready'){
@@ -290,6 +360,132 @@ export class Renderer {
     }
     return true;
   }
+  setJourneyHomeContext(context = {}) {
+    if (!context || typeof context !== 'object') {
+      this.homeJourneyContext = null;
+      return null;
+    }
+    const journey = context.journey ?? null;
+    const lastTrip = context.lastTrip ?? null;
+    const dogName = typeof context.dogName === 'string' && context.dogName.trim()
+      ? context.dogName.trim().slice(0, 32) : 'この子';
+    const tripSignature = lastTrip && typeof lastTrip === 'object'
+      ? JSON.stringify({
+        completedAt: lastTrip.completedAt ?? null,
+        routeId: lastTrip.routeId ?? null,
+        runDiscoveryIds: Array.isArray(lastTrip.runDiscoveryIds) ? lastTrip.runDiscoveryIds : [],
+        discoveryIds: Array.isArray(lastTrip.discoveryIds) ? lastTrip.discoveryIds : [],
+      })
+      : null;
+    this.homeJourneyContext = {
+      journey,
+      equipped: context.equipped && typeof context.equipped === 'object' ? { ...context.equipped } : null,
+      lastTrip,
+      dogName,
+    };
+    const isHome = this.lastDrawState === null || this.lastDrawState === 'ready';
+    if (isHome && tripSignature && tripSignature !== this.homeReturnTripSignature) {
+      this.homeReturnTripSignature = tripSignature;
+      const discoveryIds = Array.isArray(lastTrip.runDiscoveryIds) ? lastTrip.runDiscoveryIds
+        : Array.isArray(lastTrip.discoveryIds) ? lastTrip.discoveryIds : [];
+      this.homeReturnReaction = {
+        dogName,
+        routeId: typeof lastTrip.routeId === 'string' ? lastTrip.routeId : null,
+        discoveryId: discoveryIds.at(-1) ?? journey?.life?.lastDiscoveryId ?? null,
+        startedAt: this.homeClockAt(this.menuElapsedMs),
+        durationMs: 2_700,
+      };
+    }
+    return this.homeJourneyContext;
+  }
+  reactToHomeItem(itemId) {
+    const reactions = {
+      bed: { slot: 'bed', kind: 'bed', action: 'lie' },
+      starterBall: { slot: 'toy', kind: 'ball', action: 'sit' },
+      plush: { slot: 'toy', kind: 'plush', action: 'lie' },
+      rope: { slot: 'toy', kind: 'rope', action: 'sit' },
+    };
+    const reaction = reactions[itemId];
+    if (!reaction || this.homeBusy || !this.dogs?.stats.animationReady) return false;
+    const equipped = this.homeJourneyContext?.equipped ?? this.homeFurniture;
+    if (!equipped || equipped[reaction.slot] !== itemId) return false;
+    const priorSample = this.homePlaySample;
+    const startDogOffset = Number.isFinite(priorSample?.dogOffset) ? priorSample.dogOffset : 0;
+    if (!this.homeGesture(reaction.action)) return false;
+    const startedAt = this.homeClockAt(this.menuElapsedMs);
+    this.homeReaction = { itemId, kind: reaction.kind, startedAt };
+    this.homePlay = createJourneyDogPlay(itemId, startedAt, { startDogOffset });
+    this.homePlaySample = this.sampleHomePlay(this.menuElapsedMs);
+    return true;
+  }
+  reactToDiscovery(discovery) {
+    if (this.homeBusy || (this.dogs?.stats && !this.dogs.stats.animationReady)) return false;
+    const reaction = createJourneyDiscoveryReaction(discovery, this.discoveryElapsedMs);
+    if (!reaction) return false;
+    this.discoveryReaction = { ...reaction, discovery: { ...discovery } };
+    this.discoverySample = sampleJourneyDiscoveryReaction(reaction, this.discoveryElapsedMs, { reducedMotion: this.reducedMotion });
+    this.discoveryLastFrameNow = null;
+    return true;
+  }
+  applyHomeReaction(sample, timeMs) {
+    const reaction = this.homeReaction;
+    if (!reaction || !sample) return sample;
+    const age = Math.max(0, this.homeClockAt(timeMs) - reaction.startedAt);
+    if (reaction.kind === 'ball') {
+      const smooth = value => { const t = Math.max(0, Math.min(1, value)); return t * t * (3 - 2 * t); };
+      const look = this.reducedMotion ? 1 : smooth(age / 420) * (1 - smooth((age - 1_750) / 650));
+      const sniff = this.reducedMotion ? 0 : Math.max(0, Math.sin(Math.PI * (age - 700) / 850));
+      return { ...sample,
+        gazeX: Math.max(sample.gazeX ?? 0, .52 * look),
+        headYaw: (sample.headYaw ?? 0) + .12 * look,
+        headAngle: (sample.headAngle ?? 0) + .012 * look,
+        headRest: Math.max(sample.headRest ?? 0, .18 * sniff),
+      };
+    }
+    if (reaction.kind === 'plush') {
+      const settle = this.reducedMotion ? 1 : Math.max(0, Math.min(1, age / 1750));
+      return { ...sample,
+        headRest: Math.max(sample.headRest ?? 0, .82 * settle),
+        eyeRest: Math.max(sample.eyeRest ?? 0, .86 * settle),
+      };
+    }
+    return sample;
+  }
+  applyJourneyPlaySample(sample, play) {
+    if (!sample || !play) return sample;
+    const clamp = (value, min, max) => Math.max(min, Math.min(max, Number.isFinite(value) ? value : 0));
+    return {
+      ...sample,
+      bodyShift: clamp((sample.bodyShift ?? 0) + play.bodyShift, -1, 1),
+      pawAdjust: clamp(Math.max(sample.pawAdjust ?? 0, play.pawAdjust), 0, 1),
+      headAngle: clamp((sample.headAngle ?? 0) + play.headAngle, -.08, .08),
+      headLift: clamp((sample.headLift ?? 0) + play.headLift, -2, 4),
+      headRest: clamp(Math.max(sample.headRest ?? 0, play.headRest), 0, 1),
+      eyeRest: clamp(Math.max(sample.eyeRest ?? 0, play.eyeRest), 0, 1),
+      gazeX: clamp((sample.gazeX ?? 0) + play.gazeX, -1, 1),
+      earLeft: clamp((sample.earLeft ?? 0) + play.earLeft, -1, 1),
+      earRight: clamp((sample.earRight ?? 0) + play.earRight, -1, 1),
+    };
+  }
+  applyHomeReturnReaction(sample, timeMs) {
+    const reaction = this.homeReturnReaction;
+    if (!reaction || !sample) return sample;
+    const age = Math.max(0, this.homeClockAt(timeMs) - reaction.startedAt);
+    const duration = Math.max(1, finiteTime(reaction.durationMs) || 2_700);
+    if (age >= duration) return sample;
+    const t = Math.max(0, Math.min(1, age / duration));
+    const envelope = Math.sin(Math.PI * t) ** 1.25;
+    const direction = reaction.routeId?.length % 2 ? 1 : -1;
+    return {
+      ...sample,
+      gazeX: (sample.gazeX ?? 0) + direction * .18 * envelope,
+      headLift: (sample.headLift ?? 0) + 1.2 * envelope,
+      headAngle: (sample.headAngle ?? 0) - .009 * envelope,
+      earLeft: Math.max(sample.earLeft ?? 0, .16 * envelope),
+      earRight: Math.max(sample.earRight ?? 0, .22 * envelope),
+      breath: (sample.breath ?? 0) + .045 * envelope,
+    };
+  }
   updateHomeSample(timeMs, result = false) {
     if (this.homeAttention && timeMs - this.homeAttention.startedAt >= HOME_ATTENTION_MS) {
       this.homeClockOffset -= HOME_ATTENTION_MS;
@@ -316,6 +512,12 @@ export class Renderer {
         ?sampleHomeCommand(clock,this.homeInteraction,{reducedMotion:this.reducedMotion,continuousMotion:true,frameCounts:this.dogs.stats.homeFrameCounts,seed:42})
         :sampleHome(clock,{reducedMotion:this.reducedMotion,interaction:this.homeInteraction,heldFrame:this.homeHeldFrame,detailedMotion:Boolean(this.dogs?.stats.homeMotionReady),continuousMotion:Boolean(this.dogs?.stats.continuityReady),frameCounts:this.dogs?.stats.homeFrameCounts,seed:42});
     if (attentionAge !== null && !result) this.homeSample = sampleHomeAttention(this.homeSample, attentionAge, this.reducedMotion);
+    if (this.homeReaction && !result) this.homeSample = this.applyHomeReaction(this.homeSample, timeMs);
+    if (!result && this.lastDrawState === 'ready') {
+      this.homePlaySample = this.sampleHomePlay(timeMs);
+      if (this.homePlaySample) this.homeSample = this.applyJourneyPlaySample(this.homeSample, this.homePlaySample);
+      this.homeSample = this.applyHomeReturnReaction(this.homeSample, timeMs);
+    } else this.homePlaySample = null;
     return this.homeSample;
   }
   sampleAutonomousHome(clock, attending) {
@@ -550,10 +752,14 @@ export class Renderer {
   }
   frontDog(x, y, scale, time = 0, action = 'idle', reactionMs = null) {
     const c = this.ctx, foot = y + 102 * scale;
+    const playSample = this.lastDrawState === 'ready' ? this.homePlaySample : null;
+    const dogX = x + (Number.isFinite(playSample?.dogOffset) ? playSample.dogOffset : 0) * 232 * scale;
     const motionAllowed = !this.reducedMotion && this.roadComfortFlags.dogMotion;
     const authoredHomeMotion = Boolean(this.dogs?.stats.homeMotionReady);
     const bob = motionAllowed && !authoredHomeMotion ? Math.sin(time * Math.PI * 2 / 3.8) * 1.2 * scale : 0;
     const idleLean = motionAllowed && !authoredHomeMotion ? Math.sin(time * .9) * .009 : 0;
+    const playBob = motionAllowed ? -(playSample?.pawAdjust ?? 0) * 1.7 * scale : 0;
+    const playLean = motionAllowed ? (playSample?.dogLean ?? 0) : 0;
     const tapLean = motionAllowed && Number.isFinite(reactionMs) && reactionMs >= 0 && reactionMs < 700
       ? Math.sin(reactionMs / 700 * Math.PI) * .018 : 0;
 
@@ -567,16 +773,16 @@ export class Renderer {
         // A soft penumbra and a narrower contact core sit on the same rug
         // baseline. Neither follows the head or the breathing deformation.
         c.save();
-        c.translate(x, foot + 3 * scale); c.scale(1, .15);
+        c.translate(dogX, foot + 3 * scale); c.scale(1, .15);
         const shadow = c.createRadialGradient(0, 0, 0, 0, 0, (78 + 15 * lieAmount) * scale);
         shadow.addColorStop(0, '#49342532'); shadow.addColorStop(.48, '#49342518'); shadow.addColorStop(1, '#49342500');
         this.ellipse(0, 0, (78 + 15 * lieAmount) * scale, (78 + 15 * lieAmount) * scale, shadow);
         c.restore();
-        this.ellipse(x, foot + scale, (43 + 24 * lieAmount) * scale, (3 + 2 * lieAmount) * scale, '#49342526');
-      } else this.ellipse(x, foot + 2, (64+13*lieAmount) * scale * (1 - Math.abs(bob) * .012), (9+3*lieAmount) * scale, '#5a78412b');
+        this.ellipse(dogX, foot + scale, (43 + 24 * lieAmount) * scale, (3 + 2 * lieAmount) * scale, '#49342526');
+      } else this.ellipse(dogX, foot + 2, (64+13*lieAmount) * scale * (1 - Math.abs(bob) * .012), (9+3*lieAmount) * scale, '#5a78412b');
       c.save();
-      c.translate(x, foot + bob);
-      c.rotate(idleLean + tapLean);
+      c.translate(dogX, foot + bob + playBob);
+      c.rotate(idleLean + tapLean + playLean);
       if (this.lastDrawState === 'ready') {
         c.imageSmoothingEnabled = true;
         if ('imageSmoothingQuality' in c) c.imageSmoothingQuality = 'high';
@@ -614,8 +820,40 @@ export class Renderer {
     c.restore();
     return true;
   }
+  drawHomePlayToy(playSample, home, attachedPass) {
+    if (!playSample?.active || !home || !this.homePlay || !['starterBall', 'plush', 'rope'].includes(this.homePlay.itemId)) return false;
+    const attached = playSample.propMode === 'carried';
+    if (attached !== attachedPass) return false;
+    const source = this.homeFurnitureBounds?.toy;
+    if (!source || source.itemId !== this.homePlay.itemId) return false;
+    const width = source.width, height = source.height, size = home.size;
+    let centerX, centerY;
+    if (attached) {
+      centerX = home.x + playSample.dogOffset * size + playSample.carryOffsetX * size;
+      centerY = home.foot - playSample.carryOffsetY * size;
+    } else {
+      centerX = source.centerX + playSample.propOffsetX * size;
+      const floorY = source.bottom - height / 2;
+      const mouthY = home.foot - playSample.carryOffsetY * size;
+      const lift = Math.max(0, Math.min(1, playSample.propLift));
+      centerY = floorY + (mouthY - floorY) * lift;
+    }
+    const box = {
+      x: centerX - width / 2, y: centerY - height / 2, width, height,
+      left: centerX - width / 2, top: centerY - height / 2,
+      right: centerX + width / 2, bottom: centerY + height / 2,
+      centerX, centerY,
+    };
+    return drawHomeFurnitureItem(this.ctx, this.homePlay.itemId, box, {
+      images: this.furnitureArt?.images,
+      environment: this.homeInterior === 'room-garden' ? 'garden' : 'indoor',
+      rotation: playSample.propRotation,
+      attached,
+    });
+  }
   runner(x, foot, scale, game, actionOverride = null) {
     const c = this.ctx;
+    const discovery = this.discoverySample?.active ? this.discoverySample : null;
     const moveProgress = game.move
       ? Math.max(0, Math.min(1, (game.timeMs - game.move.startMs) / CONFIG.moveMs)) : 0;
     const direction = game.move ? Math.sign(game.move.to - game.move.from) : 0;
@@ -624,10 +862,11 @@ export class Renderer {
     this.contactReaction = hit;
     const bobCanAdvance = game.state === 'running'
       || (game.state === 'paused' && game.pausedFrom === 'running');
-    const bob = motionAllowed && bobCanAdvance
-      ? Math.sin(this.worldDistance(game) / .78 * Math.PI * 4) * .8 * scale : 0;
-    const lean = motionAllowed && game.move
-      ? direction * Math.sin(moveProgress * Math.PI) * .035 : 0;
+    const discoveryBob = motionAllowed && discovery ? Math.sin(discovery.progress * Math.PI * 3) * discovery.step * 2.2 * scale : 0;
+    const bob = (motionAllowed && bobCanAdvance
+      ? Math.sin(this.worldDistance(game) / .78 * Math.PI * 4) * .8 * scale : 0) + discoveryBob;
+    const lean = (motionAllowed && game.move
+      ? direction * Math.sin(moveProgress * Math.PI) * .035 : 0) + (discovery?.turn ?? 0);
     const shadowSpread = 1 - Math.min(.035, Math.abs(bob) * .02);
 
     if (this.dogs) {
@@ -641,8 +880,42 @@ export class Renderer {
       c.save();
       c.translate(x, foot + bob - joy*2.8*scale + hit.flinch*4*scale);
       c.rotate(lean + hit.side*hit.flinch*.07 + (joy>0?Math.sin(age/90)*joy*.014:0));
-      const sample={atlas:'walk',...sampleWalk({distance:this.worldDistance(game),strideLength:this.dogs.animation?.strideLength??.78,reducedMotion:!motionAllowed})};
-      const painted = this.dogs.draw(c, { view: 'back', x: 0, foot: 0, size: 116 * scale, sample });
+      const sample={atlas:'walk',...sampleWalk({
+        distance:this.worldDistance(game)+(motionAllowed&&discovery?discovery.step*.12:0),
+        strideLength:this.dogs.animation?.strideLength??.78,reducedMotion:!motionAllowed,
+      })};
+      const facing = this.observingDiscovery ? Math.max(0, Math.min(1, this.discoveryFocusProgress)) : 0;
+      let painted = false;
+      if (facing < 1) {
+        c.save(); c.globalAlpha *= 1 - facing;
+        painted = this.dogs.draw(c, { view: 'back', x: 0, foot: 0, size: 116 * scale, sample });
+        c.restore();
+      }
+      if (facing > 0 && this.observingDiscovery) {
+        const response = this.discoverySample ?? {};
+        const faceSample = sampleHome(this.discoveryElapsedMs, {
+          reducedMotion: this.reducedMotion,
+          detailedMotion: Boolean(this.dogs.stats.homeMotionReady),
+          continuousMotion: Boolean(this.dogs.stats.continuityReady),
+          frameCounts: this.dogs.stats.homeFrameCounts,
+          seed: 42,
+        });
+        const clampChannel = (value, min, max) => Math.max(min, Math.min(max, Number.isFinite(value) ? value : 0));
+        const attentiveSample = {
+          ...faceSample,
+          headLift: clampChannel((faceSample.headLift ?? 0) + (response.headLift ?? 0), -2, 4),
+          headRest: clampChannel(Math.max(faceSample.headRest ?? 0, response.headRest ?? 0), 0, 1),
+          headAngle: clampChannel((faceSample.headAngle ?? 0) + (response.headAngle ?? 0), -.08, .08),
+          gazeX: clampChannel((faceSample.gazeX ?? 0) + (response.gazeX ?? 0), -1, 1),
+          earLeft: clampChannel((faceSample.earLeft ?? 0) + (response.earLeft ?? 0), -1, 1),
+          earRight: clampChannel((faceSample.earRight ?? 0) + (response.earRight ?? 0), -1, 1),
+          bodyShift: clampChannel((faceSample.bodyShift ?? 0) + (response.bodyShift ?? 0), -1, 1),
+          pawAdjust: clampChannel(Math.max(faceSample.pawAdjust ?? 0, response.pawAdjust ?? 0), 0, 1),
+        };
+        c.save(); c.globalAlpha *= facing;
+        painted = this.dogs.draw(c, { view: 'front', x: 0, foot: 0, size: 116 * scale, sample: attentiveSample }) || painted;
+        c.restore();
+      }
       c.restore();
       return painted;
     }
@@ -868,6 +1141,9 @@ export class Renderer {
     // A stopped course is one stable frame. Reusing it avoids needless work
     // and subpixel rerasterization differences between WebKit's GPU/CPU paths.
     const paused = game.state === 'paused';
+    const observingDiscovery = this.observingDiscovery === true;
+    const discoveryFocusProgress = Number.isFinite(this.discoveryFocusProgress)
+      ? Math.max(0, Math.min(1, this.discoveryFocusProgress)) : 0;
     const signature = paused ? JSON.stringify([
       this.width, this.height, this.canvas.width, this.canvas.height,
       game.phase, game.walkLevel, game.seed, game.timeMs, game.distance, game.x, game.lane, game.move, game.score,
@@ -883,8 +1159,10 @@ export class Renderer {
       this.mountainScene?.art?.stats, this.caveScene?.art?.stats,
       this.caveScene?.tunnel?.gpu?.contextLost,
       this.caveScene?.tunnel?.gpu?.restorationPending,
+      observingDiscovery, this.discoveryReaction?.id, this.discoverySample?.progress, discoveryFocusProgress,
     ]) : null;
-    if (!force && paused && this.frozenGame === game && this.frozenSignature === signature) return;
+    if (!force && paused && !observingDiscovery && discoveryFocusProgress <= 0
+      && this.frozenGame === game && this.frozenSignature === signature) return;
     this.drawFrame(game);
     this.frozenGame = paused ? game : null;
     this.frozenSignature = signature;
@@ -920,26 +1198,63 @@ export class Renderer {
       ? w * (menu ? .025 : Math.sin(game.timeMs / 6800) * .025) : 0;
     const now = performance.now();
     if (game.state !== this.lastDrawState) {
+      const previousState = this.lastDrawState;
+      const preservingDiscovery = Boolean(this.observingDiscovery && this.discoveryReaction && game.state === 'paused');
       this.lastDrawState = game.state;
-      this.menuElapsedMs = 0; this.menuLastFrameNow = null;
-      this.homeClockOffset=0;this.homeInteraction=null;this.homeStillPose=null;
-      this.homeHeldFrame=null;
-      this.homeAttention=null;
-      this.resetHomeAutonomy();
+      if (!preservingDiscovery) {
+        this.menuElapsedMs = 0; this.menuLastFrameNow = null;
+        this.homeClockOffset=0;this.homeInteraction=null;this.homeStillPose=null;
+        this.homeHeldFrame=null;
+        this.homeAttention=null;
+        this.homeReaction=null;
+        if (previousState === 'ready' && game.state !== 'ready') {
+          this.homePlay = null; this.homePlaySample = null; this.homeReturnReaction = null;
+        }
+        this.resetHomeAutonomy();
+      }
     }
-    const canAdvanceMenu = menu && !this.menuPaused && (typeof document === 'undefined' || !document.hidden);
+    const visible = typeof document === 'undefined' || !document.hidden;
+    const canAdvanceMenu = menu && !this.menuPaused && visible;
     if (canAdvanceMenu && this.menuLastFrameNow !== null) {
       const elapsed = now - this.menuLastFrameNow;
       if (elapsed >= 0 && elapsed <= CONFIG.stallMs) this.menuElapsedMs += elapsed;
     }
     this.menuLastFrameNow = canAdvanceMenu ? now : null;
+    const canAdvanceDiscovery = Boolean(this.discoveryReaction && !this.reducedMotion && !this.menuPaused && visible
+      && (game.state === 'running' || (game.state === 'paused' && this.observingDiscovery)));
+    if (canAdvanceDiscovery && this.discoveryLastFrameNow !== null) {
+      const elapsed = now - this.discoveryLastFrameNow;
+      if (elapsed >= 0 && elapsed <= CONFIG.stallMs) this.discoveryElapsedMs += elapsed;
+    }
+    this.discoveryLastFrameNow = canAdvanceDiscovery ? now : null;
+    this.discoverySample = this.discoveryReaction
+      ? sampleJourneyDiscoveryReaction(this.discoveryReaction, this.discoveryElapsedMs, { reducedMotion: this.reducedMotion })
+      : null;
+    const discoveryFocusTarget = this.observingDiscovery && game.state === 'paused' ? 1 : 0;
+    if (this.reducedMotion) this.discoveryFocusProgress = discoveryFocusTarget;
+    else if (visible && !this.menuPaused && this.discoveryFocusLastFrameNow !== null) {
+      const elapsed = now - this.discoveryFocusLastFrameNow;
+      if (elapsed >= 0 && elapsed <= CONFIG.stallMs) {
+        const amount = Math.min(1, elapsed / 420);
+        this.discoveryFocusProgress += (discoveryFocusTarget - this.discoveryFocusProgress) * amount;
+        if (Math.abs(this.discoveryFocusProgress - discoveryFocusTarget) < .002) this.discoveryFocusProgress = discoveryFocusTarget;
+      }
+    }
+    this.discoveryFocusLastFrameNow = visible && !this.menuPaused ? now : null;
     const menuElapsedMs = this.menuElapsedMs;
     if (game.state === 'ready') {
       this.room.draw(c,w,h,Math.min(devicePixelRatio||1,CONFIG.dprCap),this.homeInterior);
-      this.homeFurnitureBounds=drawHomeFurniture(c,w,h,this.homeFurniture,{images:this.furnitureArt.images,environment:this.homeInterior==='room-garden'?'garden':'indoor'});
+      this.homeFurnitureBounds=drawHomeFurniture(c,w,h,this.homeFurniture,{
+        images:this.furnitureArt.images,environment:this.homeInterior==='room-garden'?'garden':'indoor',
+        skipToy:this.homePlayIsActive(menuElapsedMs) && ['starterBall','plush','rope'].includes(this.homePlay?.itemId),
+      });
     }
     else if (game.walkLevel >= 2 || this.adventure) this.drawAdventure(game, { menu, timeMs: menuElapsedMs });
     else this.landscape(game, menu);
+    if (!menu || !game.journeyRouteId) this.journeyScene.drawEnvironment(this, game);
+    if (this.observingDiscovery && game.state === 'paused' && this.discoveryReaction?.discovery) {
+      this.journeyScene.drawObservation(this, this.discoveryReaction.discovery, game);
+    }
     this.comfortMetrics = this.roadComfort.endFrame();
     if (menu) {
       const phaseResult = game.phase >= 2 && game.state === 'result';
@@ -950,7 +1265,9 @@ export class Renderer {
       const y = baseline - 102 * scale;
       const reactionMs = this.petStartedAt === null ? null : menuElapsedMs - this.petStartedAt;
       const home = game.state === 'ready' ? homeDogLayout(w, h) : null;
+      this.drawHomePlayToy(this.homePlaySample, home, false);
       this.frontDog(home?.x ?? w * .5, home ? home.foot - 102 * home.scale : y, home?.scale ?? scale, menuElapsedMs / 1000, phaseResult && game.endReason === 'finish' ? 'finish' : 'idle', reactionMs);
+      this.drawHomePlayToy(this.homePlaySample, home, true);
       return;
     }
     const falling = game.state === 'falling' || (game.state === 'paused' && game.pausedFrom === 'falling');
@@ -969,6 +1286,12 @@ export class Renderer {
       if (distance > CONFIG.lookAhead || distance < -.16) continue;
       objects.push({ type: 'bone', entity: bone, distance, rank: 2 });
     }
+    for (const discovery of game.discoveries ?? []) {
+      if (discovery.status !== 'pending') continue;
+      const distance = discovery.distance - currentDistance;
+      if (distance > CONFIG.lookAhead || distance < -.16) continue;
+      objects.push({ type: 'discovery', entity: discovery, distance, rank: 1 });
+    }
     for (const obstacle of game.obstacles ?? []) {
       const isFatalHole = obstacle === fatalHole;
       const parkBall = (game.walkLevel === 2 && obstacle.type === 'ball') || (game.walkLevel === 3 && obstacle.type === 'rollingStone') || game.walkLevel === 4;
@@ -982,6 +1305,7 @@ export class Renderer {
       objects.push({ type: 'obstacle', entity: obstacle, distance, rank: 1 });
     }
     objects.sort((a, b) => b.distance - a.distance || a.rank - b.rank);
+    if (game.journeyRouteId) this.journeyScene.drawLaneCue(this, game);
     for (const object of objects) {
       if (object.type === 'goal') {
         this.finish(object.distance);
@@ -989,6 +1313,8 @@ export class Renderer {
         const bone = object.entity, p = this.project(bone.lane, object.distance);
         this.bone(p.x, p.y, Math.max(.25, p.scale) * w / 430, game.timeMs, bone.kind);
         if (this.debug) this.hitbox(bone.lane, object.distance, CONFIG.boneHalfWidth, CONFIG.boneHalfLength, '#b73d70');
+      } else if (object.type === 'discovery') {
+        this.journeyScene.drawEncounter(this, object.entity, object.distance);
       } else {
         const obstacle = object.entity;
         const obstacleLane = game.walkLevel === 4 ? caveObstacleLaneAt(obstacle, game.timeMs) : game.walkLevel === 3 ? mountainObstacleLaneAt(obstacle, game.timeMs)
@@ -1032,7 +1358,12 @@ export class Renderer {
     this.effects = this.effects.filter(e => Number.isFinite(e.activeMs) && game.timeMs - e.activeMs >= 0 && game.timeMs - e.activeMs < 600);
     this.contactEffects(game, dog);
     if (falling && fatalHole) this.fallingDog(game, dog, fatalHole);
-    else this.runner(dog.x, dog.y, w / 390, game);
+    else {
+      const focus = Math.max(0, Math.min(1, this.discoveryFocusProgress));
+      const observedFoot = dog.y + (h * .53 - dog.y) * focus;
+      const observedScale = (w / 390) * (1 - .08 * focus);
+      this.runner(dog.x, observedFoot, observedScale, game);
+    }
     this.contactImpact(game, dog);
     if (this.debug) this.hitbox(game.x, 0, CONFIG.dogHalfWidth, CONFIG.dogHalfLength, '#315dc6');
     for (const effect of this.effects) {

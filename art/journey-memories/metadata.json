@@ -1,0 +1,306 @@
+{
+  "source": "Original Canvas scene and in-world subject painter; no external media",
+  "version": 1,
+  "records": [
+    {
+      "path": "art/journey-previews/street-1.webp",
+      "bytes": 46528,
+      "sha256": "e705843fc4b99c4f9ee552d8d25a7483c4291d490c472760d7b4cfa1ba9f5af8"
+    },
+    {
+      "path": "art/journey-memories/street-1-bakery.webp",
+      "bytes": 44300,
+      "sha256": "7cc5e5b3b32881b5695b2ca3572c1f887dd50d259d17fa546a7dd6ec06950275"
+    },
+    {
+      "path": "art/journey-memories/street-1-sign.webp",
+      "bytes": 40336,
+      "sha256": "e169957d9b166f897a41b3ffb8fc5add6b825ae086bbbe75ec144d04aefb58fe"
+    },
+    {
+      "path": "art/journey-memories/street-1-sparrow.webp",
+      "bytes": 40466,
+      "sha256": "284b1a821116c14bad3fd7dc3111759fbb06cc93d0dbef22650f5fca4b431f4f"
+    },
+    {
+      "path": "art/journey-previews/street-2.webp",
+      "bytes": 36824,
+      "sha256": "64b51bd1973951dc3e695ac4df7c8abd27cce12bbbed63b0ccd30b45d27932e0"
+    },
+    {
+      "path": "art/journey-memories/street-2-ripple.webp",
+      "bytes": 32212,
+      "sha256": "299d05f755bbfba9c0f38a1830d359f66b872ad6e4f282553737d71636919256"
+    },
+    {
+      "path": "art/journey-memories/street-2-bridge.webp",
+      "bytes": 30076,
+      "sha256": "c61a8eb399b1bb38f3afa0b3e6d22036fa30e2dc307b6b4ff165b3a94c87f6c2"
+    },
+    {
+      "path": "art/journey-memories/street-2-grass.webp",
+      "bytes": 31348,
+      "sha256": "5a38c5a746c85a98b19fcd802e5fe573792edc3880cda4914d3e8e694d38a47c"
+    },
+    {
+      "path": "art/journey-previews/street-3.webp",
+      "bytes": 48022,
+      "sha256": "a99d85f0da22514a6c388f70348ae5170ae820b4416f14c5439262b37ce28b3c"
+    },
+    {
+      "path": "art/journey-memories/street-3-puddle.webp",
+      "bytes": 41348,
+      "sha256": "92133e9bb864c218428aa415ce58e71e7704be4c972ba27d80556e52563537f2"
+    },
+    {
+      "path": "art/journey-memories/street-3-leaf.webp",
+      "bytes": 44928,
+      "sha256": "b71baf4f6c0fc688fa4a8b4cc8063285e9deeb72b1d92ce53ba02d09f946ee2c"
+    },
+    {
+      "path": "art/journey-memories/street-3-reflection.webp",
+      "bytes": 40538,
+      "sha256": "383c587ff13ec22c1299b5c0132a5a3e1101f30349f118c1f5d4abe35dd563af"
+    },
+    {
+      "path": "art/journey-previews/park-1.webp",
+      "bytes": 61024,
+      "sha256": "b0ebee91da394b5211004cae65aa3860c492995c67902a38bfae1612904fd9aa"
+    },
+    {
+      "path": "art/journey-memories/park-1-clover.webp",
+      "bytes": 47214,
+      "sha256": "228a71cfdfb10c5531c686152267a3ac9d3e0376bbc99e878b21f092ae6733de"
+    },
+    {
+      "path": "art/journey-memories/park-1-butterfly.webp",
+      "bytes": 50524,
+      "sha256": "532476164501edfb35717bd91ea20b4ee3a04f721217d595c674637fc1968b03"
+    },
+    {
+      "path": "art/journey-memories/park-1-bench.webp",
+      "bytes": 50970,
+      "sha256": "69c43bb8080a6ffe537d9b0c1a6bd2c8cc1fd7eaaf50827cc324db2c0b84c436"
+    },
+    {
+      "path": "art/journey-previews/park-2.webp",
+      "bytes": 74450,
+      "sha256": "a48d69f318c7d3fbd8f7c7e30a62fb9d0eed83ffc528c039f12c86b149ab9077"
+    },
+    {
+      "path": "art/journey-memories/park-2-acorn.webp",
+      "bytes": 60316,
+      "sha256": "742e3fb22f0cc7e4c70dd7611cb9a8f97fabf837a9f4991f280c0986b76cb62a"
+    },
+    {
+      "path": "art/journey-memories/park-2-crow.webp",
+      "bytes": 60572,
+      "sha256": "96fd7384612d3162bd667352df7a4c2f327a84d2247c6ace59f90d6e1b8c9db4"
+    },
+    {
+      "path": "art/journey-memories/park-2-sunbeam.webp",
+      "bytes": 60264,
+      "sha256": "51dc846352759d8e63f179f2b143583544846038ace8122a98b2eb2a1c3d98e9"
+    },
+    {
+      "path": "art/journey-previews/park-3.webp",
+      "bytes": 75772,
+      "sha256": "17200848f5e06a3f2b17f36ee5f879edccf2d8461799a5e87d6cdeb1ba227819"
+    },
+    {
+      "path": "art/journey-memories/park-3-duck.webp",
+      "bytes": 58054,
+      "sha256": "6a93cd48528bccd702938fec12b256eec0cff24a5fa3de575cf933ea4e7d5357"
+    },
+    {
+      "path": "art/journey-memories/park-3-reed.webp",
+      "bytes": 56046,
+      "sha256": "8e0a35b6512b27d02f628d2d1d592433b809158908b97d97e4a9c72c37631dc5"
+    },
+    {
+      "path": "art/journey-memories/park-3-dragonfly.webp",
+      "bytes": 64644,
+      "sha256": "ec0105e2cc002ccd46c5083e7dda9b31a8ebbf1de6e8829536ffd8937402bb3d"
+    },
+    {
+      "path": "art/journey-previews/mountain-1.webp",
+      "bytes": 82566,
+      "sha256": "728241cbc2075ee86be1be4590a60ff0e6f43312eae2c46e3af879c3bcd6913d"
+    },
+    {
+      "path": "art/journey-memories/mountain-1-moss.webp",
+      "bytes": 56504,
+      "sha256": "c71f6172bc68df7007b11c2d877bd0e4eafd21f00f0a2845b447d4e24c6342d7"
+    },
+    {
+      "path": "art/journey-memories/mountain-1-cicada.webp",
+      "bytes": 55896,
+      "sha256": "d9b4a63b7f42349c6c125b82f155e98ace30d31d9b3ceaf1a52ac8398dc7d139"
+    },
+    {
+      "path": "art/journey-memories/mountain-1-brook.webp",
+      "bytes": 48244,
+      "sha256": "5013345bc16c1a4b578ee2b71be35cb62490d95bbfd8151a9d789a4926f83f76"
+    },
+    {
+      "path": "art/journey-previews/mountain-2.webp",
+      "bytes": 75256,
+      "sha256": "c7f94d1c9eabb34dca19b3251d6b0df2353edb834960dbf313e8aca4d3eec842"
+    },
+    {
+      "path": "art/journey-memories/mountain-2-view.webp",
+      "bytes": 48680,
+      "sha256": "e950eb9c70dce2b65e7459781892b1a36e3c91c317f45bd1d954212b1c1c9f16"
+    },
+    {
+      "path": "art/journey-memories/mountain-2-bellflower.webp",
+      "bytes": 47934,
+      "sha256": "8afa6091d6bca94f01db1636630b37c40a0947b10a996d62db2087e61842771a"
+    },
+    {
+      "path": "art/journey-memories/mountain-2-eagle.webp",
+      "bytes": 43414,
+      "sha256": "84cfc7bcd9c9c6c63da0a011ffdbea2c9619552c12267aed994b9d519448ab54"
+    },
+    {
+      "path": "art/journey-previews/mountain-3.webp",
+      "bytes": 82692,
+      "sha256": "b0a3af347ec6798e4d9710694fd668ec88f831e0535bcfc631dbaa9c7232c5bd"
+    },
+    {
+      "path": "art/journey-memories/mountain-3-pinecone.webp",
+      "bytes": 54760,
+      "sha256": "4313966337b2682f9560288bba2f4fff674b241b4e12582386ac453f7a1cf0c7"
+    },
+    {
+      "path": "art/journey-memories/mountain-3-woodpecker.webp",
+      "bytes": 55212,
+      "sha256": "3b1b393085c4265fcbd4c919f43fb893df2c8b54d0aa26ab906a82a92b72d7b2"
+    },
+    {
+      "path": "art/journey-memories/mountain-3-fern.webp",
+      "bytes": 48126,
+      "sha256": "d51a12333786f6b39e2ad25fc32d9a95ce9954eb47a2e15d36fc8e80bde0596b"
+    },
+    {
+      "path": "art/journey-previews/cave-1.webp",
+      "bytes": 83566,
+      "sha256": "efddc1ac5478cd067700680840a612ada5e79ad00b3ab244821e597b2ede2994"
+    },
+    {
+      "path": "art/journey-memories/cave-1-drop.webp",
+      "bytes": 40442,
+      "sha256": "fe9b06e18236a137214aca0a926b590f0fc327a9f843f61910b0e9db3e81e5ea"
+    },
+    {
+      "path": "art/journey-memories/cave-1-crystal.webp",
+      "bytes": 40592,
+      "sha256": "1b1493d12df33959a7584b7db7519c4785e8e09ffcbf43feae1c4265f8a8b7ff"
+    },
+    {
+      "path": "art/journey-memories/cave-1-bat.webp",
+      "bytes": 42716,
+      "sha256": "80ca4810fd6c52bfe3de7bfa3659376a670bfd8dda65a10f05b894f50362b8a8"
+    },
+    {
+      "path": "art/journey-previews/cave-2.webp",
+      "bytes": 92358,
+      "sha256": "db14b0312fbd885f2adf16508006d0ebd346240d5ba8e5aae25293c23b50cc73"
+    },
+    {
+      "path": "art/journey-memories/cave-2-moss.webp",
+      "bytes": 48662,
+      "sha256": "d6371112241a66846900dda4a147188be71d772a9e2a9bdc9c5d93059691ecee"
+    },
+    {
+      "path": "art/journey-memories/cave-2-pool.webp",
+      "bytes": 48220,
+      "sha256": "af776f8d093c429d0528d567b00a7bf94b8122783878bf8e559ce23a7e656ba9"
+    },
+    {
+      "path": "art/journey-memories/cave-2-shell.webp",
+      "bytes": 44558,
+      "sha256": "3d43b534cef6895f7c7d22f2c6cf05adc1b08a439906d7d4996b5580d83ffb9c"
+    },
+    {
+      "path": "art/journey-previews/cave-3.webp",
+      "bytes": 92512,
+      "sha256": "31a9e692ba386407c2603f58413ad328552ad87f35b2f7201a464f2fefb31a9b"
+    },
+    {
+      "path": "art/journey-memories/cave-3-quartz.webp",
+      "bytes": 46798,
+      "sha256": "b51e67f3fe721744f093f882ae5d7ce4504167448683420a18e6a0e0f78531ca"
+    },
+    {
+      "path": "art/journey-memories/cave-3-echo.webp",
+      "bytes": 46660,
+      "sha256": "66b911e24c6f5132e0fc29f570061621c5cd5c333bfcf3ccec0b2035680e1ae1"
+    },
+    {
+      "path": "art/journey-memories/cave-3-spring.webp",
+      "bytes": 46964,
+      "sha256": "70da336bd16eac5d6574d2a4d43512e8cdce87c244ffa415d577eae317dec100"
+    },
+    {
+      "path": "art/journey-previews/dusk-1.webp",
+      "bytes": 32842,
+      "sha256": "b478868239e640623b4182963ca94b64e008b27624154a2798407e0dda65335c"
+    },
+    {
+      "path": "art/journey-memories/dusk-1-sunset.webp",
+      "bytes": 30252,
+      "sha256": "dfd5a6b1ff803d1dc0ccea251f6979a18ca56476ea1df70b76c9afba1da5c217"
+    },
+    {
+      "path": "art/journey-memories/dusk-1-bell.webp",
+      "bytes": 26516,
+      "sha256": "4275db4a5102699865ddd2d9bfb56343477cb09303eece332b06d94c6a11543b"
+    },
+    {
+      "path": "art/journey-memories/dusk-1-lantern.webp",
+      "bytes": 29058,
+      "sha256": "2fa06641674607c3e1126e99acb1ee7bedfd15eb1a4913730f0f176d4002d7fe"
+    },
+    {
+      "path": "art/journey-previews/dusk-2.webp",
+      "bytes": 35686,
+      "sha256": "afd1fcaf65612370179c5adf3ce22287ea707d5647ee9e0f47419ec70eb25d8f"
+    },
+    {
+      "path": "art/journey-memories/dusk-2-firefly.webp",
+      "bytes": 30044,
+      "sha256": "7ffdf26cc0ed5e53f57b992215c0593ef340e33d04ada5cc9e3176e9e402254e"
+    },
+    {
+      "path": "art/journey-memories/dusk-2-moon.webp",
+      "bytes": 28182,
+      "sha256": "22acf61e2753ef3b118967f40e11aebfca6bfed3a2b9510835af0e73555d7204"
+    },
+    {
+      "path": "art/journey-memories/dusk-2-cricket.webp",
+      "bytes": 34810,
+      "sha256": "449a86c22b22d1091490c5b97eb3046ed10daa728037871c03b1edaa5843c7fd"
+    },
+    {
+      "path": "art/journey-previews/dusk-3.webp",
+      "bytes": 43398,
+      "sha256": "b78332f014f758ea8d1ec29a1f76b01678e20d0c16bcbd12dfc26b05ae4c4f60"
+    },
+    {
+      "path": "art/journey-memories/dusk-3-cloud.webp",
+      "bytes": 26494,
+      "sha256": "3275de04281fe7c4db0bffeff855ab533b5d11484f918d10d45716d7a2ac5039"
+    },
+    {
+      "path": "art/journey-memories/dusk-3-star.webp",
+      "bytes": 27754,
+      "sha256": "3d2dd8c3e3d176fe9f4283fe409dea83e0417e03d3cba1e0e7d1459fc6564f8b"
+    },
+    {
+      "path": "art/journey-memories/dusk-3-breeze.webp",
+      "bytes": 25504,
+      "sha256": "6414abc95b3a4fd7603e38885ecd1d5b57845140ec9d72ce42c0aa883df6ba51"
+    }
+  ]
+}

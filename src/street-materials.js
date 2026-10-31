@@ -130,17 +130,19 @@ function positiveModulo(value, period) {
  */
 export class StreetMaterials {
   constructor({ ImageCtor = globalThis.Image, timeoutMs = DEFAULT_TIMEOUT_MS,
-    atlasUrl = MATERIAL_ATLAS_URL, canvasFactory = null } = {}) {
+    atlasUrl = MATERIAL_ATLAS_URL, canvasFactory = null, lazy = false } = {}) {
     this.image = null;
     this.canvasFactory = canvasFactory;
     this.tiles = new Map();
     this.status = Object.fromEntries(MATERIAL_KINDS.map(kind => [kind, 'pending']));
-    this.ready = loadImage(atlasUrl, ImageCtor, timeoutMs).then(image => {
+    this.load=()=>this._ready??=loadImage(atlasUrl, ImageCtor, timeoutMs).then(image => {
       this.image = image;
       for (const kind of MATERIAL_KINDS) this.status[kind] = image ? 'ready' : 'fallback';
       return this;
     });
+    if(!lazy)this.load();
   }
+  get ready(){return this.load();}
 
   get stats() {
     return Object.freeze({ ...this.status });
@@ -235,7 +237,7 @@ export class StreetMaterials {
   }
 }
 
-export const STREET_MATERIALS = new StreetMaterials();
+export const STREET_MATERIALS = new StreetMaterials({lazy:true,timeoutMs:10000});
 
 /** Add a deterministic world-anchored texture over a caller-painted surface. */
 export function paintMaterial(ctx, points, kind, options = {}) {

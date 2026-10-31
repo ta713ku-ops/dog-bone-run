@@ -1,0 +1,10 @@
+import {mkdir,writeFile} from 'node:fs/promises';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+let sharp;
+try{sharp=require('sharp');}catch{sharp=require('/Users/taku/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/sharp');}
+// Original code-native illustration; no reference photograph is redistributed.
+const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><rect width="512" height="512" rx="0" fill="#f5ebd9"/><circle cx="256" cy="250" r="176" fill="#e3eacb"/><path d="M139 195 164 102 224 161M288 161 350 102 375 195" fill="#bb7b40" stroke="#7d5334" stroke-width="9" stroke-linejoin="round"/><path d="M149 205Q150 142 256 144Q362 142 363 205L379 278Q357 368 256 367Q155 368 133 278Z" fill="#c58a4c"/><path d="M256 179 221 252 177 263Q177 335 256 348Q335 335 335 263L290 252Z" fill="#fff8e7"/><ellipse cx="209" cy="236" rx="13" ry="17" fill="#403425"/><ellipse cx="303" cy="236" rx="13" ry="17" fill="#403425"/><circle cx="213" cy="230" r="4" fill="white"/><circle cx="307" cy="230" r="4" fill="white"/><path d="M240 276Q256 265 272 276Q269 291 256 291Q243 291 240 276" fill="#403425"/><path d="M238 303Q256 323 274 303" fill="none" stroke="#6f4935" stroke-width="6" stroke-linecap="round"/><path d="M247 311Q256 318 265 311L264 327Q256 338 248 327Z" fill="#dc9b8b"/><g transform="translate(188 385) rotate(-10 70 30)" fill="#fff9ee" stroke="#9c8059" stroke-width="4"><path d="M20 15C4-6-11 16 6 31C-11 48 7 68 22 48H116C132 68 149 48 132 31C149 14 132-6 116 15Z"/></g></svg>`;
+await mkdir('icons',{recursive:true});await writeFile('icons/app.svg',svg);
+for(const [name,size] of [['app-192',192],['app-512',512],['app-maskable',512]])await sharp(Buffer.from(svg)).resize(size,size).png().toFile(`icons/${name}.png`);
+console.log('Generated original app icons');

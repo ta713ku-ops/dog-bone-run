@@ -336,16 +336,18 @@ function drawAxisAlignedFacade(ctx, image, cell, shape, shade, alpha) {
 /** Optional perspective facade atlas; its readiness never gates gameplay. */
 export class StreetFacadeArt {
   constructor({ ImageCtor = globalThis.Image, timeoutMs = DEFAULT_TIMEOUT_MS,
-    atlasUrl = FACADE_ATLAS_URL, cells = CELLS } = {}) {
+    atlasUrl = FACADE_ATLAS_URL, cells = CELLS, lazy = false } = {}) {
     this.image = null;
     this.cells = cells;
     this.status = Object.fromEntries(Object.keys(cells).map(kind => [kind, 'pending']));
-    this.ready = loadImage(atlasUrl, ImageCtor, timeoutMs).then(image => {
+    this.load=()=>this._ready??=loadImage(atlasUrl, ImageCtor, timeoutMs).then(image => {
       this.image = image;
       for (const kind of Object.keys(cells)) this.status[kind] = image ? 'ready' : 'fallback';
       return this;
     });
+    if(!lazy)this.load();
   }
+  get ready(){return this.load();}
 
   get atlasReady() { return validImage(this.image); }
   get stats() { return Object.freeze({ ...this.status }); }
@@ -383,7 +385,7 @@ export class StreetFacadeArt {
   }
 }
 
-export const STREET_FACADE_ART = new StreetFacadeArt();
+export const STREET_FACADE_ART = new StreetFacadeArt({lazy:true,timeoutMs:10000});
 
 export function drawFacade(ctx, quad, kind, options = {}) {
   return STREET_FACADE_ART.drawFacade(ctx, quad, kind, options);

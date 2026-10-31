@@ -1,6 +1,6 @@
 {
   "name": "dog-bone-run",
-  "version": "0.37.0",
+  "version": "0.39.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,6 +8,12 @@
     "test": "node --test tests/*.test.mjs",
     "build": "node scripts/build.mjs",
     "preview": "node scripts/server.mjs --dist",
+    "test:journey": "node tests/ultimate.browser.mjs",
+    "verify:journey": "node scripts/verify-journey.mjs",
+    "assets:journey-previews": "node scripts/build-journey-life-art.mjs",
+    "assets:app-icons": "node scripts/build-app-icons.mjs",
+    "prepare:ios": "node scripts/prepare-ios.mjs",
+    "package:release": "npm run build && node scripts/package-release.mjs",
     "test:browser": "node tests/runner-polish.browser.mjs",
     "test:touch": "node tests/runner-touch.browser.mjs",
     "test:interruptions": "node tests/runner-interruption.browser.mjs",

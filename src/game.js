@@ -7,27 +7,41 @@ import { createParkCourse, parkObstacleLaneAt } from './park-course.js';
 import { createMountainCourse, mountainObstacleLaneAt } from './mountain-course.js';
 import { createCaveCourse, caveObstacleLaneAt } from './cave-course.js';
 import { getWalkLevel } from './walk-levels.js';
+import { createJourneyCourse } from './journey-course.js';
+import { getJourneyRoute } from './journey-catalog.js';
+
+const JOURNEY_DISCOVERY_HALF_WINDOW_MS = 180;
 
 const obstacleLaneAt = (level, obstacle, timeMs) => level === 4 ? caveObstacleLaneAt(obstacle, timeMs) : level === 3
   ? mountainObstacleLaneAt(obstacle, timeMs) : parkObstacleLaneAt(obstacle, timeMs);
 
 // Pure simulation. Neither browser APIs nor rendering influence its coordinates.
 export class Game {
-  constructor({ course, obstacles, phase = 1, seed = 1, walkLevel = 1, onEvent = () => {} } = {}) {
+  constructor({ course, obstacles, phase = 1, seed = 1, walkLevel = 1,
+    journeyRouteId = null, journeyMode = 'calm', onEvent = () => {} } = {}) {
     this.phase = [2, 3, 4].includes(phase) ? phase : 1; this.fixedCourse = course; this.fixedObstacles = obstacles; this.seed = seed >>> 0;
     this.walkLevel = [2, 3, 4].includes(walkLevel) ? walkLevel : 1;
+    this.journeyRouteId = journeyRouteId;
+    this.journeyMode = journeyMode;
     this.onEvent = onEvent;
-    this.reset({ seed: this.seed, walkLevel: this.walkLevel });
+    this.reset({ seed: this.seed, walkLevel: this.walkLevel, journeyRouteId, journeyMode });
   }
-  reset({ seed = this.seed, walkLevel = this.walkLevel } = {}) {
-    this.seed = seed >>> 0;
-    this.walkLevel = [2, 3, 4].includes(walkLevel) ? walkLevel : 1;
+  reset({ seed = this.seed, walkLevel = this.walkLevel,
+    journeyRouteId = null, journeyMode = 'calm' } = {}) {
+    const requestedJourney = this.phase === 4 && typeof journeyRouteId === 'string'
+      ? getJourneyRoute(journeyRouteId) : null;
+    this.journeyRouteId = requestedJourney?.id ?? null;
+    this.journeyMode = journeyMode === 'challenge' ? 'challenge' : 'calm';
+    this.seed = requestedJourney && Number.isFinite(requestedJourney.seed)
+      ? Math.trunc(requestedJourney.seed) >>> 0 : seed >>> 0;
+    this.walkLevel = requestedJourney?.level ?? ([2, 3, 4].includes(walkLevel) ? walkLevel : 1);
     const level = getWalkLevel(this.walkLevel);
     const data = this.phase === 4
-      ? (this.walkLevel === 4 ? createCaveCourse(this.seed) : this.walkLevel === 3 ? createMountainCourse(this.seed) : this.walkLevel === 2 ? createParkCourse(this.seed) : createSprintCourse(this.seed))
+      ? (requestedJourney ? createJourneyCourse(requestedJourney, this.journeyMode)
+        : this.walkLevel === 4 ? createCaveCourse(this.seed) : this.walkLevel === 3 ? createMountainCourse(this.seed) : this.walkLevel === 2 ? createParkCourse(this.seed) : createSprintCourse(this.seed))
       : this.phase === 3 ? createPhase3Course(this.seed) : this.phase === 2 ? createPhase2Course(this.seed) : null;
     this.course = this.fixedCourse ?? data?.bones ?? createCourse();
-    this.courseData = this.phase === 4 && this.walkLevel >= 2 && !this.fixedCourse ? data : null;
+    this.courseData = this.phase === 4 && (this.walkLevel >= 2 || requestedJourney) && !this.fixedCourse ? data : null;
     this.durationMs = this.phase === 4 ? level.durationMs : CONFIG.durationMs;
     this.speed = this.phase === 4 ? level.speed : 1;
     this.goldCandidates = data?.goldCandidates ?? [];
@@ -43,6 +57,14 @@ export class Game {
     this.bones = this.course.map(b => ({ ...b, distance: b.distance ?? b.timeMs / 1000, kind: b.kind ?? 'normal', status: 'pending' }));
     const obstacles = this.fixedObstacles ?? (this.fixedCourse ? [] : data?.obstacles ?? []);
     this.obstacles = obstacles.map(o => ({ ...o, status: 'pending' }));
+    this.discoveryIds = [];
+    this.discoveries = requestedJourney
+      ? requestedJourney.discoveries.map(discovery => ({
+        ...discovery,
+        distance: discovery.timeMs * this.speed / 1000,
+        status: 'pending',
+        journeyDiscovery: true,
+      })) : [];
   }
   get goalDistance() {
     if (this.phase !== 4) return PHASE2.goalDistance;
@@ -66,7 +88,8 @@ export class Game {
   start() {
     if (this.state !== 'ready') return false;
     this.state = 'running'; this.emit('start', this.phase >= 2
-      ? { phase: this.phase, seed: this.seed, goldIds: [...this.goldIds], ...(this.phase === 4 && this.walkLevel >= 2 ? { walkLevel: this.walkLevel } : {}) }
+      ? { phase: this.phase, seed: this.seed, goldIds: [...this.goldIds], ...(this.phase === 4 && this.walkLevel >= 2 ? { walkLevel: this.walkLevel } : {}),
+        ...(this.journeyRouteId ? { journeyRouteId: this.journeyRouteId, journeyMode: this.journeyMode } : {}) }
       : {}); return true;
   }
   command(direction, source = 'keyboard', movement = null) {
@@ -290,6 +313,40 @@ export class Game {
     }
     return enter <= exit + EPS ? Math.max(startMs, Math.min(endMs, enter)) : null;
   }
+  journeyDiscoveryContactTime(discovery, startMs, endMs, x0, x1) {
+    const enter = Math.max(startMs, discovery.timeMs - JOURNEY_DISCOVERY_HALF_WINDOW_MS);
+    const exit = Math.min(endMs, discovery.timeMs + JOURNEY_DISCOVERY_HALF_WINDOW_MS);
+    if (enter > exit + EPS) return null;
+    const duration = endMs - startMs;
+    const dogAt = timeMs => duration <= EPS ? x0 : x0 + (x1 - x0) * ((timeMs - startMs) / duration);
+    const relativeStart = dogAt(enter) - discovery.lane;
+    const relativeEnd = dogAt(exit) - discovery.lane;
+    const halfWidth = CONFIG.dogHalfWidth + .12;
+    const relativeSpeed = exit - enter <= EPS ? 0 : (relativeEnd - relativeStart) / (exit - enter);
+    if (Math.abs(relativeSpeed) <= EPS) return Math.abs(relativeStart) <= halfWidth + EPS ? enter : null;
+    const a = enter + (-halfWidth - relativeStart) / relativeSpeed;
+    const b = enter + (halfWidth - relativeStart) / relativeSpeed;
+    const overlapStart = Math.max(enter, Math.min(a, b));
+    const overlapEnd = Math.min(exit, Math.max(a, b));
+    return overlapStart <= overlapEnd + EPS ? overlapStart : null;
+  }
+  collectDiscovery(discovery) {
+    if (discovery.status !== 'pending') return false;
+    discovery.status = 'discovered';
+    if (!this.discoveryIds.includes(discovery.id)) this.discoveryIds.push(discovery.id);
+    this.emit('discovery', {
+      discoveryId: discovery.id,
+      title: discovery.title,
+      description: discovery.description,
+      kind: discovery.kind,
+      lane: discovery.lane,
+      distance: discovery.distance,
+      x: this.x,
+      journeyRouteId: this.journeyRouteId,
+      discoveryIds: [...this.discoveryIds],
+    });
+    return true;
+  }
   emitObstacleVisibility(timeMs = this.timeMs) {
     if (this.walkLevel < 2) return;
     for (const obstacle of this.obstacles) {
@@ -331,9 +388,21 @@ export class Game {
         this.suppressUntilMs || Infinity, this.nextParkBoundaryAfter(startMs), goalMs);
       const x0 = this.x, x1 = this.xAt(boundary), endDistance = this.distanceAt(boundary);
       const contacts = [];
-      for (const item of [...this.obstacles, ...this.bones]) {
+      for (const item of [...this.obstacles, ...this.bones, ...this.discoveries]) {
         if (item.status !== 'pending') continue;
         const obstacle = Boolean(item.type);
+        const discovery = item.journeyDiscovery === true;
+        if (discovery) {
+          const hit = this.journeyDiscoveryContactTime(item, startMs, boundary, x0, x1);
+          if (hit !== null) contacts.push({ item, timeMs: hit, priority: 2, kind: 'discovery' });
+          else {
+            const missedAt = item.timeMs + JOURNEY_DISCOVERY_HALF_WINDOW_MS;
+            if (boundary >= missedAt - EPS && missedAt >= startMs - EPS) {
+              contacts.push({ item, timeMs: Math.max(startMs, missedAt), priority: 4, kind: 'discovery_miss' });
+            }
+          }
+          continue;
+        }
         const halfWidth = CONFIG.dogHalfWidth + (obstacle ? CONFIG.obstacleHalfWidth : CONFIG.boneHalfWidth);
         const halfLength = CONFIG.dogHalfLength + (obstacle ? CONFIG.obstacleHalfLength : CONFIG.boneHalfLength);
         const hit = this.worldContactTime(item, startMs, boundary, x0, x1, halfWidth, halfLength);
@@ -356,6 +425,16 @@ export class Game {
       const simultaneous = contacts.filter(c => Math.abs(c.timeMs - endMs) <= EPS).sort((a, b) => a.priority - b.priority);
       for (const { item, kind } of simultaneous) {
         if (kind === 'contact' && item.type === 'hole' && this.phase !== 4) { this.startFall(item); break; }
+        if (kind === 'discovery') {
+          this.collectDiscovery(item);
+          continue;
+        }
+        if (kind === 'discovery_miss') {
+          item.status = 'missed';
+          this.emit('discovery_missed', { discoveryId: item.id, lane: item.lane,
+            journeyRouteId: this.journeyRouteId, distance: item.distance });
+          continue;
+        }
         if (kind === 'passed') {
           item.status = item.type ? 'passed' : 'miss';
           this.emit(item.type ? 'obstacle_pass' : 'miss', { obstacleId: item.type ? item.id : undefined,
@@ -389,9 +468,12 @@ export class Game {
     if (this.phase === 1) return result;
     const phaseResult = { ...result, phase: this.phase, normalCollected: this.normalCollected, goldCollected: this.goldCollected,
       distance: this.distance, progress: this.progress, completed: this.state === 'result' && this.endReason === 'finish', seed: this.seed, goldIds: [...this.goldIds], ...(this.phase >= 3 ? { endReason: this.endReason } : {}) };
+    const journeyResult = this.journeyRouteId
+      ? { journeyRouteId: this.journeyRouteId, journeyMode: this.journeyMode, discoveryIds: [...this.discoveryIds] }
+      : {};
     return this.phase === 4 && this.walkLevel >= 2
       ? { ...phaseResult, walkLevel: this.walkLevel, durationMs: this.durationMs, speed: this.speed,
-        contactCount: this.contactCount, contactEventCount: this.contactEventCount }
-      : phaseResult;
+        contactCount: this.contactCount, contactEventCount: this.contactEventCount, ...journeyResult }
+      : { ...phaseResult, ...journeyResult };
   }
 }

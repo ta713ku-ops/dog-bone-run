@@ -61,7 +61,9 @@ for (const engine of [chromium, webkit]) {
         assert.equal(await page.locator('#game').getAttribute('data-state'), 'paused');
         assert.equal(await page.evaluate(() => window.__dogBoneTest.log.events.filter(e => e.type === 'pause').at(-1).reason), reason);
         await page.getByRole('button', { name: '再開する', exact: true }).tap();
-        await page.waitForFunction(() => window.__dogBoneTest.game.state === 'running');
+        await page.waitForFunction(() => window.__dogBoneTest.game.state === 'running',null,{timeout:10000}).catch(async error=>{
+          console.error(JSON.stringify({engine:engine.name(),sound,reason,details:await page.evaluate(()=>{const t=window.__dogBoneTest,c=t.homeShop;return{state:t.game.state,owner:c.owner,runId:c.currentRunId,active:c.state?.roomShop.activeWalk,error:c.error,suspended:c.lifecycleSuspended,recovering:!!c.lifecycleRecovery,closed:!!c.lifecycleClosedStore,refreshing:c.refreshing,pending:t.pending,events:t.log.events.slice(-8),text:document.body.innerText};})}));throw error;
+        });
       }
       checks.push(`${engine.name()}/${sound ? 'sound' : 'silent'}:20 stationary taps, focus retained, manual and lifecycle pause reasons`);
       await context.close();

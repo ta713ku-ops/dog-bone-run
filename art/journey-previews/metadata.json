@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "source": "Actual Canvas renderer, no external photograph",
+  "previews": [
+    {
+      "place": "street",
+      "path": "art/journey-previews/street.webp",
+      "routeId": "street-1",
+      "activeMs": 5200,
+      "bytes": 115434,
+      "sha256": "e241423092c85b01f235a52d585641049631c95ac4da2bbe2222a254842e3186"
+    },
+    {
+      "place": "park",
+      "path": "art/journey-previews/park.webp",
+      "routeId": "park-1",
+      "activeMs": 5200,
+      "bytes": 141502,
+      "sha256": "3dce678ec682b5a09bd359c136b446a1c9176072a8255ccd8998c899850c55ba"
+    },
+    {
+      "place": "mountain",
+      "path": "art/journey-previews/mountain.webp",
+      "routeId": "mountain-1",
+      "activeMs": 5200,
+      "bytes": 170628,
+      "sha256": "7f5fa88431aea8da097f34cd8f3dec873694bf2fce984d652a2daadb6aae3420"
+    },
+    {
+      "place": "cave",
+      "path": "art/journey-previews/cave.webp",
+      "routeId": "cave-1",
+      "activeMs": 5200,
+      "bytes": 167836,
+      "sha256": "9aeeddc4a072e2c7dde8611924a82871ca5c376b07162d8b993640ba9e0802b1"
+    }
+  ]
+}
